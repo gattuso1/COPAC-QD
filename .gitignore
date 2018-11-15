@@ -1,0 +1,6 @@
+*.log
+*.o
+*.mod
+*.50
+WaveFunction1
+QD-range.f90

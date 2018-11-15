@@ -1,0 +1,16 @@
+! Namelist definition
+
+&elecSt !Parameters of the system
+me        =  0.13
+mh        =  0.82
+eps       =  9.56
+epsout    =  2.3
+V0        =  1.75
+omegaLO   =  5.99585d12
+/
+
+&syst !Parameters of the system
+aA = 1.65d-9
+linker = 0.2d-9
+/
+
