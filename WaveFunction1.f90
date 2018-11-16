@@ -15,17 +15,15 @@ character*64:: arg1, arg2, filename, argA
 
 integer:: i,je,jh,k,l,nsteps,r,rsteps,ifail,raA,raB, m, o, i1, i2, oo, iii, iio, ioi, ioo, rx
 
-real(dp):: V0eV,maxr0,stepr0,Ef,le,re,lh,rh,delta,x,y,z,D,Dev,lambda,V0e, V0h, & 
+real(dp):: maxr0,stepr0,Ef,le,re,lh,rh,delta,x,y,z,D,Dev,lambda, & 
         aex, J , E2, integral, truc, truc2, truc3, a1, a2, a3, OA, OB, dcouplA, &
         InteA, Inth1A, Inth2A, InteB, Inth1B, Inth2B, Overlapeh1A, dcouplB, epsinfrR, &
-         slope, epsin, &
         C_in_in, C_in_out, C_out_out, prod,  inie, ende, inih, endh, inte, inth, LePo, ra, angl, &
-        Integii, Integio, Integoi, Integoo, rand1, rand2, start, finish, mu, A, rhoe, rhoh, epsinf, disteh, &
+        rand1, rand2, start, finish, mu, A, epsinf, disteh, &
         Rine, Route, Rinh1, Routh1, Rinh2, Routh2, RadProbe, RadProbh1, RadProbh2, &
         r0, Ae, Ah1, Ah2, Be, Bh1, Bh2, &
         Eeh1, Eeh2, alphae, alphah1, alphah2, betae, betah1, betah2, &
         I1eh1, I1eh2, I2eh1, I2eh2, I3eh1, I3eh2, kine, kinh1, kinh2, koute, kouth1, kouth2
-        
 
 real(dp),allocatable:: minEe(:),minEh(:),diffe(:), diffh(:), E(:)
 
@@ -39,13 +37,6 @@ nsteps= int(Ef/delta)
 rsteps= int(maxr0/stepr0)+1
 ifail=  1
 o=      1000000
-V0=     V0*elec
-rhoe  = 1.0/sqrt((2*me*omegaLO)/hbar)
-rhoh  = 1.0/sqrt((2*mh*omegaLO)/hbar)
-eps = 1.0 + (eps - 1.0) / (1.0 + (0.75e-9/(2*aA))**1.2)
-epsin = 1.0/((1.0/eps)-((1.0/eps)-(1.0/(eps+3.5)))*(1-(exp(-(36/35)*aA/rhoe)+exp(-(36/35)*aA/rhoh))/2))
-
-!write(6,*) eps, epsin
 
 allocate(E(nsteps))
 allocate(diffe(nsteps))
@@ -53,6 +44,7 @@ allocate(diffh(nsteps))
 allocate(minEe(nsteps))
 allocate(minEh(nsteps))
 
+open(10,file='Ee.dat')
 open(11,file='E1se-1sh.dat')
 open(12,file='E1se-2sh.dat')
 open(13,file='E1se-1sh-Cb.dat')
@@ -82,10 +74,6 @@ r=0
 je=1
 jh=1
 
-!Confining potentials of electron and hole
-V0e=-1*(-3.49+2.47*(1d9*2*aA)**(-1.32))*elec
-V0h=-1*(-5.23-0.74*(1d9*2*aA)**(-0.95))*elec
-
 do i=1,nsteps
 
 E(i)=delta*i
@@ -100,30 +88,27 @@ if ((diffe(0) .eq. 0.000) .and. (diffh(0) .eq. 0.00)) then
 
 endif
 
+!write(10,*) E(i), sqrt(2*me*E(i))/hbar * aA * 1/tan(sqrt(2*me*E(i))/hbar * aA), - 1 + (me/m0) + (me*aA)/(hbar) &
+!           * sqrt((2/m0)*(V0e-E(i)))
+
 if (diffe(i) .le. diffe(i-1)) then
         minEe(je) = E(i)
-
 elseif ( (diffe(i) .ge. diffe(i-1)) .and. (E(i-1) .eq. minEe(je)) ) then
-
         je=je+1
-
 endif
 
-diffh(i) = abs(sqrt(2*mh*E(i))/hbar * aA * 1/tan(sqrt(2*mh*E(i))/hbar * aA) - 1 + (mh/m0) + (mh*aA)/(hbar) &
-           * sqrt((2/m0)*(V0h-E(i))))
-
-if (diffh(i) .le. diffh(i-1)) then
-
-        minEh(jh) = E(i)
-
-elseif ( (diffh(i) .ge. diffh(i-1)) .and. (E(i-1) .eq. minEh(jh)) ) then
-
-        jh=jh+1
-
-endif
-
+!diffh(i) = abs(sqrt(2*mh*E(i))/hbar * aA * 1/tan(sqrt(2*mh*E(i))/hbar * aA) - 1 + (mh/m0) + (mh*aA)/(hbar) &
+!           * sqrt((2/m0)*(V0h-E(i))))
+!
+!if (diffh(i) .le. diffh(i-1)) then
+!        minEh(jh) = E(i)
+!elseif ( (diffh(i) .ge. diffh(i-1)) .and. (E(i-1) .eq. minEh(jh)) ) then
+!        jh=jh+1
+!endif
 
 enddo
+
+!write(6,*) V0h, m0, minEe(1),minEe(2), hbar
 
 !wave vectors in and out
 
@@ -181,7 +166,7 @@ I3eh2=(Be**2*Bh2**2*aA/(2*betae)*(exp(-2*betae)*eone(2*betah2)-eone(2*betae+2*be
          (Be**2*Bh2**2*aA/(2*betah2)*(exp(-2*betah2)*eone(2*betae)-eone(2*betah2+2*betae)))
 
 
-Eeh1=(elec**2/(4*pi*eps*eps0))*(I1eh1+I2eh1+I3eh1)/elec
+Eeh1=(elec**2/(4*pi*epsin*eps0))*(I1eh1+I2eh1+I3eh1)/elec
 
 Eeh2=(elec**2/(4*pi*eps*eps0))*(I1eh2+I2eh2+I3eh2)/elec
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -189,6 +174,8 @@ Eeh2=(elec**2/(4*pi*eps*eps0))*(I1eh2+I2eh2+I3eh2)/elec
 write(20,*) aA, minEe(1)/elec, minEh(1)/elec, minEh(2)/elec
 write(11,*) aA, (minEe(1)+minEh(1))/elec+V0eV
 write(12,*) aA, (minEe(1)+minEh(2))/elec+V0eV
+
+write(6,*) Eeh1
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -307,9 +294,6 @@ enddo
 
 m=10000
 
-slope=50d9
-
-
 !write(6,*) r, aA
 
 !Overlap 
@@ -406,11 +390,15 @@ slope=50d9
 !                  D12ex_out_in(oo,Bh1,kouth1,Be,koute,Ah2,kinh2,Ae,kine,aA) + &
 !                  D12ex_in_out(oo,Ah1,kinh1,Ae,kine,Bh2,kouth2,Be,koute,aA) + &
 !                  D12ex_out_out(oo,Bh1,kouth1,Be,koute,Bh2,kouth2,Be,koute,aA)
-write(50,*) aA, &!D12_in_in(oo,Ah1,kinh1,Ae,kine,Ah1,kinh1,Ae,kine,aA) + &
+!write(50,*) aA, &!D12_in_in(oo,Ah1,kinh1,Ae,kine,Ah1,kinh1,Ae,kine,aA) + &
+write(6,*) Ah2,Bh2,kinh2,kouth2
+
+write(6,*) aA, D12dir(oo,Ah1,Bh1,kinh1,kouth1,Ae,Be,kine,koute,Ah2,Bh2,kinh2,kouth2,Ae,Be,kine,koute,aA), &
+               D12ex(oo,Ah1,Bh1,kinh1,kouth1,Ae,Be,kine,koute,Ah2,Bh2,kinh2,kouth2,Ae,Be,kine,koute,aA)
 !               D12_out_in(oo,Bh1,kouth1,Ae,kine,Bh1,kouth1,Ae,kine,aA) + &
 !               D12_in_out(oo,Ah1,kinh1,Be,koute,Ah1,kinh1,Be,koute,aA) + &
 !               D12_out_out(oo,Bh1,kouth1,Be,koute,Bh1,kouth1,Be,koute,aA)
-               D12ex_in_in(oo,Ah1,kinh1,Ae,kine,Ah1,kinh1,Ae,kine,aA) !+ & 
+!               D12ex_in_in(oo,Ah1,kinh1,Ae,kine,Ah1,kinh1,Ae,kine,aA) !+ & 
                !D12ex_out_in(oo,Bh1,kouth1,Be,koute,Ah1,kinh1,Ae,kine,aA) + &
                !D12ex_in_out(oo,Ah1,kinh1,Ae,kine,Bh1,kouth1,Be,koute,aA) + &
                !D12ex_out_out(oo,Bh1,kouth1,Be,koute,Bh1,kouth1,Be,koute,aA)

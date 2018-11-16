@@ -7,6 +7,7 @@ eps       =  9.56
 epsout    =  2.3
 V0        =  1.75
 omegaLO   =  5.99585d12
+slope     =  50d9
 /
 
 &syst !Parameters of the system
