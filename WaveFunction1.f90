@@ -63,11 +63,11 @@ k=1
 
 !Computation of energies
 
-diffe(:)=0
-diffh(:)=0
-E(:)=0
-minEe(:)=0 
-minEh(:)=0 
+!diffe(:)=0
+!diffh(:)=0
+!E(:)=0
+!minEe(:)=0 
+!minEh(:)=0 
 i=0
 r=0
 
@@ -75,21 +75,14 @@ je=1
 jh=1
 
 do i=1,nsteps
-
 E(i)=delta*i
-
 diffe(i) = abs(sqrt(2*me*E(i))/hbar * aA * 1/tan(sqrt(2*me*E(i))/hbar * aA) - 1 + (me/m0) + (me*aA)/(hbar) &
            * sqrt((2/m0)*(V0e-E(i))))
-
 if ((diffe(0) .eq. 0.000) .and. (diffh(0) .eq. 0.00)) then 
-
         diffe(0)=diffe(i)
         diffh(0)=diffe(i)
-
 endif
 
-!write(10,*) E(i), sqrt(2*me*E(i))/hbar * aA * 1/tan(sqrt(2*me*E(i))/hbar * aA), - 1 + (me/m0) + (me*aA)/(hbar) &
-!           * sqrt((2/m0)*(V0e-E(i)))
 
 if (diffe(i) .le. diffe(i-1)) then
         minEe(je) = E(i)
@@ -97,18 +90,14 @@ elseif ( (diffe(i) .ge. diffe(i-1)) .and. (E(i-1) .eq. minEe(je)) ) then
         je=je+1
 endif
 
-!diffh(i) = abs(sqrt(2*mh*E(i))/hbar * aA * 1/tan(sqrt(2*mh*E(i))/hbar * aA) - 1 + (mh/m0) + (mh*aA)/(hbar) &
-!           * sqrt((2/m0)*(V0h-E(i))))
-!
-!if (diffh(i) .le. diffh(i-1)) then
-!        minEh(jh) = E(i)
-!elseif ( (diffh(i) .ge. diffh(i-1)) .and. (E(i-1) .eq. minEh(jh)) ) then
-!        jh=jh+1
-!endif
-
+diffh(i) = abs(sqrt(2*mh*E(i))/hbar * aA * 1/tan(sqrt(2*mh*E(i))/hbar * aA) - 1 + (mh/m0) + (mh*aA)/(hbar) &
+           * sqrt((2/m0)*(V0h-E(i))))
+if (diffh(i) .le. diffh(i-1)) then
+        minEh(jh) = E(i)
+elseif ( (diffh(i) .ge. diffh(i-1)) .and. (E(i-1) .eq. minEh(jh)) ) then
+        jh=jh+1
+endif
 enddo
-
-!write(6,*) V0h, m0, minEe(1),minEe(2), hbar
 
 !wave vectors in and out
 
@@ -174,8 +163,6 @@ Eeh2=(elec**2/(4*pi*eps*eps0))*(I1eh2+I2eh2+I3eh2)/elec
 write(20,*) aA, minEe(1)/elec, minEh(1)/elec, minEh(2)/elec
 write(11,*) aA, (minEe(1)+minEh(1))/elec+V0eV
 write(12,*) aA, (minEe(1)+minEh(2))/elec+V0eV
-
-write(6,*) Eeh1
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -391,17 +378,10 @@ m=10000
 !                  D12ex_in_out(oo,Ah1,kinh1,Ae,kine,Bh2,kouth2,Be,koute,aA) + &
 !                  D12ex_out_out(oo,Bh1,kouth1,Be,koute,Bh2,kouth2,Be,koute,aA)
 !write(50,*) aA, &!D12_in_in(oo,Ah1,kinh1,Ae,kine,Ah1,kinh1,Ae,kine,aA) + &
-write(6,*) Ah2,Bh2,kinh2,kouth2
 
-write(6,*) aA, D12dir(oo,Ah1,Bh1,kinh1,kouth1,Ae,Be,kine,koute,Ah2,Bh2,kinh2,kouth2,Ae,Be,kine,koute,aA), &
-               D12ex(oo,Ah1,Bh1,kinh1,kouth1,Ae,Be,kine,koute,Ah2,Bh2,kinh2,kouth2,Ae,Be,kine,koute,aA)
-!               D12_out_in(oo,Bh1,kouth1,Ae,kine,Bh1,kouth1,Ae,kine,aA) + &
-!               D12_in_out(oo,Ah1,kinh1,Be,koute,Ah1,kinh1,Be,koute,aA) + &
-!               D12_out_out(oo,Bh1,kouth1,Be,koute,Bh1,kouth1,Be,koute,aA)
-!               D12ex_in_in(oo,Ah1,kinh1,Ae,kine,Ah1,kinh1,Ae,kine,aA) !+ & 
-               !D12ex_out_in(oo,Bh1,kouth1,Be,koute,Ah1,kinh1,Ae,kine,aA) + &
-               !D12ex_in_out(oo,Ah1,kinh1,Ae,kine,Bh1,kouth1,Be,koute,aA) + &
-               !D12ex_out_out(oo,Bh1,kouth1,Be,koute,Bh1,kouth1,Be,koute,aA)
+write(6,*) aA, D12dir(oo,Ah1,Bh1,kinh1,kouth1,Ae,Be,kine,koute,Ah1,Bh1,kinh1,kouth1,Ae,Be,kine,koute,aA), &
+               D12ex(oo,Ah1,Bh1,kinh1,kouth1,Ae,Be,kine,koute,Ah1,Bh1,kinh1,kouth1,Ae,Be,kine,koute,aA), &
+               D12ex_8loops(oo,Ah1,Bh1,kinh1,kouth1,Ae,Be,kine,koute,Ah1,Bh1,kinh1,kouth1,Ae,Be,kine,koute,aA)
 
 !  OA= Ana_in_in(m,Ah1(raA),Ae(raA),kinh1(raA),kine(raA),aA) + & 
 !      Ana_out_out(m,Bh1(raA),Be(raA),kouth1(raA),koute(raA),aA) 

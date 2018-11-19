@@ -17,6 +17,8 @@ open(150,file='WaveFunction1.def',form='formatted')
 read(150,NML=elecSt)
 read(150,NML=syst)
 
+me=me*m0
+mh=mh*m0
 rhoe  = 1.0/sqrt((2*me*omegaLO)/hbar)
 rhoh  = 1.0/sqrt((2*mh*omegaLO)/hbar)
 epsin = 1.0 + (eps - 1.0) / (1.0 + (0.75e-9/(2*aA))**1.2)

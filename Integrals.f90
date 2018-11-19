@@ -623,231 +623,172 @@ real(dp) function TransDip_cart(A1,B1,kin1,kout1,A2,B2,kin2,kout2,a)
 end function TransDip_cart
 
 !!Exciton coupling, direct coulomb integral on one dot, inside volume, h1-e/h2-e
-!real(dp) function D12_in_in(oo,A1,k1,A2,k2,A3,k3,A4,k4,r)
-!
-!      implicit none
-!      double precision, external:: s13adf, ei
-!      integer :: oo, l, k,  i1, i2,m
-!      real(dp) :: x, y, pi, Integii, inte, inth, ende, endh, angl, A1, A2, A3, A4, k1, k2, k3, k4,&
-!      eps,eps0,elec,epsout,epsinfa,eps1,eps2,slope,interval,r,h,hbar,omegaLO,m0,me,mh,rhoe,rhoh, epsR
-!      real(dp), dimension(3) :: r1, r2
-!
-!      slope=50e9
-!
-!      oo=100
-!
-!      m=100
-!
-!      interval=r/m
-!      
-!      i1=0
-!      i2=0
-!      Integii= 0.0
-!      x=0
-!      y=0
-!
-!      epsinfa = 1.0 + (eps - 1.0) / (1.0 + (0.75e-9/(2*r))**1.2)
-!      
-!      do i1=0,m-1
-!      x=0.5*interval + i1*interval
-!      do i2=0,m-1
-!      y=0.5*interval + i2*interval
-!      epsR = 1.0/((1.0/epsinfa)-((1.0/epsinfa)-(1.0/(epsinfa+3.5)))*(1-(exp(-x/rhoe)+exp(-y/rhoh))/2))
-!      eps1 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(x-r)))/pi
-!      eps2 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(y-r)))/pi
-!      write(6,*) eps1, eps2, epsR
-!      do k=1,oo
-!      r1 = vector(x)
-!      r2 = vector(y)
-!      Integii= Integii + (sin(k1*x)*sin(k2*y)*sin(k3*x)*sin(k4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
-!      enddo
-!      enddo
-!      enddo
-!    
-!      D12_in_in = (A1*A2*A3*A4*elec*Integii*interval**2)/(4*pi*oo*eps0)
-!
-!end function D12_in_in
-!
-!!Exciton coupling, direct coulomb integral on one dot, inside volume, h1-e/h2-e
-!real(dp) function D12_out_in(oo,B1,k1,A2,k2,B3,k3,A4,k4,r)
-!
-!      implicit none
-!      double precision, external:: s13adf, ei
-!      integer :: oo, l, k,  i1, i2,m
-!      real(dp) :: x, y, pi, Integii, inte, inth, ende, endh, angl, B1, A2, B3, A4, k1, k2, k3, k4,&
-!      eps,eps0,elec,epsout,epsinfa,eps1,eps2,slope,interval,r,h,hbar,omegaLO,m0,me,mh,rhoe,rhoh, epsR
-!      real(dp), dimension(3) :: r1, r2
-!
-!      pi=  4.D0*DATAN(1.D0)
-!      eps=    9.56
-!      eps0=   8.854187817620000e-12
-!      elec=   1.60217662e-19
-!      epsout= 2.5 
-!      slope=50e9
-!      h=      6.626070040e-34
-!      hbar=   h/(2*pi)
-!      omegaLO= 5.99585e12
-!      m0=  9.10938356e-31
-!      me= 0.13*m0
-!      mh= 0.82*m0 
-!      rhoe  = 1.0/sqrt((2*me*omegaLO)/hbar)
-!      rhoh  = 1.0/sqrt((2*mh*omegaLO)/hbar)
-!
-!      oo=100
-!
-!      m=100
-!
-!      interval=r/m
-!      
-!      i1=0
-!      i2=0
-!      Integii= 0.0
-!      x=0
-!      y=0
-!
-!      epsinfa = 1.0 + (eps - 1.0) / (1.0 + (0.75e-9/(2*r))**1.2)
-!      !write(6,*) r, epsinfa
-!      
-!      do i1=m,2*m
-!      x=0.5*interval + i1*interval
-!      do i2=0,m-1
-!      y=0.5*interval + i2*interval
-!      epsR = 1.0/((1.0/epsinfa)-((1.0/epsinfa)-(1.0/(epsinfa+3.5)))*(1-(exp(-x/rhoe)+exp(-y/rhoh))/2))
-!      eps1 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(x-r)))/pi
-!      eps2 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(y-r)))/pi
-!      !write(6,*) r, x, y, eps1, eps2, epsR
-!      do k=1,oo
-!      r1 = vector(x)
-!      r2 = vector(y)
-!      Integii= Integii + (exp(-1.0*k1*x)*sin(k2*y)*exp(-1.0*k3*x)*sin(k4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
-!      enddo
-!      enddo
-!      enddo
-!    
-!      D12_out_in = (B1*A2*B3*A4*elec*Integii*interval**2)/(4*pi*oo*eps0)
-!
-!end function D12_out_in
-!
-!!Exciton coupling, direct coulomb integral on one dot, inside volume, h1-e/h2-e
-!real(dp) function D12_in_out(oo,A1,k1,B2,k2,A3,k3,B4,k4,r)
-!
-!      implicit none
-!      double precision, external:: s13adf, ei
-!      integer :: oo, l, k,  i1, i2,m
-!      real(dp) :: x, y, pi, Integii, inte, inth, ende, endh, angl, A1, B2, A3, B4, k1, k2, k3, k4,&
-!      eps,eps0,elec,epsout,epsinfa,eps1,eps2,slope,interval,r,h,hbar,omegaLO,m0,me,mh,rhoe,rhoh, epsR
-!      real(dp), dimension(3) :: r1, r2
-!
-!      pi=  4.D0*DATAN(1.D0)
-!      eps=    9.56
-!      eps0=   8.854187817620000e-12
-!      elec=   1.60217662e-19
-!      epsout= 2.5 
-!      slope=50e9
-!      h=      6.626070040e-34
-!      hbar=   h/(2*pi)
-!      omegaLO= 5.99585e12
-!      m0=  9.10938356e-31
-!      me= 0.13*m0
-!      mh= 0.82*m0 
-!      rhoe  = 1.0/sqrt((2*me*omegaLO)/hbar)
-!      rhoh  = 1.0/sqrt((2*mh*omegaLO)/hbar)
-!
-!      oo=100
-!
-!      m=100
-!
-!      interval=r/m
-!      
-!      i1=0
-!      i2=0
-!      Integii= 0.0
-!      x=0
-!      y=0
-!
-!      epsinfa = 1.0 + (eps - 1.0) / (1.0 + (0.75e-9/(2*r))**1.2)
-!      !write(6,*) r, epsinfa
-!      
-!      do i1=0,m-1
-!      x=0.5*interval + i1*interval
-!      do i2=m,2*m
-!      y=0.5*interval + i2*interval
-!      epsR = 1.0/((1.0/epsinfa)-((1.0/epsinfa)-(1.0/(epsinfa+3.5)))*(1-(exp(-x/rhoe)+exp(-y/rhoh))/2))
-!      eps1 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(x-r)))/pi
-!      eps2 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(y-r)))/pi
-!      !write(6,*) r, x, y, eps1, eps2, epsR
-!      do k=1,oo
-!      r1 = vector(x)
-!      r2 = vector(y)
-!      Integii= Integii + (sin(k1*x)*exp(-1.0*k2*y)*sin(k3*x)*exp(-1.0*k4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
-!      enddo
-!      enddo
-!      enddo
-!    
-!      D12_in_out = (A1*B2*A3*B4*elec*Integii*interval**2)/(4*pi*oo*eps0)
-!
-!end function D12_in_out
-!
-!!Exciton coupling, direct coulomb integral on one dot, inside volume, h1-e/h2-e
-!real(dp) function D12_out_out(oo,B1,k1,B2,k2,B3,k3,B4,k4,r)
-!
-!      implicit none
-!      double precision, external:: s13adf, ei
-!      integer :: oo, l, k,  i1, i2,m
-!      real(dp) :: x, y, pi, Integii, inte, inth, ende, endh, angl, B1, B2, B3, B4, k1, k2, k3, k4,&
-!      eps,eps0,elec,epsout,epsinfa,eps1,eps2,slope,interval,r,h,hbar,omegaLO,m0,me,mh,rhoe,rhoh, epsR
-!      real(dp), dimension(3) :: r1, r2
-!
-!      pi=  4.D0*DATAN(1.D0)
-!      eps=    9.56
-!      eps0=   8.854187817620000e-12
-!      elec=   1.60217662e-19
-!      epsout= 2.5 
-!      slope=50e9
-!      h=      6.626070040e-34
-!      hbar=   h/(2*pi)
-!      omegaLO= 5.99585e12
-!      m0=  9.10938356e-31
-!      me= 0.13*m0
-!      mh= 0.82*m0 
-!      rhoe  = 1.0/sqrt((2*me*omegaLO)/hbar)
-!      rhoh  = 1.0/sqrt((2*mh*omegaLO)/hbar)
-!
-!      oo=100
-!
-!      m=100
-!
-!      interval=r/m
-!      
-!      i1=0
-!      i2=0
-!      Integii= 0.0
-!      x=0
-!      y=0
-!
-!      epsinfa = 1.0 + (eps - 1.0) / (1.0 + (0.75e-9/(2*r))**1.2)
-!      !write(6,*) r, epsinfa
-!      
-!      do i1=m,2*m
-!      x=0.5*interval + i1*interval
-!      do i2=m,2*m
-!      y=0.5*interval + i2*interval
-!      epsR = 1.0/((1.0/epsinfa)-((1.0/epsinfa)-(1.0/(epsinfa+3.5)))*(1-(exp(-x/rhoe)+exp(-y/rhoh))/2))
-!      eps1 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(x-r)))/pi
-!      eps2 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(y-r)))/pi
-!      !write(6,*) r, x, y, eps1, eps2, epsR
-!      do k=1,oo
-!      r1 = vector(x)
-!      r2 = vector(y)
-!      Integii= Integii + (exp(-1.0*k1*x)*exp(-1.0*k2*y)*exp(-1.0*k3*x)*exp(-1.0*k4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
-!      enddo
-!      enddo
-!      enddo
-!    
-!      D12_out_out = (B1*B2*B3*B4*elec*Integii*interval**2)/(4*pi*oo*eps0)
-!
-!end function D12_out_out
-!
+real(dp) function D12_in_in(oo,A1,k1,A2,k2,A3,k3,A4,k4,r)
+
+      implicit none
+      double precision, external:: s13adf, ei
+      integer :: oo, l, k,  i1, i2,m
+      real(dp) :: x, y, Integii, inte, inth, ende, endh, angl, A1, A2, A3, A4, k1, k2, k3, k4,&
+      eps1,eps2,interval,r,epsR
+      real(dp), dimension(3) :: r1, r2
+
+      oo=100
+
+      m=100
+
+      interval=r/m
+      
+      i1=0
+      i2=0
+      Integii= 0.0
+      x=0
+      y=0
+
+      do i1=0,m-1
+      x=0.5*interval + i1*interval
+      do i2=0,m-1
+      y=0.5*interval + i2*interval
+      epsR = 1.0/((1.0/epsin)-((1.0/epsin)-(1.0/(epsin+3.5)))*(1-(exp(-x/rhoe)+exp(-y/rhoh))/2))
+      eps1 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+      eps2 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+      !write(6,*) eps1, eps2, epsR
+      do k=1,oo
+      r1 = vector(x)
+      r2 = vector(y)
+      Integii= Integii + (sin(k1*x)*sin(k2*y)*sin(k3*x)*sin(k4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
+      enddo
+      enddo
+      enddo
+    
+      D12_in_in = (A1*A2*A3*A4*elec*Integii*interval**2)/(4*pi*oo*eps0)
+
+end function D12_in_in
+
+!Exciton coupling, direct coulomb integral on one dot, inside volume, h1-e/h2-e
+real(dp) function D12_out_in(oo,B1,k1,A2,k2,B3,k3,A4,k4,r)
+
+      implicit none
+      double precision, external:: s13adf, ei
+      integer :: oo, l, k,  i1, i2,m
+      real(dp) :: x, y, Integii, inte, inth, ende, endh, angl, B1, A2, B3, A4, k1, k2, k3, k4,&
+      eps1,eps2,interval, epsR, r
+      real(dp), dimension(3) :: r1, r2
+
+      oo=100
+
+      m=100
+
+      interval=r/m
+      
+      i1=0
+      i2=0
+      Integii= 0.0
+      x=0
+      y=0
+
+      do i1=m,2*m
+      x=0.5*interval + i1*interval
+      do i2=0,m-1
+      y=0.5*interval + i2*interval
+      epsR = 1.0/((1.0/epsin)-((1.0/epsin)-(1.0/(epsin+3.5)))*(1-(exp(-x/rhoe)+exp(-y/rhoh))/2))
+      eps1 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+      eps2 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+      !write(6,*) r, x, y, eps1, eps2, epsR
+      do k=1,oo
+      r1 = vector(x)
+      r2 = vector(y)
+      Integii= Integii + (exp(-1.0*k1*x)*sin(k2*y)*exp(-1.0*k3*x)*sin(k4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
+      enddo
+      enddo
+      enddo
+    
+      D12_out_in = (B1*A2*B3*A4*elec*Integii*interval**2)/(4*pi*oo*eps0)
+
+end function D12_out_in
+
+!Exciton coupling, direct coulomb integral on one dot, inside volume, h1-e/h2-e
+real(dp) function D12_in_out(oo,A1,k1,B2,k2,A3,k3,B4,k4,r)
+
+      implicit none
+      double precision, external:: s13adf, ei
+      integer :: oo, l, k,  i1, i2,m
+      real(dp) :: x, y,  Integii, inte, inth, ende, endh, angl, A1, B2, A3, B4, k1, k2, k3, k4,&
+      eps1,eps2,interval,r,epsR
+      real(dp), dimension(3) :: r1, r2
+
+      oo=100
+
+      m=100
+
+      interval=r/m
+      
+      i1=0
+      i2=0
+      Integii= 0.0
+      x=0
+      y=0
+
+      do i1=0,m-1
+      x=0.5*interval + i1*interval
+      do i2=m,2*m
+      y=0.5*interval + i2*interval
+      epsR = 1.0/((1.0/epsin)-((1.0/epsin)-(1.0/(epsin+3.5)))*(1-(exp(-x/rhoe)+exp(-y/rhoh))/2))
+      eps1 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+      eps2 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+      !write(6,*) r, x, y, eps1, eps2, epsR
+      do k=1,oo
+      r1 = vector(x)
+      r2 = vector(y)
+      Integii= Integii + (sin(k1*x)*exp(-1.0*k2*y)*sin(k3*x)*exp(-1.0*k4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
+      enddo
+      enddo
+      enddo
+    
+      D12_in_out = (A1*B2*A3*B4*elec*Integii*interval**2)/(4*pi*oo*eps0)
+
+end function D12_in_out
+
+!Exciton coupling, direct coulomb integral on one dot, inside volume, h1-e/h2-e
+real(dp) function D12_out_out(oo,B1,k1,B2,k2,B3,k3,B4,k4,r)
+
+      implicit none
+      double precision, external:: s13adf, ei
+      integer :: oo, l, k,  i1, i2,m
+      real(dp) :: x, y, Integii, inte, inth, ende, endh, angl, B1, B2, B3, B4, k1, k2, k3, k4,&
+      eps1,eps2,interval,r,epsR
+      real(dp), dimension(3) :: r1, r2
+
+      oo=100
+
+      m=100
+
+      interval=r/m
+      
+      i1=0
+      i2=0
+      Integii= 0.0
+      x=0
+      y=0
+ 
+      do i1=m,2*m
+      x=0.5*interval + i1*interval
+      do i2=m,2*m
+      y=0.5*interval + i2*interval
+      epsR = 1.0/((1.0/epsin)-((1.0/epsin)-(1.0/(epsin+3.5)))*(1-(exp(-x/rhoe)+exp(-y/rhoh))/2))
+      eps1 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+      eps2 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+      do k=1,oo
+      r1 = vector(x)
+      r2 = vector(y)
+      Integii= Integii + (exp(-1.0*k1*x)*exp(-1.0*k2*y)*exp(-1.0*k3*x)*exp(-1.0*k4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
+      enddo
+      enddo
+      enddo
+    
+      D12_out_out = (B1*B2*B3*B4*elec*Integii*interval**2)/(4*pi*oo*eps0)
+
+end function D12_out_out
+
 !!Exciton coupling, exchange coulomb integral on one dot, inside volume, h1-e/h2-e
 !real(dp) function D12ex_in_out(oo,A1,k1,A2,k2,B3,k3,B4,k4,r)
 !
@@ -1013,16 +954,16 @@ end function TransDip_cart
 !
 !end function D12ex_out_out
 
-!Exciton coupling, exchange coulomb integral on one dot, inside volume, h1-e/h2-e
-real(dp) function D12ex(oo,A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4,kin4,kout4,r)
+!Exciton coupling exchange same dot 8 loops
+real(dp) function D12ex_8loops(oo,A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4,kin4,kout4,r)
 
       implicit none
       integer :: oo, l, k,  i1, i2,m
       real(dp) :: x, y, Integii,Integio,Integoi,Integoo, inte, inth, ende, endh, angl,&
-      eps1,eps2,slope,interval,r,epsR, A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4,kin4,kout4
+      eps1,eps2,interval,r,epsR, A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4,kin4,kout4
       real(dp), dimension(3) :: r1, r2
 
-      oo=100
+      oo=200
       m=100
       interval=r/m
       i1=0
@@ -1091,24 +1032,209 @@ real(dp) function D12ex(oo,A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4
       enddo
       enddo
 
-      D12ex = (elec*interval**2)/(4*pi*oo*eps0)*( &
+      D12ex_8loops = (elec*interval**2)/(4*pi*oo*eps0)*( &
               (A1*A2*A3*A4*Integii) + &
               (A1*A2*B3*B4*Integio) + &
               (B1*B2*A3*A4*Integoi) + &
               (B1*B2*B3*B4*Integoo))
 
-end function D12ex
+end function D12ex_8loops
+!
+!!Exciton coupling same dot direct 8 loops, slow
+!real(dp) function D12dir(oo,A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4,kin4,kout4,r)
+!
+!      implicit none
+!      integer :: oo, l, k,  i1, i2,m
+!      real(dp) :: x, y, Integii,Integio,Integoi,Integoo, inte, inth, ende, endh, angl,&
+!      eps1,eps2,interval,r,epsR, A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4,kin4,kout4, start, finish
+!      real(dp), dimension(3) :: r1, r2
+!
+!      oo=200
+!      m=100
+!      interval=r/m
+!      i1=0
+!      i2=0
+!      Integii= 0.0
+!      Integio= 0.0
+!      Integoi= 0.0
+!      Integoo= 0.0
+!      x=0
+!      y=0
+!
+!call cpu_time(start)
+!
+!      do i1=0,m-1
+!      x=0.5*interval + i1*interval
+!      do i2=0,m-1
+!      y=0.5*interval + i2*interval
+!      do k=1,oo
+!      r1 = vector(x)
+!      r2 = vector(y)
+!      epsR = 1.0/((1.0/epsin)-((1.0/epsin)-(1.0/(epsin+3.5)))*(1-(exp(-norm2(r1-r2)/rhoe)+exp(-norm2(r1-r2)/rhoh))/2))
+!      eps1 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+!      eps2 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+!      Integii= Integii + (sin(kin1*x)*sin(kin2*y)*sin(kin3*x)*sin(kin4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
+!      enddo
+!      enddo
+!      enddo
+!
+!      do i1=0,m-1
+!      x=0.5*interval + i1*interval
+!      eps1 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+!      do i2=m,2*m
+!      y=0.5*interval + i2*interval
+!      eps2 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+!      do k=1,oo
+!      r1 = vector(x)
+!      r2 = vector(y)
+!      Integio= Integio + (sin(kin1*x)*exp(-kout2*y)*sin(kin3*x)*exp(-1.0*kout4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
+!      enddo
+!      enddo
+!      enddo
+!
+!      do i1=m,2*m
+!      x=0.5*interval + i1*interval
+!      eps1 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+!      do i2=0,m-1
+!      y=0.5*interval + i2*interval
+!      eps2 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+!      do k=1,oo
+!      r1 = vector(x)
+!      r2 = vector(y)
+!      Integoi= Integoi + (exp(-1.0*kout1*x)*sin(kin2*y)*exp(-1.0*kout3*x)*sin(kin4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
+!      enddo
+!      enddo
+!      enddo
+!
+!      do i1=m,2*m
+!      x=0.5*interval + i1*interval
+!      eps1 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+!      do i2=m,2*m
+!      y=0.5*interval + i2*interval
+!      eps2 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+!      do k=1,oo
+!      r1 = vector(x)
+!      r2 = vector(y)
+!      Integoo= Integoo + (exp(-1.0*kout1*x)*exp(-1.0*kout2*y)*exp(-1.0*kout3*x)*exp(-1.0*kout4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
+!      enddo
+!      enddo
+!      enddo
+!
+!write(6,*) "in_in",  (A1*A2*A3*A4*elec*Integii*interval**2)/(4*pi*oo*eps0)
+!write(6,*) "in_out",  (A1*B2*A3*B4*elec*Integio*interval**2)/(4*pi*oo*eps0)
+!write(6,*) "out_in",  (B1*A2*B3*A4*elec*Integoi*interval**2)/(4*pi*oo*eps0)
+!write(6,*) "out_out",  (B1*B2*B3*B4*elec*Integoo*interval**2)/(4*pi*oo*eps0)
+!
+!      D12dir = (elec*interval**2)/(4*pi*oo*eps0)*( &
+!              (A1*A2*A3*A4*Integii) + &
+!              (A1*B2*A3*B4*Integio) + &
+!              (B1*A2*B3*A4*Integoi) + &
+!              (B1*B2*B3*B4*Integoo))
+!
+!call cpu_time(finish)
+!
+!write(6,*) "Time", finish-start
+!
+!end function D12dir
+!
+!!Exciton coupling same dot direct 6 loops
+!real(dp) function D12dir2(oo,A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4,kin4,kout4,r)
+!
+!      implicit none
+!      integer :: oo, l, k,  i1, i2,m
+!      real(dp) :: x, y, Integii,Integio,Integoi,Integoo, inte, inth, ende, endh, angl,&
+!      eps1,eps2,interval,r,epsR, A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4,kin4,kout4, start, finish
+!      real(dp), dimension(3) :: r1, r2
+!
+!      oo=200
+!      m=100
+!      interval=r/m
+!      i1=0
+!      i2=0
+!      Integii= 0.0
+!      Integio= 0.0
+!      Integoi= 0.0
+!      Integoo= 0.0
+!      x=0
+!      y=0
+!
+!call cpu_time(start)
+!
+!      do i1=0,m-1
+!      x=0.5*interval + i1*interval
+!      eps1 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+!      do i2=0,m-1
+!      y=0.5*interval + i2*interval
+!      do k=1,oo
+!      r1 = vector(x)
+!      r2 = vector(y)
+!      epsR = 1.0/((1.0/epsin)-((1.0/epsin)-(1.0/(epsin+3.5)))*(1-(exp(-norm2(r1-r2)/rhoe)+exp(-norm2(r1-r2)/rhoh))/2))
+!      eps1 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+!      eps2 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+!      Integii= Integii + (sin(kin1*x)*sin(kin2*y)*sin(kin3*x)*sin(kin4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
+!      enddo
+!      enddo
+!      do i2=m,2*m
+!      y=0.5*interval + i2*interval
+!      eps2 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+!      do k=1,oo
+!      r1 = vector(x)
+!      r2 = vector(y)
+!      Integio= Integio + (sin(kin1*x)*exp(-kout2*y)*sin(kin3*x)*exp(-1.0*kout4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
+!      enddo
+!      enddo
+!      enddo
+!
+!      do i1=m,2*m
+!      x=0.5*interval + i1*interval
+!      eps1 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+!      do i2=0,m-1
+!      y=0.5*interval + i2*interval
+!      eps2 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+!      do k=1,oo
+!      r1 = vector(x)
+!      r2 = vector(y)
+!      Integoi= Integoi + (exp(-1.0*kout1*x)*sin(kin2*y)*exp(-1.0*kout3*x)*sin(kin4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
+!      enddo
+!      enddo
+!      do i2=m,2*m
+!      y=0.5*interval + i2*interval
+!      do k=1,oo
+!      r1 = vector(x)
+!      r2 = vector(y)
+!      Integoo= Integoo + (exp(-1.0*kout1*x)*exp(-1.0*kout2*y)*exp(-1.0*kout3*x)*exp(-1.0*kout4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
+!      enddo
+!      enddo
+!      enddo
+!
+!!write(6,*) "in_in",  (A1*A2*A3*A4*elec*Integii*interval**2)/(4*pi*oo*eps0)
+!!write(6,*) "in_out",  (A1*B2*A3*B4*elec*Integio*interval**2)/(4*pi*oo*eps0)
+!!write(6,*) "out_in",  (B1*A2*B3*A4*elec*Integoi*interval**2)/(4*pi*oo*eps0)
+!!write(6,*) "out_out",  (B1*B2*B3*B4*elec*Integoo*interval**2)/(4*pi*oo*eps0)
+!
+!      D12dir2 = (elec*interval**2)/(4*pi*oo*eps0)*( &
+!              (A1*A2*A3*A4*Integii) + &
+!              (A1*B2*A3*B4*Integio) + &
+!              (B1*A2*B3*A4*Integoi) + &
+!              (B1*B2*B3*B4*Integoo))
+!
+!call cpu_time(finish)
+!
+!write(6,*) "Time2", finish-start
+!
+!end function D12dir2
 
-!Exciton coupling, exchange coulomb integral on one dot, inside volume, h1-e/h2-e
+
+!Exciton coupling same dot, direct, 2 loops and ifs, fast
 real(dp) function D12dir(oo,A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4,kin4,kout4,r)
 
       implicit none
       integer :: oo, l, k,  i1, i2,m
       real(dp) :: x, y, Integii,Integio,Integoi,Integoo, inte, inth, ende, endh, angl,&
-      eps1,eps2,slope,interval,r,epsR, A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4,kin4,kout4
+      eps1,eps2,eps1R,eps2R,interval,r,epsR, A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4,kin4,kout4, start, finish
       real(dp), dimension(3) :: r1, r2
 
-      oo=100
+      oo=200
       m=100
       interval=r/m
       i1=0
@@ -1120,69 +1246,128 @@ real(dp) function D12dir(oo,A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A
       x=0
       y=0
 
-      do i1=0,m-1
-      x=0.5*interval + i1*interval
-      do i2=0,m-1
-      y=0.5*interval + i2*interval
-      do k=1,oo
-      r1 = vector(x)
-      r2 = vector(y)
-      epsR = 1.0/((1.0/epsin)-((1.0/epsin)-(1.0/(epsin+3.5)))*(1-(exp(-norm2(r1-r2)/rhoe)+exp(-norm2(r1-r2)/rhoh))/2))
-      eps1 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(x-r)))/pi
-      eps2 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(y-r)))/pi
-      Integii= Integii + (sin(kin1*x)*sin(kin2*y)*sin(kin3*x)*sin(kin4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
-      enddo
-      enddo
-      enddo
+!call cpu_time(start)
 
-      do i1=0,m-1
+      do i1=0,2*m
       x=0.5*interval + i1*interval
-      eps1 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(x-r)))/pi
-      do i2=m,2*m
+            eps1 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+      do i2=0,2*m
       y=0.5*interval + i2*interval
-      eps2 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(y-r)))/pi
-      do k=1,oo
-      r1 = vector(x)
-      r2 = vector(y)
-      Integio= Integio + (sin(kin1*x)*sin(kin2*y)*exp(-1.0*kout3*x)*exp(-1.0*kout4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
-      enddo
-      enddo
-      enddo
-
-      do i1=m,2*m
-      x=0.5*interval + i1*interval
-      eps1 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(x-r)))/pi
-      do i2=0,m-1
-      y=0.5*interval + i2*interval
-      eps2 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(y-r)))/pi
-      do k=1,oo
-      r1 = vector(x)
-      r2 = vector(y)
-      Integoi= Integoi + (exp(-1.0*kout1*x)*exp(-1.0*kout2*y)*sin(kin3*x)*sin(kin4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
-      enddo
-      enddo
-      enddo
-
-      do i1=m,2*m
-      x=0.5*interval + i1*interval
-      eps1 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(x-r)))/pi
-      do i2=m,2*m
-      y=0.5*interval + i2*interval
-      eps2 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(y-r)))/pi
-      do k=1,oo
-      r1 = vector(x)
-      r2 = vector(y)
+            eps2 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+         if ( (i1 .lt. m) .and. (i2 .lt. m) ) then
+            do k=1,oo
+            r1 = vector(x)
+            r2 = vector(y)
+            epsR = 1.0/((1.0/epsin)-((1.0/epsin)-(1.0/(epsin+3.5)))*(1-(exp(-norm2(r1-r2)/rhoe)+exp(-norm2(r1-r2)/rhoh))/2))
+            eps1R = epsout + (epsR-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+            eps2R = epsout + (epsR-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+            Integii= Integii + (sin(kin1*x)*sin(kin2*y)*sin(kin3*x)*sin(kin4*y))/(norm2(r1-r2)*sqrt(eps1R*eps2R))
+            enddo
+         elseif ( (i1 .lt. m) .and. (i2 .ge. m) ) then
+            do k=1,oo
+            r1 = vector(x)
+            r2 = vector(y)
+            Integio= Integio + (sin(kin1*x)*exp(-kout2*y)*sin(kin3*x)*exp(-1.0*kout4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
+            enddo
+         elseif ( (i1 .ge. m) .and. (i2 .lt. m) ) then
+            do k=1,oo
+            r1 = vector(x)
+            r2 = vector(y)
+            Integoi= Integoi + (exp(-1.0*kout1*x)*sin(kin2*y)*exp(-1.0*kout3*x)*sin(kin4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
+            enddo
+         elseif ( (i1 .ge. m) .and. (i2 .ge. m) ) then
+            do k=1,oo
+            r1 = vector(x)
+            r2 = vector(y)
       Integoo= Integoo + (exp(-1.0*kout1*x)*exp(-1.0*kout2*y)*exp(-1.0*kout3*x)*exp(-1.0*kout4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
-      enddo
+            enddo
+         endif
       enddo
       enddo
 
       D12dir = (elec*interval**2)/(4*pi*oo*eps0)*( &
               (A1*A2*A3*A4*Integii) + &
+              (A1*B2*A3*B4*Integio) + &
+              (B1*A2*B3*A4*Integoi) + &
+              (B1*B2*B3*B4*Integoo))
+
+!call cpu_time(finish)
+
+!write(6,*) "Time", finish-start
+
+end function D12dir
+
+!Exciton coupling same dot, exchange, 2 loops and ifs, fast
+real(dp) function D12ex(oo,A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4,kin4,kout4,r)
+
+      implicit none
+      integer :: oo, l, k,  i1, i2,m
+      real(dp) :: x, y, Integii,Integio,Integoi,Integoo, inte, inth, ende, endh, angl,&
+      eps1,eps2,eps1R,eps2R,interval,r,epsR, A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4,kin4,kout4, start, finish
+      real(dp), dimension(3) :: r1, r2
+
+      oo=200
+      m=100
+      interval=r/m
+      i1=0
+      i2=0
+      Integii= 0.0
+      Integio= 0.0
+      Integoi= 0.0
+      Integoo= 0.0
+      x=0
+      y=0
+
+!call cpu_time(start)
+
+      do i1=0,2*m
+      x=0.5*interval + i1*interval
+            eps1 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+      do i2=0,2*m
+      y=0.5*interval + i2*interval
+            eps2 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+         if ( (i1 .lt. m) .and. (i2 .lt. m) ) then
+            do k=1,oo
+            r1 = vector(x)
+            r2 = vector(y)
+            epsR = 1.0/((1.0/epsin)-((1.0/epsin)-(1.0/(epsin+3.5)))*(1-(exp(-norm2(r1-r2)/rhoe)+exp(-norm2(r1-r2)/rhoh))/2))
+            eps1R = epsout + (epsR-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+            eps2R = epsout + (epsR-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+            Integii= Integii + (sin(kin1*x)*sin(kin2*x)*sin(kin3*y)*sin(kin4*y))/(norm2(r1-r2)*sqrt(eps1R*eps2R))
+            enddo
+         elseif ( (i1 .lt. m) .and. (i2 .ge. m) ) then
+            do k=1,oo
+            r1 = vector(x)
+            r2 = vector(y)
+            Integio= Integio + (sin(kin1*x)*sin(kin2*x)*exp(-1.0*kout3*y)*exp(-1.0*kout4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
+            enddo
+         elseif ( (i1 .ge. m) .and. (i2 .lt. m) ) then
+            do k=1,oo
+            r1 = vector(x)
+            r2 = vector(y)
+            Integoi= Integoi + (exp(-1.0*kout1*x)*exp(-1.0*kout2*x)*sin(kin3*y)*sin(kin4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
+            enddo
+         elseif ( (i1 .ge. m) .and. (i2 .ge. m) ) then
+            do k=1,oo
+            r1 = vector(x)
+            r2 = vector(y)
+      Integoo= Integoo + (exp(-1.0*kout1*x)*exp(-1.0*kout2*x)*exp(-1.0*kout3*y)*exp(-1.0*kout4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
+            enddo
+         endif
+      enddo
+      enddo
+
+      D12ex = (elec*interval**2)/(4*pi*oo*eps0)*( &
+              (A1*A2*A3*A4*Integii) + &
               (A1*A2*B3*B4*Integio) + &
               (B1*B2*A3*A4*Integoi) + &
               (B1*B2*B3*B4*Integoo))
 
-end function D12dir
+!call cpu_time(finish)
+
+!write(6,*) "Time", finish-start
+
+end function D12ex
+
 
 end module Integrals
