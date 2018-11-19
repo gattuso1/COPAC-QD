@@ -22,28 +22,44 @@ real(dp) function Ana_in_in(m,A1,A2,k1,k2,a)
 
 end function Ana_in_in
 
-real(dp) function Overlapinin(m,AB1,AB2,k1,k2,a)
+!Overlap integral on simgle dot, numerical integration
+real(dp) function OverlapNum(A1,A2,B1,B2,kin1,kin2,kout1,kout2,r)
 
       implicit none
-      double precision, external:: s13adf, ei
-      integer, intent(in) :: m
-      integer :: i, ifail
-      real(dp) :: x, integral,integral_err, f, f2, interval
-      real(dp), intent(in) :: AB1,AB2,k1,k2,a
+      integer :: i, m
+      real(dp) :: x, fin, fout, interval
+      real(dp), intent(in) :: A1,A2,B1,B2,kin1,kin2,kout1,kout2,r
 
-      f= 0.0
       i=0
+     
+      m=1000
 
-      interval= a/m
+      interval= r/m
 
       do i=0,m-1
       x=0.5*interval+i*interval
-      f = f + AB1*sin(k1*x)*AB2*sin(k2*x)
+      fin = fin + A1*sin(kin1*x)*A2*sin(kin2*x)
       enddo
 
-      Overlapinin=abs(f)*interval
+      do i=m,2*m
+      x=0.5*interval+i*interval
+      fout = fout + B1*B2*exp(-kout1*x)*exp(-kout2*x)
+      enddo
 
-end function Overlapinin
+      OverlapNum=abs(fin+fout)*interval
+
+end function OverlapNum
+
+!Overlap integral on simgle dot, analytical integration
+real(dp) function OverlapAna(A1,A2,B1,B2,kin1,kin2,kout1,kout2,r)
+
+      implicit none
+      real(dp), intent(in) :: A1,A2,B1,B2,kin1,kin2,kout1,kout2,r
+      
+      OverlapAna=(A1*A2*(kin2*sin(kin1*r)*cos(kin2*r)-kin1*cos(kin1*r)*sin(kin2*r))/(kin1**2-kin2**2)  &
+                 + 1.0*B1*B2*exp(-1*(kout1+kout2)*r)/(kout1+kout2))
+
+end function OverlapAna
 
 real(dp) function O_in_out_dimer(m,A1,B1,kin1,kout1,A2,B2,kin2,kout2,a,b,l)
 
@@ -235,79 +251,45 @@ r1Rnorm(:)=sqrt(((3*a+3*b+l)*r1(:,1)-(RAB(1)+2*a))**2+(4*maxrad*r1(:,2)-2*maxrad
 
 end function TransDip_dimer_MC
 
-
-!Analytical expression of overlap integrals inside dot volume
-real(dp) function Oin(AB1,AB2,k1,k2,a)
-      implicit none
-      real(dp), intent(in) :: AB1,AB2,k1,k2,a
-      
-      Oin=AB1*AB2*(k2*sin(k1*a)*cos(k2*a)-k1*cos(k1*a)*sin(k2*a))/(k1**2-k2**2)
-
-end function Oin
-
-!Analytical expression of overlap integrals outside dot volume
-real(dp) function Oout(AB1,AB2,k1,k2,a)
-      implicit none
-      real(dp), intent(in) :: AB1,AB2,k1,k2,a
-
-      Oout=-1*AB1*AB2*exp(-1*(k1+k2)*a)/(k1+k2)
-
-end function Oout
-
-real(dp) function Overlapoutout(m,AB1,AB2,k1,k2,a)
+!Normalization of WF analytical
+real(dp) function Norm_Ana(r,A,B,kin,kout)
 
       implicit none
-      double precision, external:: s13adf, ei
-      integer, intent(in) :: m
-      integer :: i, ifail
-      real(dp) :: x, integral,integral_err, f, f2, interval
-      real(dp), intent(in) :: AB1,AB2,k1,k2,a
+      real(dp) :: r,A,B,kin,kout
 
-      f= 0.0
-      i=0
-      interval=0
-      
-      interval= a/m
+      Norm_Ana=-A**2*(sin(2*kin*r)-2*kin*r)/(4*kin) + B**2*exp(-2*kout*r)/(2*kout)
 
-      do i=m,4*m
-      x=0.5*interval+i*interval
-      f = f + AB1*AB2*exp(-k1*x)*exp(-k2*x)
-      write(6,*) x, f 
-      enddo
-
-      Overlapoutout=abs(f)*interval
-
-end function Overlapoutout
+end function Norm_Ana
 
 !Normalization of WF in radial coordinates
-real(dp) function Norm(m,AB1,AB2,k1,k2,a)
+real(dp) function Norm_Num(r,A,B,kin,kout)
 
       implicit none
-      double precision, external:: s13adf, ei
-      integer, intent(in) :: m
-      integer :: i, ifail
-      real(dp) :: x, integral,integral_err, f, f2, interval
-      real(dp), intent(in) :: AB1,AB2,k1,k2,a
+      integer :: i, m
+      real(dp) :: x, fin, fout, interval
+      real(dp), intent(in) :: A,B,kin,kout,r
 
-      f= 0.0
+      fin= 0.0
+      fout= 0.0
+      m=2000
       i=0
       x=0
 
-      interval= a/m
+      interval= r/m
 
       do i=0,m-1
       x=0.5*interval+i*interval
-      f = f + (AB1*sin(k1*x))**2
+      fin = fin + (A*sin(kin*x))**2
       enddo
 
-      do i=m,5*m
+      do i=m,4*m
       x=0.5*interval+i*interval
-      f = f + (AB2*exp(-1*k2*x))**2
+      fout = fout + (B*exp(-1*kout*x))**2
       enddo
 
-      Norm=f*interval
+      Norm_Num=abs(fin+fout)*interval
 
-end function Norm
+end function Norm_Num
 
 !Normalization of WF in cartesian coordinates
 real(dp) function Norm_cart(m,AB1,AB2,k1,k2,a,b)
@@ -488,66 +470,58 @@ real(dp) function Ana_out_out(m,B1,B2,k1,k2,a)
 end function Ana_out_out
 
 !Transition dipole inside dot volume, spherical symmetry
-real(dp) function TransDipIn(m,AB1,AB2,k1,k2,a)
+real(dp) function TransDip_Num(A1,A2,B1,B2,kin1,kin2,kout1,kout2,r)
 
       implicit none
-      integer, intent(in) :: m
-      integer :: i, ifail
-      real(dp) :: x, integral,integral_err, f, f2, interval
-      real(dp), intent(in) :: AB1,AB2,k1,k2,a
+      integer :: i, m
+      real(dp) :: x, fin, fout, interval
+      real(dp), intent(in) :: A1,A2,B1,B2,kin1,kin2,kout1,kout2,r
 
-      f= 0.0
       i=0
-      interval= a/m
+      m=1000
+
+      interval= r/m
 
       do i=0,m-1
       x=0.5*interval+i*interval
-      f = f + elec*x*AB1*sin(k1*x)*AB2*sin(k2*x)
+      fin = fin + elec*x*A1*sin(kin1*x)*A2*sin(kin2*x)
       enddo
 
-      TransDipIn=abs(f)*interval
-
-end function TransDipIn
-
-!Transition dipole outside dot volume, spherical symmetry
-real(dp) function TransDipOut(m,AB1,AB2,k1,k2,a)
-
-      implicit none
-      integer, intent(in) :: m
-      integer :: i, ifail
-      real(dp) :: x, integral,integral_err, f, f2, interval
-      real(dp), intent(in) :: AB1,AB2,k1,k2,a
-
-      f= 0.0
-      i=0
-
-      interval= a/m
-
-      do i=m,4*m
+      do i=m,2*m
       x=0.5*interval+i*interval
-      f = f + elec*x*AB1*exp(-1.0*k1*x)*AB2*exp(-1.0*k2*x)
+      fout = fout + elec*x*B1*exp(-1.0*kout1*x)*B2*exp(-1.0*kout2*x)
       enddo
 
-      TransDipOut=abs(f)*interval
+      TransDip_Num=abs(fin+fout)*interval
 
-end function TransDipOut
+end function TransDip_Num
 
 !Transition dipole one dot, analytic, spherical symmetry
-real(dp) function TransDip_Ana(AB1,k1,AB2,k2,AB3,k3,AB4,k4,a)
+real(dp) function TransDip_Ana(A1,A2,B1,B2,kin1,kin2,kout1,kout2,r)
 
       implicit none
-      real(dp) :: AB1,AB2,AB3,AB4,k1,k2,k3,k4,a,rmin,rmax
+      real(dp) :: A1,A2,B1,B2,kin1,kin2,kout1,kout2,r,rmin,rmax
 
       rmin=0.0
-      rmax=2*a
+      rmax=2*r
 
-      TransDip_Ana=-1.0*elec*(((AB1*AB2*0.5*((a*sin(a*(k1-k2))/(k1-k2))-(a*sin(a*(k1+k2))/(k1+k2))+&
-                       (cos(a*(k1-k2))/(k1-k2)**2)-(cos(a*(k1+k2))/(k1+k2)**2))) - &
-                       AB1*AB2*0.5*((cos(rmin*(k1-k2))/(k1-k2)**2)-(cos(rmin*(k1+k2))/(k1+k2)**2))) + &
-                       (AB3*AB4*((-1.0*(exp(-1.0*rmax*(k3+k4))*(k3*rmax+k4*rmax+1)/(k3+k4)**2))+&
-                       ((exp(-1.0*a*(k3+k4))*(k3*a+k4*a+1)/(k3+k4)**2)))))
+      TransDip_Ana=-1.0*elec*(((A1*A2*0.5*((r*sin(r*(kin1-kin2))/(kin1-kin2))-(r*sin(r*(kin1+kin2))/(kin1+kin2))+&
+                       (cos(r*(kin1-kin2))/(kin1-kin2)**2)-(cos(r*(kin1+kin2))/(kin1+kin2)**2))) - &
+                       A1*A2*0.5*((cos(rmin*(kin1-kin2))/(kin1-kin2)**2)-(cos(rmin*(kin1+kin2))/(kin1+kin2)**2))) + &
+                       (B1*B2*((-1.0*(exp(-1.0*rmax*(kout1+kout2))*(kout1*rmax+kout2*rmax+1)/(kout1+kout2)**2))+&
+                       ((exp(-1.0*r*(kout1+kout2))*(kout1*r+kout2*r+1)/(kout1+kout2)**2)))))
 
 end function TransDip_Ana
+
+real(dp) function TransDip_EMA(Egap,r)
+
+      implicit none
+      real(dp) :: Egap, r
+
+      TransDip_EMA=sqrt(((elec**2*hbar**2)/(6*Egap**2*m0))* &
+       ((m0/me)-1)*((V0*(V0+(0.42*elec)))/(V0+(2/3)*(0.42*elec))))
+
+end function TransDip_EMA
 
 real(dp) function TransDip_cart(A1,B1,kin1,kout1,A2,B2,kin2,kout2,a)
 
@@ -582,8 +556,6 @@ real(dp) function TransDip_cart(A1,B1,kin1,kout1,A2,B2,kin2,kout2,a)
       r1(2)=y1
       r1(3)=z1
 
-!write(6,*) r1
-
          do xx2=-1*nint(a/interval),nint(a/interval)
          x2=0.5*interval+xx2*interval
          do yy2=-1*nint(a/interval),nint(a/interval)
@@ -600,16 +572,12 @@ real(dp) function TransDip_cart(A1,B1,kin1,kout1,A2,B2,kin2,kout2,a)
       exit
       else if ((norm2(r1) .le. a) .and. (norm2(r2) .le. a)) then
          f1 = f1 + A1*A2*norm2(r)*(sin(kin1*norm2(r1))*sin(kin2*norm2(r2)))/(norm2(r1)*norm2(r2))
-!write(40,*) norm2(r1),norm2(r2),norm2(r),(elec/(4*pi))*f1
       else if ((norm2(r1) .le. a) .and. (norm2(r2) .gt. a)) then
          f2 = f2 + A1*B2*norm2(r)*(sin(kin1*norm2(r1))*exp(-1*kout2*norm2(r2)))/(norm2(r1)*norm2(r2))
-!write(41,*) norm2(r1),norm2(r2),norm2(r),(elec/(4*pi))*f2
       else if ((norm2(r1) .gt. a) .and. (norm2(r2) .le. a)) then
          f3 = f3 + B1*A2*norm2(r)*(exp(-1*kout1*norm2(r1))*sin(kin2*norm2(r2)))/(norm2(r1)*norm2(r2))
-!write(42,*) norm2(r1),norm2(r2),norm2(r),(elec/(4*pi))*f3
       else if ((norm2(r1) .gt. a) .and. (norm2(r2) .gt. a)) then
          f4 = f4 + B1*B2*norm2(r)*(exp(-1*kout1*norm2(r1))*exp(-1*kout2*norm2(r2)))/(norm2(r1)*norm2(r2))
-!write(43,*) norm2(r1),norm2(r2),norm2(r),(elec/(4*pi))*f4
       endif
          enddo
          enddo

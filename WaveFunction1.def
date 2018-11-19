@@ -5,7 +5,7 @@ me        =  0.13
 mh        =  0.82
 eps       =  9.56
 epsout    =  2.3
-V0        =  1.75
+V0eV      =  1.75
 omegaLO   =  5.99585d12
 slope     =  50d9
 /
