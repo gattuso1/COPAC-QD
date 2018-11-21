@@ -1,5 +1,8 @@
 ! Namelist definition
 
+&outputs !Select output parameters, yes or no
+o_ov  = no
+
 &elecSt !Parameters of the system
 me        =  0.13
 mh        =  0.82
@@ -11,7 +14,7 @@ slope     =  50d9
 /
 
 &syst !Parameters of the system
-aA = 1.65d-9
+aA     = 1.00d-9
 linker = 0.2d-9
 /
 

@@ -4,16 +4,19 @@ use Constants
 
 implicit none
 
+   character*64 :: o_ov
    real(dp) :: aA, linker, me, mh, eps, epsout, V0, omegaLO, rhoe, rhoh, epsin, V0e, V0h, V0eV, epsR, slope
 
 contains 
 
 subroutine getVariables
 
+NAMELIST /outputs/ o_ov
 NAMELIST /elecSt/ me,mh,eps,epsout,V0eV,omegaLO,slope
 NAMELIST /syst/ aA,linker
 
 open(150,file='WaveFunction1.def',form='formatted')
+read(150,NML=outputs)
 read(150,NML=elecSt)
 read(150,NML=syst)
 

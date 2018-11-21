@@ -1194,11 +1194,11 @@ end function D12ex_8loops
 
 
 !Exciton coupling same dot, direct, 2 loops and ifs, fast
-real(dp) function D12dir(oo,A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4,kin4,kout4,r)
+real(dp) function DXXdir(A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4,kin4,kout4,r)
 
       implicit none
-      integer :: oo, l, k,  i1, i2,m
-      real(dp) :: x, y, Integii,Integio,Integoi,Integoo, inte, inth, ende, endh, angl,&
+      integer :: oo, i1, i2, m, k
+      real(dp) :: x, y, Integii,Integio,Integoi,Integoo, &
       eps1,eps2,eps1R,eps2R,interval,r,epsR, A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4,kin4,kout4, start, finish
       real(dp), dimension(3) :: r1, r2
 
@@ -1253,7 +1253,7 @@ real(dp) function D12dir(oo,A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A
       enddo
       enddo
 
-      D12dir = (elec*interval**2)/(4*pi*oo*eps0)*( &
+      DXXdir = (elec*interval**2)/(4*pi*oo*eps0)*( &
               (A1*A2*A3*A4*Integii) + &
               (A1*B2*A3*B4*Integio) + &
               (B1*A2*B3*A4*Integoi) + &
@@ -1263,14 +1263,14 @@ real(dp) function D12dir(oo,A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A
 
 !write(6,*) "Time", finish-start
 
-end function D12dir
+end function DXXdir
 
 !Exciton coupling same dot, exchange, 2 loops and ifs, fast
-real(dp) function D12ex(oo,A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4,kin4,kout4,r)
+real(dp) function DXXex(A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4,kin4,kout4,r)
 
       implicit none
-      integer :: oo, l, k,  i1, i2,m
-      real(dp) :: x, y, Integii,Integio,Integoi,Integoo, inte, inth, ende, endh, angl,&
+      integer :: oo, i1, i2, m, k
+      real(dp) :: x, y, Integii,Integio,Integoi,Integoo, &
       eps1,eps2,eps1R,eps2R,interval,r,epsR, A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4,kin4,kout4, start, finish
       real(dp), dimension(3) :: r1, r2
 
@@ -1325,7 +1325,7 @@ real(dp) function D12ex(oo,A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4
       enddo
       enddo
 
-      D12ex = (elec*interval**2)/(4*pi*oo*eps0)*( &
+      DXXex = (elec*interval**2)/(4*pi*oo*eps0)*( &
               (A1*A2*A3*A4*Integii) + &
               (A1*A2*B3*B4*Integio) + &
               (B1*B2*A3*A4*Integoi) + &
@@ -1335,7 +1335,7 @@ real(dp) function D12ex(oo,A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4
 
 !write(6,*) "Time", finish-start
 
-end function D12ex
+end function DXXex
 
 
 end module Integrals

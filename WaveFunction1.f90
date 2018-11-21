@@ -26,6 +26,8 @@ real(dp),allocatable:: minEe(:),minEh(:),diffe(:), diffh(:), E(:)
 
 call getVariables
 
+write(6,*) o_ov
+
 maxr0=  4d-9
 stepr0= 0.05d-9
 delta=  0.00001d-18
@@ -185,12 +187,10 @@ write(17,*) r0, RadProbe, RadProbh1, RadProbh2
 write(15,*) r0, r0**2*RadProbe**2, r0**2*RadProbh1**2, r0**2*RadProbh2**2
 
 enddo
-
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !Normalization integrals
-
 write(6,*) "Norm e  ana", Norm_Ana(aA,Ae,Be,kine,koute)
 write(6,*) "Norm e  num", Norm_Num(aA,Ae,Be,kine,koute)
 write(6,*) "Norm h1 ana", Norm_Ana(aA,Ah1,Bh1,kinh1,kouth1)
@@ -199,11 +199,21 @@ write(6,*) "Norm h2 ana", Norm_Ana(aA,Ah2,Bh2,kinh2,kouth2)
 write(6,*) "Norm h2 num", Norm_Num(aA,Ah2,Bh2,kinh2,kouth2)
 
 !Overlap integrals
-
+!if ( o_ov .eq. 'no' ) then exit
+!elseif 
 write(6,*) "Overlap e-h1 ana", abs(OverlapAna(Ae,Ah1,Be,Bh1,kine,kinh1,koute,kouth1,aA))
 write(6,*) "Overlap e-h1 num", abs(OverlapNum(Ae,Ah1,Be,Bh1,kine,kinh1,koute,kouth1,aA))
 write(6,*) "Overlap e-h2 ana", abs(OverlapAna(Ae,Ah2,Be,Bh2,kine,kinh2,koute,kouth2,aA))
 write(6,*) "Overlap e-h2 num", abs(OverlapNum(Ae,Ah2,Be,Bh2,kine,kinh2,koute,kouth2,aA))
+!endif
+
+!Coulomb correction
+write(6,*) "Cb dir+ex eh1-eh1", DXXdir(Ae,Be,kine,koute,Ah1,Bh1,kinh1,kouth1,Ae,Be,kine,koute,Ah1,Bh1,kinh1,kouth1,aA) + &
+                                DXXex(Ae,Be,kine,koute,Ah1,Bh1,kinh1,kouth1,Ae,Be,kine,koute,Ah1,Bh1,kinh1,kouth1,aA)
+write(6,*) "Cb dir+ex eh1-eh2", DXXdir(Ae,Be,kine,koute,Ah1,Bh1,kinh1,kouth1,Ae,Be,kine,koute,Ah2,Bh2,kinh2,kouth2,aA) + &
+                                DXXex(Ae,Be,kine,koute,Ah1,Bh1,kinh1,kouth1,Ae,Be,kine,koute,Ah2,Bh2,kinh2,kouth2,aA)
+write(6,*) "Cb dir+ex eh2-eh2", DXXdir(Ae,Be,kine,koute,Ah2,Bh2,kinh2,kouth2,Ae,Be,kine,koute,Ah2,Bh2,kinh2,kouth2,aA) + &
+                                DXXex(Ae,Be,kine,koute,Ah2,Bh2,kinh2,kouth2,Ae,Be,kine,koute,Ah2,Bh2,kinh2,kouth2,aA)
 
 !Dipole moment 
 write(6,*) "Dipole e-h1 ana",  abs(TransDip_Ana(Ae,Ah1,Be,Bh1,kine,kinh1,koute,kouth1,aA))/Cm_to_D
