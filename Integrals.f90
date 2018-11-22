@@ -202,12 +202,16 @@ real(dp) function TransDip_dimer_MC(A1,B1,kin1,kout1,A2,B2,kin2,kout2,a,b,l)
       integer :: m, i, i1, i2, i3
       real(dp) :: f1, f2, f3, interval, f, maxrad, vola, volb, volout, side
       real(dp), intent(in) :: A1,B1,kin1,kout1,A2,B2,kin2,kout2,a, b, l
-      real(dp), allocatable:: r1(:,:) , r2(:,:) , r1Anorm(:), r1Bnorm(:), RAB(:)
+      real(dp), allocatable:: r1(:,:) , r2(:,:) , r1Anorm(:), r1Bnorm(:), RAB(:), r1Nnorm(:)
 
-      m=400000
+      
+      !open(40,file='Rtest.dat')
+
+      m=100000
 
       allocate(RAB(3))
       allocate(r1(m,3))
+      allocate(r1Nnorm(m))
       allocate(r1Anorm(m))
       allocate(r1Bnorm(m))
 
@@ -222,33 +226,44 @@ real(dp) function TransDip_dimer_MC(A1,B1,kin1,kout1,A2,B2,kin2,kout2,a,b,l)
       f2 = 0.0
       f3 = 0.0
       maxrad=max(a,b)
+
       vola=(4.0/3)*pi*a**3
       volb=(4.0/3)*pi*b**3
       side=0.5d-9
       volout=abs(((2*maxrad+2*side)**2*(2*a+l+2*b+2*side)-(vola+volb)))
 
       call random_seed()
-      call random_number(r1)
+      call random_number(r1(:,1))
+      call random_number(r1(:,2))
+      call random_number(r1(:,3))
 
 r1Anorm(:)=sqrt(((2*a+2*b+l+2*side)*r1(:,1)-(a+side))**2+((2*maxrad+2*side)*r1(:,2)-(maxrad+side))**2+ &
                ((2*maxrad+2*side)*r1(:,3)-(maxrad+side))**2)
 r1Bnorm(:)=sqrt(((2*a+2*b+l+2*side)*r1(:,1)-(RAB(1)+a+side))**2+((2*maxrad+2*side)*r1(:,2)-(maxrad+side))**2+&
                 ((2*maxrad+2*side)*r1(:,3)-(maxrad+side))**2)
+r1Nnorm(:)=sqrt(((2*a+2*b+l+2*side)*r1(:,1)-(l/2+2*a+side))**2+((2*maxrad+2*side)*r1(:,2)-(maxrad+side))**2+&
+                ((2*maxrad+2*side)*r1(:,2)-(maxrad+side))**2)
+
+!      do i=1,m
+!write(40,'(i6, 8f18.14)') i, 1.0d9*((2*a+2*b+l+2*side)*r1(i,1)-(a+side)), 1.0d9*((2*maxrad+2*side)*r1(i,2)-(maxrad+side)), & 
+!                     1.0d9*((2*maxrad+2*side)*r1(i,3)-(maxrad+side)),&
+!                     1.0d9*((2*a+2*b+l+2*side)*r1(i,1)-(RAB(1)+a+side)), 1.0d9*((2*maxrad+2*side)*r1(i,2)-(maxrad+side)), &
+!                     1.0d9*((2*maxrad+2*side)*r1(i,3)-(maxrad+side)),&
+!                     1.0d9*r1Anorm(i), 1.0d9*r1Bnorm(i)
+!      enddo
 
       do i=1,m
       if ((r1Anorm(i) .le. a) .and. (r1Bnorm(i) .gt. b)) then
-      f1 = f1 + r1Anorm(i)*sin(kin1*r1Anorm(i))*exp(-1*kout2*r1Bnorm(i))/(4*pi*r1Anorm(i)*r1Bnorm(i))
+      f1 = f1 + sin(kin1*r1Anorm(i))*exp(-1.0*kout2*r1Bnorm(i))/(4.0*pi*r1Nnorm(i))
       i1 = i1 + 1
       else if ((r1Anorm(i) .gt. a) .and. (r1Bnorm(i) .le. b)) then
-      f2 = f2 + r1Anorm(i)*exp(-1*kout1*r1Anorm(i))*sin(kin2*r1Bnorm(i))/(4*pi*r1Anorm(i)*r1Bnorm(i))
+      f2 = f2 + exp(-1.0*kout1*r1Anorm(i))*sin(kin2*r1Bnorm(i))/(4.0*pi*r1Nnorm(i))
       i2 = i2 + 1
       else if ((r1Anorm(i) .gt. a) .and. (r1Bnorm(i) .gt. b)) then
-      f3 = f3 + r1Anorm(i)*exp(-1*kout1*r1Anorm(i))*exp(-1*kout2*r1Bnorm(i))/(4*pi*r1Anorm(i)*r1Bnorm(i))
+      f3 = f3 + exp(-1.0*kout1*r1Anorm(i))*exp(-1.0*kout2*r1Bnorm(i))/(4.0*pi*r1Nnorm(i))
       i3 = i3 + 1
       endif
       enddo
-
-write(6,*) i1, (A1*B2*f1*vola/i1), i2, (B1*A2*f2*volb/i2), i3, (B1*B2*f3*volout/i3)
 
       TransDip_dimer_MC=elec*((A1*B2*f1*vola/i1)+(B1*A2*f2*volb/i2)+(B1*B2*f3*volout/i3))
 
@@ -619,7 +634,7 @@ real(dp) function D12_in_in(oo,A1,k1,A2,k2,A3,k3,A4,k4,r)
       x=0.5*interval + i1*interval
       do i2=0,m-1
       y=0.5*interval + i2*interval
-      epsR = 1.0/((1.0/epsin)-((1.0/epsin)-(1.0/(epsin+3.5)))*(1-(exp(-x/rhoe)+exp(-y/rhoh))/2))
+      epsR = 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-x/rhoe)+exp(-y/rhoh))/2))
       eps1 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(x-r)))/pi
       eps2 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(y-r)))/pi
       !write(6,*) eps1, eps2, epsR
@@ -661,7 +676,7 @@ real(dp) function D12_out_in(oo,B1,k1,A2,k2,B3,k3,A4,k4,r)
       x=0.5*interval + i1*interval
       do i2=0,m-1
       y=0.5*interval + i2*interval
-      epsR = 1.0/((1.0/epsin)-((1.0/epsin)-(1.0/(epsin+3.5)))*(1-(exp(-x/rhoe)+exp(-y/rhoh))/2))
+      epsR = 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-x/rhoe)+exp(-y/rhoh))/2))
       eps1 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(x-r)))/pi
       eps2 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(y-r)))/pi
       !write(6,*) r, x, y, eps1, eps2, epsR
@@ -703,7 +718,7 @@ real(dp) function D12_in_out(oo,A1,k1,B2,k2,A3,k3,B4,k4,r)
       x=0.5*interval + i1*interval
       do i2=m,2*m
       y=0.5*interval + i2*interval
-      epsR = 1.0/((1.0/epsin)-((1.0/epsin)-(1.0/(epsin+3.5)))*(1-(exp(-x/rhoe)+exp(-y/rhoh))/2))
+      epsR = 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-x/rhoe)+exp(-y/rhoh))/2))
       eps1 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(x-r)))/pi
       eps2 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(y-r)))/pi
       !write(6,*) r, x, y, eps1, eps2, epsR
@@ -745,7 +760,7 @@ real(dp) function D12_out_out(oo,B1,k1,B2,k2,B3,k3,B4,k4,r)
       x=0.5*interval + i1*interval
       do i2=m,2*m
       y=0.5*interval + i2*interval
-      epsR = 1.0/((1.0/epsin)-((1.0/epsin)-(1.0/(epsin+3.5)))*(1-(exp(-x/rhoe)+exp(-y/rhoh))/2))
+      epsR = 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-x/rhoe)+exp(-y/rhoh))/2))
       eps1 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(x-r)))/pi
       eps2 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(y-r)))/pi
       do k=1,oo
@@ -953,7 +968,7 @@ real(dp) function D12ex_8loops(oo,A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,k
       do k=1,oo
       r1 = vector(x)
       r2 = vector(y)
-      epsR = 1.0/((1.0/epsin)-((1.0/epsin)-(1.0/(epsin+3.5)))*(1-(exp(-norm2(r1-r2)/rhoe)+exp(-norm2(r1-r2)/rhoh))/2))
+      epsR = 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-norm2(r1-r2)/rhoe)+exp(-norm2(r1-r2)/rhoh))/2))
       eps1 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(x-r)))/pi
       eps2 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(y-r)))/pi
       Integii= Integii + (sin(kin1*x)*sin(kin2*x)*sin(kin3*y)*sin(kin4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
@@ -963,10 +978,10 @@ real(dp) function D12ex_8loops(oo,A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,k
 
       do i1=0,m-1
       x=0.5*interval + i1*interval
-      eps1 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+      eps1 = epsout + (epsin(n)-epsout)*((pi/2) - atan(slope*(x-r)))/pi
       do i2=m,2*m
       y=0.5*interval + i2*interval
-      eps2 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+      eps2 = epsout + (epsin(n)-epsout)*((pi/2) - atan(slope*(y-r)))/pi
       do k=1,oo
       r1 = vector(x)
       r2 = vector(y)
@@ -977,10 +992,10 @@ real(dp) function D12ex_8loops(oo,A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,k
 
       do i1=m,2*m
       x=0.5*interval + i1*interval
-      eps1 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+      eps1 = epsout + (epsin(n)-epsout)*((pi/2) - atan(slope*(x-r)))/pi
       do i2=0,m-1
       y=0.5*interval + i2*interval
-      eps2 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+      eps2 = epsout + (epsin(n)-epsout)*((pi/2) - atan(slope*(y-r)))/pi
       do k=1,oo
       r1 = vector(x)
       r2 = vector(y)
@@ -991,10 +1006,10 @@ real(dp) function D12ex_8loops(oo,A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,k
 
       do i1=m,2*m
       x=0.5*interval + i1*interval
-      eps1 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+      eps1 = epsout + (epsin(n)-epsout)*((pi/2) - atan(slope*(x-r)))/pi
       do i2=m,2*m
       y=0.5*interval + i2*interval
-      eps2 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+      eps2 = epsout + (epsin(n)-epsout)*((pi/2) - atan(slope*(y-r)))/pi
       do k=1,oo
       r1 = vector(x)
       r2 = vector(y)
@@ -1041,7 +1056,7 @@ end function D12ex_8loops
 !      do k=1,oo
 !      r1 = vector(x)
 !      r2 = vector(y)
-!      epsR = 1.0/((1.0/epsin)-((1.0/epsin)-(1.0/(epsin+3.5)))*(1-(exp(-norm2(r1-r2)/rhoe)+exp(-norm2(r1-r2)/rhoh))/2))
+!      epsR = 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-norm2(r1-r2)/rhoe)+exp(-norm2(r1-r2)/rhoh))/2))
 !      eps1 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(x-r)))/pi
 !      eps2 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(y-r)))/pi
 !      Integii= Integii + (sin(kin1*x)*sin(kin2*y)*sin(kin3*x)*sin(kin4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
@@ -1051,10 +1066,10 @@ end function D12ex_8loops
 !
 !      do i1=0,m-1
 !      x=0.5*interval + i1*interval
-!      eps1 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+!      eps1 = epsout + (epsin(n)-epsout)*((pi/2) - atan(slope*(x-r)))/pi
 !      do i2=m,2*m
 !      y=0.5*interval + i2*interval
-!      eps2 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+!      eps2 = epsout + (epsin(n)-epsout)*((pi/2) - atan(slope*(y-r)))/pi
 !      do k=1,oo
 !      r1 = vector(x)
 !      r2 = vector(y)
@@ -1065,10 +1080,10 @@ end function D12ex_8loops
 !
 !      do i1=m,2*m
 !      x=0.5*interval + i1*interval
-!      eps1 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+!      eps1 = epsout + (epsin(n)-epsout)*((pi/2) - atan(slope*(x-r)))/pi
 !      do i2=0,m-1
 !      y=0.5*interval + i2*interval
-!      eps2 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+!      eps2 = epsout + (epsin(n)-epsout)*((pi/2) - atan(slope*(y-r)))/pi
 !      do k=1,oo
 !      r1 = vector(x)
 !      r2 = vector(y)
@@ -1079,10 +1094,10 @@ end function D12ex_8loops
 !
 !      do i1=m,2*m
 !      x=0.5*interval + i1*interval
-!      eps1 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+!      eps1 = epsout + (epsin(n)-epsout)*((pi/2) - atan(slope*(x-r)))/pi
 !      do i2=m,2*m
 !      y=0.5*interval + i2*interval
-!      eps2 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+!      eps2 = epsout + (epsin(n)-epsout)*((pi/2) - atan(slope*(y-r)))/pi
 !      do k=1,oo
 !      r1 = vector(x)
 !      r2 = vector(y)
@@ -1133,13 +1148,13 @@ end function D12ex_8loops
 !
 !      do i1=0,m-1
 !      x=0.5*interval + i1*interval
-!      eps1 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+!      eps1 = epsout + (epsin(n)-epsout)*((pi/2) - atan(slope*(x-r)))/pi
 !      do i2=0,m-1
 !      y=0.5*interval + i2*interval
 !      do k=1,oo
 !      r1 = vector(x)
 !      r2 = vector(y)
-!      epsR = 1.0/((1.0/epsin)-((1.0/epsin)-(1.0/(epsin+3.5)))*(1-(exp(-norm2(r1-r2)/rhoe)+exp(-norm2(r1-r2)/rhoh))/2))
+!      epsR = 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-norm2(r1-r2)/rhoe)+exp(-norm2(r1-r2)/rhoh))/2))
 !      eps1 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(x-r)))/pi
 !      eps2 = epsout + (epsR-epsout)*((pi/2) - atan(slope*(y-r)))/pi
 !      Integii= Integii + (sin(kin1*x)*sin(kin2*y)*sin(kin3*x)*sin(kin4*y))/(norm2(r1-r2)*sqrt(eps1*eps2))
@@ -1147,7 +1162,7 @@ end function D12ex_8loops
 !      enddo
 !      do i2=m,2*m
 !      y=0.5*interval + i2*interval
-!      eps2 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+!      eps2 = epsout + (epsin(n)-epsout)*((pi/2) - atan(slope*(y-r)))/pi
 !      do k=1,oo
 !      r1 = vector(x)
 !      r2 = vector(y)
@@ -1158,10 +1173,10 @@ end function D12ex_8loops
 !
 !      do i1=m,2*m
 !      x=0.5*interval + i1*interval
-!      eps1 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+!      eps1 = epsout + (epsin(n)-epsout)*((pi/2) - atan(slope*(x-r)))/pi
 !      do i2=0,m-1
 !      y=0.5*interval + i2*interval
-!      eps2 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+!      eps2 = epsout + (epsin(n)-epsout)*((pi/2) - atan(slope*(y-r)))/pi
 !      do k=1,oo
 !      r1 = vector(x)
 !      r2 = vector(y)
@@ -1221,15 +1236,15 @@ real(dp) function DXXdir(A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B
 
       do i1=0,2*m
       x=0.5*interval + i1*interval
-            eps1 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+            eps1 = epsout + (epsin(n)-epsout)*((pi/2) - atan(slope*(x-r)))/pi
       do i2=0,2*m
       y=0.5*interval + i2*interval
-            eps2 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+            eps2 = epsout + (epsin(n)-epsout)*((pi/2) - atan(slope*(y-r)))/pi
          if ( (i1 .lt. m) .and. (i2 .lt. m) ) then
             do k=1,oo
             r1 = vector(x)
             r2 = vector(y)
-            epsR = 1.0/((1.0/epsin)-((1.0/epsin)-(1.0/(epsin+3.5)))*(1-(exp(-norm2(r1-r2)/rhoe)+exp(-norm2(r1-r2)/rhoh))/2))
+           epsR = 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-norm2(r1-r2)/rhoe)+exp(-norm2(r1-r2)/rhoh))/2))
             eps1R = epsout + (epsR-epsout)*((pi/2) - atan(slope*(x-r)))/pi
             eps2R = epsout + (epsR-epsout)*((pi/2) - atan(slope*(y-r)))/pi
             Integii= Integii + (sin(kin1*x)*sin(kin2*y)*sin(kin3*x)*sin(kin4*y))/(norm2(r1-r2)*sqrt(eps1R*eps2R))
@@ -1293,15 +1308,15 @@ real(dp) function DXXex(A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4
 
       do i1=0,2*m
       x=0.5*interval + i1*interval
-            eps1 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(x-r)))/pi
+            eps1 = epsout + (epsin(n)-epsout)*((pi/2) - atan(slope*(x-r)))/pi
       do i2=0,2*m
       y=0.5*interval + i2*interval
-            eps2 = epsout + (epsin-epsout)*((pi/2) - atan(slope*(y-r)))/pi
+            eps2 = epsout + (epsin(n)-epsout)*((pi/2) - atan(slope*(y-r)))/pi
          if ( (i1 .lt. m) .and. (i2 .lt. m) ) then
             do k=1,oo
             r1 = vector(x)
             r2 = vector(y)
-            epsR = 1.0/((1.0/epsin)-((1.0/epsin)-(1.0/(epsin+3.5)))*(1-(exp(-norm2(r1-r2)/rhoe)+exp(-norm2(r1-r2)/rhoh))/2))
+           epsR = 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-norm2(r1-r2)/rhoe)+exp(-norm2(r1-r2)/rhoh))/2))
             eps1R = epsout + (epsR-epsout)*((pi/2) - atan(slope*(x-r)))/pi
             eps2R = epsout + (epsR-epsout)*((pi/2) - atan(slope*(y-r)))/pi
             Integii= Integii + (sin(kin1*x)*sin(kin2*x)*sin(kin3*y)*sin(kin4*y))/(norm2(r1-r2)*sqrt(eps1R*eps2R))

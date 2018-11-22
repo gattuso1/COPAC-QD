@@ -1,7 +1,7 @@
 ! Namelist definition
 
 &outputs !Select output parameters, yes or no
-o_Norm  = "y"
+o_Norm  = "n"
 o_Over  = "n"
 o_Coul  = "n"
 o_DipS  = "n"
@@ -21,8 +21,9 @@ slope     =  50d9
 /
 
 &syst !Parameters of the system
-aA     = 1.00d-9
-aB     = 1.50d-9
-linker = 0.2d-9
+ndots  = 2
+aA     = 1.0d-9
+aB     = 1.0d-9
+linker = 1.0d-9
 /
 
