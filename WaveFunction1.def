@@ -1,7 +1,14 @@
 ! Namelist definition
 
 &outputs !Select output parameters, yes or no
-o_ov  = no
+o_Norm  = "y"
+o_Over  = "n"
+o_Coul  = "n"
+o_DipS  = "n"
+o_Osci  = "n"
+o_Exti  = "n"
+o_DipD  = "y"
+/
 
 &elecSt !Parameters of the system
 me        =  0.13
@@ -15,6 +22,7 @@ slope     =  50d9
 
 &syst !Parameters of the system
 aA     = 1.00d-9
+aB     = 1.50d-9
 linker = 0.2d-9
 /
 

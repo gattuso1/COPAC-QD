@@ -149,16 +149,16 @@ real(dp) function O_in_out_dimer_cart(m,A1,B1,kin1,kout1,A2,B2,kin2,kout2,a,b,l)
 end function O_in_out_dimer_cart
 
 !Computation of dimer transition dipole moments integrating in a grid
-real(dp) function TransDip_dimer_cart(m,A1,B1,kin1,kout1,A2,B2,kin2,kout2,a,b,l)
+real(dp) function TransDip_dimer_cart(A1,B1,kin1,kout1,A2,B2,kin2,kout2,a,b,l)
 
       implicit none
-      integer :: m, x1,x2,x3
-      integer :: xx,yy,zz,mm
-      real(dp) :: x,y,z,integral,integral_err, f1, f2, f3,  interval, f
+      integer :: x1,x2,x3
+      integer :: m, xx,yy,zz,mm
+      real(dp) :: x,y,z, f1, f2, f3,  interval, f
       real(dp), intent(in) :: A1,B1,kin1,kout1,A2,B2,kin2,kout2,a, b, l
       real(dp),dimension(3) :: r1, r2 
 
-      !open(40,file='Overlap-dimer.dat')
+      !write(6,*) a, b, l, A1,B1,kin1,kout1,A2,B2,kin2,kout2
 
       m=100
        
@@ -200,16 +200,16 @@ real(dp) function TransDip_dimer_MC(A1,B1,kin1,kout1,A2,B2,kin2,kout2,a,b,l)
 
       implicit none
       integer :: m, i, i1, i2, i3
-      real(dp) :: f1, f2, f3, interval, f, maxrad, vola, volb, volout
+      real(dp) :: f1, f2, f3, interval, f, maxrad, vola, volb, volout, side
       real(dp), intent(in) :: A1,B1,kin1,kout1,A2,B2,kin2,kout2,a, b, l
-      real(dp), allocatable:: r1(:,:) , r2(:,:) , r1norm(:), r1Rnorm(:), RAB(:)
+      real(dp), allocatable:: r1(:,:) , r2(:,:) , r1Anorm(:), r1Bnorm(:), RAB(:)
 
       m=400000
 
       allocate(RAB(3))
       allocate(r1(m,3))
-      allocate(r1norm(m))
-      allocate(r1Rnorm(m))
+      allocate(r1Anorm(m))
+      allocate(r1Bnorm(m))
 
       RAB(1)=a+b+l
       RAB(2)=0
@@ -224,28 +224,31 @@ real(dp) function TransDip_dimer_MC(A1,B1,kin1,kout1,A2,B2,kin2,kout2,a,b,l)
       maxrad=max(a,b)
       vola=(4.0/3)*pi*a**3
       volb=(4.0/3)*pi*b**3
-      volout=abs(((4*maxrad)**2*(3*a+l+3*b)-(vola+volb)))
+      side=0.5d-9
+      volout=abs(((2*maxrad+2*side)**2*(2*a+l+2*b+2*side)-(vola+volb)))
 
       call random_seed()
       call random_number(r1)
 
-r1norm(:)=sqrt(((3*a+3*b+l)*r1(:,1)-2*a)**2+(4*maxrad*r1(:,2)-2*maxrad)**2+(4*maxrad*r1(:,3)-2*maxrad)**2)
-r1Rnorm(:)=sqrt(((3*a+3*b+l)*r1(:,1)-(RAB(1)+2*a))**2+(4*maxrad*r1(:,2)-2*maxrad)**2+(4*maxrad*r1(:,3)-2*maxrad)**2)
+r1Anorm(:)=sqrt(((2*a+2*b+l+2*side)*r1(:,1)-(a+side))**2+((2*maxrad+2*side)*r1(:,2)-(maxrad+side))**2+ &
+               ((2*maxrad+2*side)*r1(:,3)-(maxrad+side))**2)
+r1Bnorm(:)=sqrt(((2*a+2*b+l+2*side)*r1(:,1)-(RAB(1)+a+side))**2+((2*maxrad+2*side)*r1(:,2)-(maxrad+side))**2+&
+                ((2*maxrad+2*side)*r1(:,3)-(maxrad+side))**2)
 
       do i=1,m
-      if ((r1norm(i) .le. a) .and. (r1Rnorm(i) .gt. b)) then
-      f1 = f1 + r1norm(i)*sin(kin1*r1norm(i))*exp(-1*kout2*r1Rnorm(i))/(4*pi*r1norm(i)*r1Rnorm(i))
+      if ((r1Anorm(i) .le. a) .and. (r1Bnorm(i) .gt. b)) then
+      f1 = f1 + r1Anorm(i)*sin(kin1*r1Anorm(i))*exp(-1*kout2*r1Bnorm(i))/(4*pi*r1Anorm(i)*r1Bnorm(i))
       i1 = i1 + 1
-      else if ((r1norm(i) .gt. a) .and. (r1Rnorm(i) .le. b)) then
-      f2 = f2 + r1norm(i)*exp(-1*kout1*r1norm(i))*sin(kin2*r1Rnorm(i))/(4*pi*r1norm(i)*r1Rnorm(i))
+      else if ((r1Anorm(i) .gt. a) .and. (r1Bnorm(i) .le. b)) then
+      f2 = f2 + r1Anorm(i)*exp(-1*kout1*r1Anorm(i))*sin(kin2*r1Bnorm(i))/(4*pi*r1Anorm(i)*r1Bnorm(i))
       i2 = i2 + 1
-      else if ((r1norm(i) .gt. a) .and. (r1Rnorm(i) .gt. b)) then
-      f3 = f3 + r1norm(i)*exp(-1*kout1*r1norm(i))*exp(-1*kout2*r1Rnorm(i))/(4*pi*r1norm(i)*r1Rnorm(i))
+      else if ((r1Anorm(i) .gt. a) .and. (r1Bnorm(i) .gt. b)) then
+      f3 = f3 + r1Anorm(i)*exp(-1*kout1*r1Anorm(i))*exp(-1*kout2*r1Bnorm(i))/(4*pi*r1Anorm(i)*r1Bnorm(i))
       i3 = i3 + 1
       endif
       enddo
 
-!write(6,*) i1, (A1*B2*f1*vola/i1), i2, (B1*A2*f2*volb/i2), i3, (B1*B2*f3*volout/i3)
+write(6,*) i1, (A1*B2*f1*vola/i1), i2, (B1*A2*f2*volb/i2), i3, (B1*B2*f3*volout/i3)
 
       TransDip_dimer_MC=elec*((A1*B2*f1*vola/i1)+(B1*A2*f2*volb/i2)+(B1*B2*f3*volout/i3))
 

@@ -26,8 +26,6 @@ real(dp),allocatable:: minEe(:),minEh(:),diffe(:), diffh(:), E(:)
 
 call getVariables
 
-write(6,*) o_ov
-
 maxr0=  4d-9
 stepr0= 0.05d-9
 delta=  0.00001d-18
@@ -191,49 +189,58 @@ enddo
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !Normalization integrals
+if ( o_Norm == 'y' ) then
 write(6,*) "Norm e  ana", Norm_Ana(aA,Ae,Be,kine,koute)
 write(6,*) "Norm e  num", Norm_Num(aA,Ae,Be,kine,koute)
 write(6,*) "Norm h1 ana", Norm_Ana(aA,Ah1,Bh1,kinh1,kouth1)
 write(6,*) "Norm h1 num", Norm_Num(aA,Ah1,Bh1,kinh1,kouth1)
 write(6,*) "Norm h2 ana", Norm_Ana(aA,Ah2,Bh2,kinh2,kouth2)
 write(6,*) "Norm h2 num", Norm_Num(aA,Ah2,Bh2,kinh2,kouth2)
+endif
 
 !Overlap integrals
-!if ( o_ov .eq. 'no' ) then exit
-!elseif 
+if ( o_Over == 'y' ) then
 write(6,*) "Overlap e-h1 ana", abs(OverlapAna(Ae,Ah1,Be,Bh1,kine,kinh1,koute,kouth1,aA))
 write(6,*) "Overlap e-h1 num", abs(OverlapNum(Ae,Ah1,Be,Bh1,kine,kinh1,koute,kouth1,aA))
 write(6,*) "Overlap e-h2 ana", abs(OverlapAna(Ae,Ah2,Be,Bh2,kine,kinh2,koute,kouth2,aA))
 write(6,*) "Overlap e-h2 num", abs(OverlapNum(Ae,Ah2,Be,Bh2,kine,kinh2,koute,kouth2,aA))
-!endif
+endif
 
 !Coulomb correction
+if ( o_Coul == 'y' ) then
 write(6,*) "Cb dir+ex eh1-eh1", DXXdir(Ae,Be,kine,koute,Ah1,Bh1,kinh1,kouth1,Ae,Be,kine,koute,Ah1,Bh1,kinh1,kouth1,aA) + &
                                 DXXex(Ae,Be,kine,koute,Ah1,Bh1,kinh1,kouth1,Ae,Be,kine,koute,Ah1,Bh1,kinh1,kouth1,aA)
 write(6,*) "Cb dir+ex eh1-eh2", DXXdir(Ae,Be,kine,koute,Ah1,Bh1,kinh1,kouth1,Ae,Be,kine,koute,Ah2,Bh2,kinh2,kouth2,aA) + &
                                 DXXex(Ae,Be,kine,koute,Ah1,Bh1,kinh1,kouth1,Ae,Be,kine,koute,Ah2,Bh2,kinh2,kouth2,aA)
 write(6,*) "Cb dir+ex eh2-eh2", DXXdir(Ae,Be,kine,koute,Ah2,Bh2,kinh2,kouth2,Ae,Be,kine,koute,Ah2,Bh2,kinh2,kouth2,aA) + &
                                 DXXex(Ae,Be,kine,koute,Ah2,Bh2,kinh2,kouth2,Ae,Be,kine,koute,Ah2,Bh2,kinh2,kouth2,aA)
+endif
 
 !Dipole moment 
+if ( o_DipS == 'y' ) then
 write(6,*) "Dipole e-h1 ana",  abs(TransDip_Ana(Ae,Ah1,Be,Bh1,kine,kinh1,koute,kouth1,aA))/Cm_to_D
 write(6,*) "Dipole e-h1 num",  abs(TransDip_Num(Ae,Ah1,Be,Bh1,kine,kinh1,koute,kouth1,aA))/Cm_to_D 
 write(6,*) "Dipole e-h1 EMA",  abs(TransDip_EMA(Eeh1,aA))/Cm_to_D
 write(6,*) "Dipole e-h2 ana",  abs(TransDip_Ana(Ae,Ah2,Be,Bh2,kine,kinh2,koute,kouth2,aA))/Cm_to_D
 write(6,*) "Dipole e-h2 num",  abs(TransDip_Num(Ae,Ah2,Be,Bh2,kine,kinh2,koute,kouth2,aA))/Cm_to_D
 write(6,*) "Dipole e-h1 EMA",  abs(TransDip_EMA(Eeh2,aA))/Cm_to_D
+endif
 
 !Oscilator strength
+if ( o_Osci == 'y' ) then
 write(6,*) "Oscillator strength e-h1", ((2*me)/(3*elec**2*hbar**2))*Eeh1*&
                                        TransDip_Ana(Ae,Ah1,Be,Bh1,kine,kinh1,koute,kouth1,aA)**2
 write(6,*) "Oscillator strength e-h2", ((2*me)/(3*elec**2*hbar**2))*Eeh2*&
                                        TransDip_Ana(Ae,Ah2,Be,Bh2,kine,kinh2,koute,kouth2,aA)**2
+endif
 
 !molar extinction coefficient
+if ( o_Exti == 'y' ) then
 A=1.25e5*elec**2
 mu=(me*mh)/(me+mh)
 write(6,*) "Exct. Coef. e-h1", (A*mu*aA**2)/(sqrt(2*pi)*Eeh1*hbar**2*0.1)
 write(6,*) "Exct. Coef. e-h2", (A*mu*aA**2)/(sqrt(2*pi)*Eeh2*hbar**2*0.1)
+endif
 
 !Dielectric constant size dependent
 !epsinf = 1.0 + (eps - 1.0) / (1.0 + (0.75e-9/(2*aA))**1.2)
@@ -268,9 +275,12 @@ write(6,*) "Exct. Coef. e-h2", (A*mu*aA**2)/(sqrt(2*pi)*Eeh2*hbar**2*0.1)
 
 !enddo
 
-!write(23,*) linker,TransDip_dimer_MC(Ah1,Bh1,kinh1,kouth1,Ae,Be,kine,koute,aA,aB,linker),&
-!                 TransDip_dimer_MC(Ah2,Bh2,kinh2,kouth2,Ae,Be,kine,koute,aA,aB,linker)
-!write(6,*) linker , TransDip_dimer_MC(Ah2,Bh2,kinh2,kouth2,Ae,Be,kine,koute,aB,aA,linker)
+!if ( o_DipD == 'y' ) then
+!write(6,*)  TransDip_dimer_MC(Ah1,Bh1,kinh1,kouth1,Ae,Be,kine,koute,aA,aB,linker), &
+!                 TransDip_dimer_MC(Ae,Be,kine,koute,Ah1,Bh1,kinh1,kouth1,aB,aA,linker)
+                  ! TransDip_dimer_MC(Ah1,Bh1,kinh1,kouth1,Ae,Be,kine,koute,aA,aB,linker)
+!write(6,*) linker, TransDip_dimer_MC(Ah2,Bh2,kinh2,kouth2,Ae,Be,kine,koute,aB,aA,linker)
+!endif
 
 !enddo
 
