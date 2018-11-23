@@ -3,5 +3,5 @@
 *.mod
 fort*
 *.dat
-QD-s.f90
+QD-s
 QD-range.f90
