@@ -1,4 +1,8 @@
 # QD-prop
 
-## subtitle
-This is beautiful like his author
+## Files
+Compile
+Constants.f90
+Integrals.f90
+Variables.f90
+WaveFunction1.def

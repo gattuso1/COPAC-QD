@@ -5,7 +5,7 @@ if [[ -z $1 ]];then
 echo -e "\nYou should use it like this:\n\n$0 number\n"
 exit
 else
-name=WaveFunction$1
+name=QD-$1
 fi
 
 echo Compiling $name
