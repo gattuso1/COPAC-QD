@@ -1,7 +1,7 @@
 *.log
 *.o
 *.mod
-*.50
+fort*
 *.dat
 QD-s.f90
 QD-range.f90
