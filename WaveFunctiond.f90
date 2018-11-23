@@ -13,7 +13,9 @@ double precision, external:: s13adf, ei, eone, nag_bessel_j0
 
 character*64 :: arg1, arg2, filename, argA
 
-integer :: i,je,jh,k,nsteps,r,rsteps,ifail, r2
+character*2 :: flag
+
+integer :: je,jh,k,nsteps,r,rsteps,ifail, r2
 
 real(dp) :: maxr0,stepr0,Ef,le,re,lh,rh,delta, start, finish, mu, A, epsinf, aR1, aR2, &
         Rine, Route, Rinh1, Routh1, Rinh2, Routh2, RadProbe, RadProbh1, RadProbh2, r0
@@ -22,7 +24,7 @@ real(dp),allocatable :: Eeh1(:), Eeh2(:), Ae(:), Ah1(:), Ah2(:), Be(:), Bh1(:), 
                         I1eh1(:), I1eh2(:), I2eh1(:), I2eh2(:), I3eh1(:), I3eh2(:), kine(:), kinh1(:), kinh2(:), &
                         koute(:), kouth1(:), kouth2(:)
 
-real(dp),allocatable :: minEe(:,:),minEh(:,:),diffe(:), diffh(:), E(:)
+real(dp),allocatable :: minEe(:,:),minEh(:,:),diffe(:), diffh(:), E(:), Ham(:,:)
 
 call getVariables
 
@@ -63,6 +65,7 @@ allocate(kinh2(ndots))
 allocate(koute(ndots)) 
 allocate(kouth1(ndots)) 
 allocate(kouth2(ndots))
+allocate(Ham(9,9))
 
 open(10,file='Ee.dat')
 open(11,file='E1se-1sh.dat')
@@ -315,9 +318,14 @@ enddo
 !
 !aR2=r2*stepr0
 
+write(6,*) epsin(1), epsin(2), aR(1), aR(2)
+
 !if ( o_DipD == 'y' ) then
-write(23,*) aR1, aR2,  TransDip_dimer_MC(Ah1(1),Bh1(1),kinh1(1),kouth1(1),Ae(2),Be(2),kine(2),koute(2),aR1,aR2,linker)
-write(24,*) aR1, aR2,  TransDip_dimer_MC(Ah2(1),Bh2(1),kinh2(1),kouth2(1),Ae(2),Be(2),kine(2),koute(2),aR1,aR2,linker)
+write(6,*) "e-h1", aR(1), aR(2), &
+                3.33564d30*TransDip_dimer_MC(Ah1(1),Bh1(1),kinh1(1),kouth1(1),Ae(2),Be(2),kine(2),koute(2),aR(1),aR(2),linker)
+write(6,*) "h1-e", aR(2), aR(1), &
+               3.33564d30*TransDip_dimer_MC(Ae(2),Be(2),kine(2),koute(2),Ah1(1),Bh1(1),kinh1(1),kouth1(1),aR(2),aR(1),linker)
+!write(24,*) aR1, aR2,  TransDip_dimer_MC(Ah2(1),Bh2(1),kinh2(1),kouth2(1),Ae(2),Be(2),kine(2),koute(2),aR1,aR2,linker)
 !write(6,*) 'e-h1',  TransDip_dimer_MC(Ae(2),Be(2),kine(2),koute(2),Ah1(1),Bh1(1),kinh1(1),kouth1(1),aR(2),aR(1),linker)
 !write(6,*) 'h2-e',  TransDip_dimer_MC(Ah2(1),Bh2(1),kinh2(1),kouth2(1),Ae(2),Be(2),kine(2),koute(2),aR(1),aR(2),linker)
 !write(6,*) 'e-h2',  TransDip_dimer_MC(Ae(2),Be(2),kine(2),koute(2),Ah2(1),Bh2(1),kinh2(1),kouth2(1),aR(2),aR(1),linker)
@@ -359,6 +367,14 @@ write(24,*) aR1, aR2,  TransDip_dimer_MC(Ah2(1),Bh2(1),kinh2(1),kouth2(1),Ae(2),
 
 !write(6,*) Ana_in_in(m,Ah2(n),Ae(n),kinh2(n),kine(n),aR(n)), & 
 !      Ana_out_out(m,Bh2(n),Be(n),kouth2(n),koute(n),aR(n)) 
+
+!if ( o_DCou == 'y' ) then
+!include 'fetchIntegrals.f90'
+!
+!do i = 1,nstates
+!write(14,"(9f6.3)") (Ham(i,j), j=0,nterms-1)
+!enddo
+!endif
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 deallocate(E,diffe,diffh,minEe,minEh)

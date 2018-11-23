@@ -207,7 +207,7 @@ real(dp) function TransDip_dimer_MC(A1,B1,kin1,kout1,A2,B2,kin2,kout2,a,b,l)
       
       !open(40,file='Rtest.dat')
 
-      m=100000
+      m=500000
 
       allocate(RAB(3))
       allocate(r1(m,3))
@@ -254,13 +254,13 @@ r1Nnorm(:)=sqrt(((2*a+2*b+l+2*side)*r1(:,1)-(l/2+2*a+side))**2+((2*maxrad+2*side
 
       do i=1,m
       if ((r1Anorm(i) .le. a) .and. (r1Bnorm(i) .gt. b)) then
-      f1 = f1 + sin(kin1*r1Anorm(i))*exp(-1.0*kout2*r1Bnorm(i))/(4.0*pi*r1Nnorm(i))
+      f1 = f1 + r1Nnorm(i)*sin(kin1*r1Anorm(i))*exp(-1.0*kout2*r1Bnorm(i))/(4.0*pi*r1Anorm(i)*r1Bnorm(i))
       i1 = i1 + 1
       else if ((r1Anorm(i) .gt. a) .and. (r1Bnorm(i) .le. b)) then
-      f2 = f2 + exp(-1.0*kout1*r1Anorm(i))*sin(kin2*r1Bnorm(i))/(4.0*pi*r1Nnorm(i))
+      f2 = f2 + r1Nnorm(i)*exp(-1.0*kout1*r1Anorm(i))*sin(kin2*r1Bnorm(i))/(4.0*pi*r1Anorm(i)*r1Bnorm(i))
       i2 = i2 + 1
       else if ((r1Anorm(i) .gt. a) .and. (r1Bnorm(i) .gt. b)) then
-      f3 = f3 + exp(-1.0*kout1*r1Anorm(i))*exp(-1.0*kout2*r1Bnorm(i))/(4.0*pi*r1Nnorm(i))
+      f3 = f3 + r1Nnorm(i)*exp(-1.0*kout1*r1Anorm(i))*exp(-1.0*kout2*r1Bnorm(i))/(4.0*pi*r1Anorm(i)*r1Bnorm(i))
       i3 = i3 + 1
       endif
       enddo

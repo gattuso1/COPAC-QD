@@ -4,18 +4,18 @@ use Constants
 
 implicit none
 
-   character*1 :: o_Norm, o_Over, o_Coul, o_DipS, o_Osci, o_Exti, o_DipD
-   integer :: ndots, n
-   real(dp) :: aA, aB, linker, me, mh, eps, epsout, V0, omegaLO, rhoe, rhoh, slope, V0eV
+   character*1 :: o_Norm, o_Over, o_Coul, o_DipS, o_Osci, o_Exti, o_DipD, o_DCou
+   integer :: ndots, n, nstates, i, j
+   real(dp) :: aA, aB, linker, me, mh, eps, epsout, V0, omegaLO, rhoe, rhoh, slope, V0eV, side
    real(dp),allocatable :: aR(:), epsin(:), epsR(:), V0e(:), V0h(:)
 
 contains 
 
 subroutine getVariables
 
-NAMELIST /outputs/ o_Norm,o_Over,o_Coul,o_DipS,o_Osci,o_Exti,o_DipD
-NAMELIST /elecSt/ me,mh,eps,epsout,V0eV,omegaLO,slope
-NAMELIST /syst/ ndots,aA,aB,linker
+NAMELIST /outputs/ o_Norm,o_Over,o_Coul,o_DipS,o_Osci,o_Exti,o_DipD,o_DCou
+NAMELIST /elecSt/ me,mh,eps,epsout,V0eV,omegaLO,slope,side
+NAMELIST /syst/ ndots,aA,aB,linker,nstates
 
 open(150,file='WaveFunctiond.def',form='formatted')
 read(150,NML=outputs)
