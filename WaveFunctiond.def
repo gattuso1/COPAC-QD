@@ -1,8 +1,8 @@
 ! Namelist definition
 
 &outputs !Select output parameters, yes or no
-o_Norm  = "y"
-o_Over  = "y"
+o_Norm  = "n"
+o_Over  = "n"
 o_Coul  = "n"
 o_DipS  = "n"
 o_Osci  = "n"

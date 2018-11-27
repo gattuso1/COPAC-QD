@@ -230,7 +230,7 @@ real(dp) function TransDip_dimer_MC(A1,B1,kin1,kout1,A2,B2,kin2,kout2,a,b,l)
       vola=(4.0/3)*pi*a**3
       volb=(4.0/3)*pi*b**3
       side=0.5d-9
-      volout=abs(((2*maxrad+2*side)**2*(2*a+l+2*b+2*side)-(vola+volb)))
+      volout=abs((2*maxrad+2*side)**2*(2*a+l+2*b+2*side)-(vola+volb))
 
       call random_seed()
       call random_number(r1(:,1))
@@ -245,29 +245,195 @@ r1Nnorm(:)=sqrt(((2*a+2*b+l+2*side)*r1(:,1)-(l/2+2*a+side))**2+((2*maxrad+2*side
                 ((2*maxrad+2*side)*r1(:,2)-(maxrad+side))**2)
 
 !      do i=1,m
-!write(40,'(i6, 8f18.14)') i, 1.0d9*((2*a+2*b+l+2*side)*r1(i,1)-(a+side)), 1.0d9*((2*maxrad+2*side)*r1(i,2)-(maxrad+side)), & 
-!                     1.0d9*((2*maxrad+2*side)*r1(i,3)-(maxrad+side)),&
-!                     1.0d9*((2*a+2*b+l+2*side)*r1(i,1)-(RAB(1)+a+side)), 1.0d9*((2*maxrad+2*side)*r1(i,2)-(maxrad+side)), &
-!                     1.0d9*((2*maxrad+2*side)*r1(i,3)-(maxrad+side)),&
+!write(40,'(i6, 8f18.14)') i, 1.0d9*((2*a+2*b+l+2*side)*r1(i,:)-(a+side)), 1.0d9*((2*maxrad+2*side)*r1(i,:)-(maxrad+side)), & 
+!                     1.0d9*((2*maxrad+2*side)*r1(i,:)-(maxrad+side)),&
+!                     1.0d9*((2*a+2*b+l+2*side)*r1(i,:)-(RAB(1)+a+side)), 1.0d9*((2*maxrad+2*side)*r1(i,:)-(maxrad+side)), &
+!                     1.0d9*((2*maxrad+2*side)*r1(i,:)-(maxrad+side)),&
 !                     1.0d9*r1Anorm(i), 1.0d9*r1Bnorm(i)
+!      enddo
+
+!      do i=1,m
+!      if ((r1Anorm(i) .le. a) .and. (r1Bnorm(i) .gt. b)) then
+!      f1 = f1 + r1Nnorm(i)*sin(kin1*r1Anorm(i))*exp(-1.0*kout2*r1Bnorm(i))/(4.0*pi*r1Anorm(i)*r1Bnorm(i))
+!      i1 = i1 + 1
+!      else if ((r1Anorm(i) .gt. a) .and. (r1Bnorm(i) .le. b)) then
+!      f2 = f2 + r1Nnorm(i)*exp(-1.0*kout1*r1Anorm(i))*sin(kin2*r1Bnorm(i))/(4.0*pi*r1Anorm(i)*r1Bnorm(i))
+!      i2 = i2 + 1
+!      else if ((r1Anorm(i) .gt. a) .and. (r1Bnorm(i) .gt. b)) then
+!      f3 = f3 + r1Nnorm(i)*exp(-1.0*kout1*r1Anorm(i))*exp(-1.0*kout2*r1Bnorm(i))/(4.0*pi*r1Anorm(i)*r1Bnorm(i))
+!      i3 = i3 + 1
+!      endif
 !      enddo
 
       do i=1,m
       if ((r1Anorm(i) .le. a) .and. (r1Bnorm(i) .gt. b)) then
-      f1 = f1 + r1Nnorm(i)*sin(kin1*r1Anorm(i))*exp(-1.0*kout2*r1Bnorm(i))/(4.0*pi*r1Anorm(i)*r1Bnorm(i))
+      f1 = f1 + r1Anorm(i)*exp(-1.0*kout2*RAB(1))*sin(kin1*r1Anorm(i))*exp(-1.0*kout2*r1Bnorm(i))/&
+                (4.0*pi*r1Anorm(i)*(r1Bnorm(i)+RAB(1)))
       i1 = i1 + 1
       else if ((r1Anorm(i) .gt. a) .and. (r1Bnorm(i) .le. b)) then
-      f2 = f2 + r1Nnorm(i)*exp(-1.0*kout1*r1Anorm(i))*sin(kin2*r1Bnorm(i))/(4.0*pi*r1Anorm(i)*r1Bnorm(i))
+      f2 = f2 + r1Anorm(i)*exp(-1.0*kout1*r1Anorm(i))*sin(kin2*(r1Bnorm(i)+RAB(1)))/&
+                (4.0*pi*r1Anorm(i)*(r1Bnorm(i)+RAB(1)))
       i2 = i2 + 1
       else if ((r1Anorm(i) .gt. a) .and. (r1Bnorm(i) .gt. b)) then
-      f3 = f3 + r1Nnorm(i)*exp(-1.0*kout1*r1Anorm(i))*exp(-1.0*kout2*r1Bnorm(i))/(4.0*pi*r1Anorm(i)*r1Bnorm(i))
+      f3 = f3 + r1Anorm(i)*exp(-1.0*kout2*RAB(1))*exp(-1.0*kout1*r1Anorm(i))*exp(-1.0*kout2*r1Bnorm(i))/&
+                (4.0*pi*r1Anorm(i)*(r1Bnorm(i)+RAB(1)))
       i3 = i3 + 1
       endif
       enddo
 
-      TransDip_dimer_MC=elec*((A1*B2*f1*vola/i1)+(B1*A2*f2*volb/i2)+(B1*B2*f3*volout/i3))
+
+write(6,*) abs(elec*(A1*B2*f1*vola/i1)), abs(elec*(B1*A2*f2*volb/i2)), abs(elec*(B1*B2*f3*volout/i3))
+
+      TransDip_dimer_MC=elec*(abs((A1*B2*f1*vola/i1))+abs((B1*A2*f2*volb/i2))+abs((B1*B2*f3*volout/i3)))
 
 end function TransDip_dimer_MC
+
+!Computation of dimer transition dipole moments integrating using Monte-Carlo
+real(dp) function TransDip_dimer_MC_off(A1,B1,kin1,kout1,A2,B2,kin2,kout2,a,b,l)
+
+      implicit none
+      integer :: m, i, i1, i2, i3
+      real(dp) :: fx1, fx2, fx3, fy1, fy2, fy3,fz1, fz2, fz3,interval, f, maxrad, vola, volb, volout
+      real(dp), intent(in) :: A1,B1,kin1,kout1,A2,B2,kin2,kout2,a, b, l
+      real(dp), allocatable:: r1(:,:) , r2(:,:) , r1A(:,:), r1B(:,:), RAB(:), r1N(:,:)
+
+      
+      open(41,file='Rtest.dat')
+
+      m=1000000
+
+      allocate(RAB(3))
+      allocate(r1(m,3))
+      allocate(r1N(m,3))
+      allocate(r1A(m,3))
+      allocate(r1B(m,3))
+
+      RAB(1)=a+b+l
+      RAB(2)=0
+      RAB(3)=0
+
+      i1=0
+      i2=0
+      i3=0
+      fx1 = 0.0
+      fx2 = 0.0
+      fx3 = 0.0
+      fy1 = 0.0
+      fy2 = 0.0
+      fy3 = 0.0
+      fz1 = 0.0
+      fz2 = 0.0
+      fz3 = 0.0
+      maxrad=max(a,b)
+
+      vola=(4.0/3)*pi*a**3
+      volb=(4.0/3)*pi*b**3
+      volout=abs(((2*maxrad+2*side)**2*(2*a+l+2*b+2*side)-(vola+volb)))
+
+!write(6,*) vola, volb, volout, l
+
+      call random_seed()
+      call random_number(r1(:,1))
+      call random_number(r1(:,2))
+      call random_number(r1(:,3))
+
+!bottom back corner
+!r1N(:,1)=(r1(:,1)*(2*a+2*b+l+2*side))
+!r1N(:,2)=(r1(:,2)*(2*maxrad+2*side))
+!r1N(:,3)=(r1(:,3)*(2*maxrad+2*side))
+!r1A(:,1)=(r1(:,1)*(2*a+2*b+l+2*side))-(side+a)
+!r1A(:,2)=(r1(:,2)*(2*maxrad+2*side))-(side+maxrad)
+!r1A(:,3)=(r1(:,3)*(2*maxrad+2*side))-(side+maxrad)
+!r1B(:,1)=(r1(:,1)*(2*a+2*b+l+2*side))-(side+2*a+l+b)
+!r1B(:,2)=(r1(:,2)*(2*maxrad+2*side))-(side+maxrad)
+!r1B(:,3)=(r1(:,3)*(2*maxrad+2*side))-(side+maxrad)
+
+!Point between QD surfaces
+r1N(:,1)=(r1(:,1)*(2*a+2*b+l+2*side))-(side+2*a+l/2)
+r1N(:,2)=(r1(:,2)*(2*maxrad+2*side))-(maxrad+side)
+r1N(:,3)=(r1(:,3)*(2*maxrad+2*side))-(maxrad+side)
+r1A(:,1)=(r1(:,1)*(2*a+2*b+l+2*side))-(side+a)
+r1A(:,2)=(r1(:,2)*(2*maxrad+2*side)-(maxrad+side))
+r1A(:,3)=(r1(:,3)*(2*maxrad+2*side)-(maxrad+side))
+r1B(:,1)=(r1(:,1)*(2*a+2*b+l+2*side))-(side+2*a+l+b)
+r1B(:,2)=(r1(:,2)*(2*maxrad+2*side)-(maxrad+side))
+r1B(:,3)=(r1(:,3)*(2*maxrad+2*side)-(maxrad+side))
+
+!begining x axis
+!r1N(:,1)=(r1(:,1)*(2*a+2*b+l+2*side))
+!r1N(:,2)=(r1(:,2)*(2*maxrad+2*side))-(maxrad+side)
+!r1N(:,3)=(r1(:,3)*(2*maxrad+2*side))-(maxrad+side)
+!r1A(:,1)=(r1(:,1)*(2*a+2*b+l+2*side))-(side+a)
+!r1A(:,2)=(r1(:,2)*(2*maxrad+2*side)-(maxrad+side))
+!r1A(:,3)=(r1(:,3)*(2*maxrad+2*side)-(maxrad+side))
+!r1B(:,1)=(r1(:,1)*(2*a+2*b+l+2*side))-(side+2*a+l+b)
+!r1B(:,2)=(r1(:,2)*(2*maxrad+2*side)-(maxrad+side))
+!r1B(:,3)=(r1(:,3)*(2*maxrad+2*side)-(maxrad+side))
+
+!center dot A
+!r1N(:,1)=(r1(:,1)*(2*a+2*b+l+2*side))-(side+a)
+!r1N(:,2)=(r1(:,2)*(2*maxrad+2*side))-(maxrad+side)
+!r1N(:,3)=(r1(:,3)*(2*maxrad+2*side))-(maxrad+side)
+!r1A(:,1)=(r1(:,1)*(2*a+2*b+l+2*side))-(side+a)
+!r1A(:,2)=(r1(:,2)*(2*maxrad+2*side)-(maxrad+side))
+!r1A(:,3)=(r1(:,3)*(2*maxrad+2*side)-(maxrad+side))
+!r1B(:,1)=(r1(:,1)*(2*a+2*b+l+2*side))-(side+2*a+l+b)
+!r1B(:,2)=(r1(:,2)*(2*maxrad+2*side)-(maxrad+side))
+!r1B(:,3)=(r1(:,3)*(2*maxrad+2*side)-(maxrad+side))
+
+      do i=1,m
+      if ((norm2(r1A(i,:)) .le. a) .and. (norm2(r1B(i,:)) .gt. b)) then
+      fx1 = fx1 + (r1N(i,1))*sin(kin1*norm2(r1A(i,:)))*exp(-1.0*kout2*norm2(r1B(i,:)))/&
+                (norm2(r1A(i,:))*norm2(r1B(i,:)))
+      fy1 = fy1 + (r1N(i,2))*sin(kin1*norm2(r1A(i,:)))*exp(-1.0*kout2*norm2(r1B(i,:)))/&
+                (norm2(r1A(i,:))*norm2(r1B(i,:)))
+      fz1 = fz1 + (r1N(i,3))*sin(kin1*norm2(r1A(i,:)))*exp(-1.0*kout2*norm2(r1B(i,:)))/&
+                (norm2(r1A(i,:))*norm2(r1B(i,:)))
+      !write(41,'(6f10.4)') r1N(i,:)*1e9, r1N(i,:)*1e9, r1N(i,:)*1e9, r1A(i,:)*1e9, r1A(i,:)*1e9, r1A(i,:)*1e9
+      i1 = i1 + 1
+      else if ((norm2(r1A(i,:)) .gt. a) .and. (norm2(r1B(i,:)) .le. b)) then
+      fx2 = fx2 + (r1N(i,1))*exp(-1.0*kout1*norm2(r1A(i,:)))*sin(kin2*(norm2(r1B(i,:))))/&
+                (norm2(r1A(i,:))*norm2(r1B(i,:)))
+      fy2 = fy2 + (r1N(i,2))*exp(-1.0*kout1*norm2(r1A(i,:)))*sin(kin2*(norm2(r1B(i,:))))/&
+               (norm2(r1A(i,:))*norm2(r1B(i,:)))
+      fz2 = fz2 + (r1N(i,3))*exp(-1.0*kout1*norm2(r1A(i,:)))*sin(kin2*(norm2(r1B(i,:))))/&
+                (norm2(r1A(i,:))*norm2(r1B(i,:)))
+      i2 = i2 + 1
+      !write(41,'(6f10.4)') r1N(i,:)*1e9, r1N(i,:)*1e9, r1N(i,:)*1e9, r1B(i,:)*1e9, r1B(i,:)*1e9, r1B(i,:)*1e9
+      else if ((norm2(r1A(i,:)) .gt. a) .and. (norm2(r1B(i,:)) .gt. b)) then
+      fx3 = fx3 + (r1N(i,1))*exp(-1.0*kout1*norm2(r1A(i,:)))*exp(-1.0*kout2*norm2(r1B(i,:)))/&
+               (norm2(r1A(i,:))*norm2(r1B(i,:)))
+      fy3 = fy3 + (r1N(i,2))*exp(-1.0*kout1*norm2(r1A(i,:)))*exp(-1.0*kout2*norm2(r1B(i,:)))/&
+                (norm2(r1A(i,:))*norm2(r1B(i,:)))
+      fz3 = fz3 + (r1N(i,3))*exp(-1.0*kout1*norm2(r1A(i,:)))*exp(-1.0*kout2*norm2(r1B(i,:)))/&
+                (norm2(r1A(i,:))*norm2(r1B(i,:)))
+      !write(41,'(6f10.4)') r1A(i,:)*1e9, r1A(i,:)*1e9, r1A(i,:)*1e9, r1B(i,:)*1e9, r1B(i,:)*1e9, r1B(i,:)*1e9
+      i3 = i3 + 1
+      endif
+      enddo
+
+!write(6,*) "  "
+!write(6,*) "inA-outB" , i1, (A1*B2*fx1*vola/i1),(A1*B2*fy1*vola/i1),(A1*B2*fz1*vola/i1)
+!write(6,*) "outA-inB" , i2, (B1*A2*fx2*volb/i2),(B1*A2*fy2*volb/i2),(B1*A2*fz2*volb/i2)
+!write(6,*) "outA-outB" , i3,(B1*B2*fx3*volout/i3),(B1*B2*fy3*volout/i3),(B1*B2*fz3*volout/i3)
+
+write(6,*) "   "
+write(6,*) "x" , i1,  (A1*B2*fx1*vola/i1), i2, (B1*A2*fx2*volb/i2), i3, (B1*B2*fx3*volout/i3)
+write(6,*) "x" ,  (elec/(4*pi))*((A1*B2*fx1*vola/i1)+(B1*A2*fx2*volb/i2)+(B1*B2*fx3*volout/i3)) 
+write(6,*) "y" ,  (elec/(4*pi))*((A1*B2*fy1*vola/i1)+(B1*A2*fy2*volb/i2)+(B1*B2*fy3*volout/i3))  
+!write(6,*) "y" ,  i1, (A1*B2*fy1*vola/i1), i2, (B1*A2*fy2*volb/i2), i3, (B1*B2*fy3*volout/i3)
+write(6,*) "z" ,  (elec/(4*pi))*((A1*B2*fz1*vola/i1)+(B1*A2*fz2*volb/i2)+(B1*B2*fz3*volout/i3))
+
+      !TransDip_dimer_MC_off=(elec/(4*pi))*(abs((A1*B2*f1*vola/i1))+abs((B1*A2*f2*volb/i2))+abs((B1*B2*f3*volout/i3)))
+!   TransDip_dimer_MC_off=sqrt(((elec/(4*pi))*((A1*B2*fx1*vola/i1)+(B1*A2*fx2*volb/i2)+(B1*B2*fx3*volout/i3)))**2+ &
+!                              ((elec/(4*pi))*((A1*B2*fy1*vola/i1)+(B1*A2*fy2*volb/i2)+(B1*B2*fy3*volout/i3)))**2+ &
+!                              ((elec/(4*pi))*((A1*B2*fz1*vola/i1)+(B1*A2*fz2*volb/i2)+(B1*B2*fz3*volout/i3)))**2)
+TransDip_dimer_MC_off=sqrt(((elec/(4*pi))*(((A1*B2*fx1*vola/i1)+(B1*A2*fx2*volb/i2)+(B1*B2*fx3*volout/i3))))**2+ &
+                           ((elec/(4*pi))*(((A1*B2*fy1*vola/i1)+(B1*A2*fy2*volb/i2)+(B1*B2*fy3*volout/i3))))**2+ &
+                           ((elec/(4*pi))*(((A1*B2*fz1*vola/i1)+(B1*A2*fz2*volb/i2)+(B1*B2*fz3*volout/i3))))**2)
+
+
+end function TransDip_dimer_MC_off
 
 !Normalization of WF analytical
 real(dp) function Norm_Ana(r,A,B,kin,kout)
@@ -310,23 +476,22 @@ real(dp) function Norm_Num(r,A,B,kin,kout)
 end function Norm_Num
 
 !Normalization of WF in cartesian coordinates
-real(dp) function Norm_cart(m,AB1,AB2,k1,k2,a,b)
+real(dp) function Norm_cart(AB1,AB2,k1,k2,a)
 
       implicit none
       double precision, external:: s13adf, ei
       integer :: m
-      integer :: i, ifail,xx1,yy1,zz1
-      real(dp) :: x, integral,integral_err, f, f1, f2, interval
+      integer :: i, xx1,yy1,zz1
+      real(dp) :: f1, f2, interval
       real(dp) :: AB1,AB2,k1,k2,a,x1,y1,z1, b
       real(dp), dimension(3) :: r1
 
-      f= 0.0
+      m=100
       f1= 0.0
       f2= 0.0
       i=0
-      x=0
 
-      interval= b/m
+      interval= 2*a/m
 
       do xx1=0,m
       x1=0.5*interval+xx1*interval
@@ -340,25 +505,61 @@ real(dp) function Norm_cart(m,AB1,AB2,k1,k2,a,b)
 
 
       if (norm2(r1) .le. a) then
-      f = f + (AB1*sin(k1*norm2(r1))/(sqrt(4*pi)*norm2(r1)))**2
-      f2 = f2 + f**2
-      !write(6,*) (AB1*sin(k1*norm2(r1))/(sqrt(4*pi)*norm2(r1)))**2
+      f1 = f1 + (AB1*sin(k1*norm2(r1))/(sqrt(4*pi)*norm2(r1)))**2
       else if (norm2(r1) .gt. a) then
-      f1 = f1 + (AB2*exp(-1*k2*norm2(r1))/(sqrt(4*pi)*norm2(r1)))**2
-      f2 = f2 + f**2
-      !write(6,*) (AB2*exp(-1*k2*norm2(r1))/(sqrt(4*pi)*norm2(r1)))**2
+      f2 = f2 + (AB2*exp(-1*k2*norm2(r1))/(sqrt(4*pi)*norm2(r1)))**2
       endif
       
       enddo
       enddo
       enddo
 
-!write(6,*) f*interval**3, f1*interval**3 , (f+f1)*interval**3 !, sqrt((f2-f**2))*interval**3
-!write(6,*) f*interval**3, f1*interval**3 , (f+f1)*interval**3 !, sqrt((f2-f**2))*interval**3
-
-      Norm_cart=8*(f+f1)*interval**3
+      Norm_cart=8*(f1+f2)*interval**3
 
 end function Norm_cart
+
+!Normalization of WF in cartesian coordinates
+real(dp) function Norm_cart_off(AB1,AB2,k1,k2,a)
+
+      implicit none
+      double precision, external:: s13adf, ei
+      integer :: m
+      integer :: i, xx1,yy1,zz1
+      real(dp) :: f1, f2, interval
+      real(dp) :: AB1,AB2,k1,k2,a,x1,y1,z1, b
+      real(dp), dimension(3) :: r1
+
+      m=500
+      f1= 0.0
+      f2= 0.0
+      i=0
+
+      interval= 4*a/m
+
+      do xx1=0,m
+      x1=0.5*interval+xx1*interval
+      do yy1=0,m
+      y1=0.5*interval+yy1*interval
+      do zz1=0,m
+      z1=0.5*interval+zz1*interval
+      r1(1)=2*a-x1
+      r1(2)=2*a-y1
+      r1(3)=2*a-z1
+
+
+      if (norm2(r1) .le. a) then
+      f1 = f1 + (AB1*sin(k1*norm2(r1))/(sqrt(4*pi)*norm2(r1)))**2
+      else if (norm2(r1) .gt. a) then
+      f2 = f2 + (AB2*exp(-1*k2*norm2(r1))/(sqrt(4*pi)*norm2(r1)))**2
+      endif
+      
+      enddo
+      enddo
+      enddo
+
+      Norm_cart_off=(f1+f2)*interval**3
+
+end function Norm_cart_off
 
 !Normalization of WF in cartesian coordinates using Monte Carlo method 
 real(dp) function Norm_cart_Rdm(AB1,AB2,k1,k2,a,b)
