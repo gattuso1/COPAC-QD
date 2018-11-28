@@ -4,5 +4,6 @@ fort*
 *.mod
 *.50
 *.dat
+*.def
 WaveFunctiond
 QD-range.f90
