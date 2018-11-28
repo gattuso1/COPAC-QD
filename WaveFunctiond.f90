@@ -221,6 +221,7 @@ write(6,*) "Norm e  ana", Norm_Ana(aR(n),Ae(n),Be(n),kine(n),koute(n))
 write(6,*) "Norm e  num", Norm_Num(aR(n),Ae(n),Be(n),kine(n),koute(n))
 write(6,*) "Norm e  cart", Norm_Cart(Ae(n),Be(n),kine(n),koute(n),aR(n))
 !write(6,*) "Norm e  cart off", Norm_Cart_off(Ae(n),Be(n),kine(n),koute(n),aR(n))
+write(6,*) "Norm e MC off", Norm_MC_off(Ae(n),Be(n),kine(n),koute(n),aR(n),aR(n),linker)
 write(6,*) "Norm h1 ana", Norm_Ana(aR(n),Ah1(n),Bh1(n),kinh1(n),kouth1(n))
 write(6,*) "Norm h1 num", Norm_Num(aR(n),Ah1(n),Bh1(n),kinh1(n),kouth1(n))
 write(6,*) "Norm h2 ana", Norm_Ana(aR(n),Ah2(n),Bh2(n),kinh2(n),kouth2(n))
@@ -320,9 +321,12 @@ enddo
 !
 !aR2=r2*stepr0
 
+write(6,*) aR(1), aR(2)
+
 !if ( o_DipD == 'y' ) then
 write(6,*) "e-h1",  "   ", &
-       TransDip_dimer_MC_off(Ah1(1),Bh1(1),kinh1(1),kouth1(1),Ae(2),Be(2),kine(2),koute(2),aR(1),aR(2),linker)/3.33564d-30
+       TransDip_dimer_MC_off(Ah1(1),Bh1(1),kinh1(1),kouth1(1),Ae(2),Be(2),kine(2),koute(2),aR(1),aR(2),linker)/3.33564d-30 ,&
+       TransDip_dimer_MC_off(Ah1(2),Bh1(2),kinh1(2),kouth1(2),Ae(1),Be(1),kine(1),koute(1),aR(2),aR(1),linker)/3.33564d-30
 !write(6,*) "h1-e", "   ", &
 !       TransDip_dimer_MC_off(Ae(2),Be(2),kine(2),koute(2),Ah1(1),Bh1(1),kinh1(1),kouth1(1),aR(2),aR(1),linker)/3.33564d-30
 !write(24,*) aR1, aR2,  TransDip_dimer_MC(Ah2(1),Bh2(1),kinh2(1),kouth2(1),Ae(2),Be(2),kine(2),koute(2),aR1,aR2,linker)

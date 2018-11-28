@@ -24,7 +24,7 @@ side      =  0.5d-9
 
 &syst !Parameters of the system
 ndots   = 2
-aA      = 1.0d-9
+aA      = 2.0d-9
 aB      = 1.0d-9
 linker  = 0.2d-9
 nstates = 9
