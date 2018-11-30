@@ -15,7 +15,7 @@ NAMELIST /outputs/ o_Norm,o_Over,o_Coul,o_DipS,o_Osci,o_Exti,o_DipD
 NAMELIST /elecSt/ me,mh,eps,epsout,V0eV,omegaLO,slope
 NAMELIST /syst/ aA,aB,linker
 
-open(150,file='WaveFunction1.def',form='formatted')
+open(150,file='QD-s.def',form='formatted')
 read(150,NML=outputs)
 read(150,NML=elecSt)
 read(150,NML=syst)

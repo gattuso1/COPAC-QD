@@ -1,7 +1,10 @@
 *.log
 *.o
 *.mod
-*.50
+fort*
 *.dat
-WaveFunction1
+QD-s
 QD-range.f90
+make*
+gnu*
+*eps
