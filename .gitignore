@@ -8,6 +8,5 @@ QD-s
 *.def
 WaveFunctiond
 QD-range.f90
-make*
 gnu*
 *eps

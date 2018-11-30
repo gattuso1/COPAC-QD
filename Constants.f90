@@ -5,7 +5,7 @@ implicit none
    real(dp), parameter :: pi = 4.d0*datan(1.d0)
    real(dp), parameter :: h  = 6.62607004d-34
    real(dp), parameter :: hbar  = h/(2*pi)
-   real(dp), parameter :: c  = 299792458
+   real(dp), parameter :: cl  = 299792458
    real(dp), parameter :: eps0  = 8.85418781762d-12
    real(dp), parameter :: elec  = 1.60217662d-19
    real(dp), parameter :: m0  = 9.10938356d-31
