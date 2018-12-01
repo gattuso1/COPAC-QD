@@ -72,8 +72,6 @@ allocate(Oscillator_Ana_h2e(rmax+1))
 allocate(ExctCoef_h1e(rmax+1))
 allocate(ExctCoef_h2e(rmax+1))
 
-open(11,file='Eh1e.dat')
-open(12,file='Eh2e.dat')
 open(13,file='wavefunctionA.dat')
 open(14,file='wavefunctionB.dat')
 open(15,file='radialdisA.dat')
@@ -339,6 +337,10 @@ open(25,file='Popc.dat')
 open(26,file='Norm.dat')
 open(27,file='TransHam.dat')
 
+write(21,'("#     Number                  QDA                       QDB                    linker")')
+write(27,'("#     Number                  QDA                       QDB                    linker")')
+write(22,'("#  time                      pulse1                    pulse2                    pulse3")')
+
 do t=0,ntime
 
 xtime = dcmplx(t*timestep,0.0)
@@ -349,7 +351,24 @@ write(22,*) real(xtime) , real(pulse1 * xEd * cos(xomega*(xtime-xt01)+xphase) * 
 
 enddo
 
+if ( aA .ne. aB ) then
+rmax = nsys
+endif 
+
+call cpu_time(start)
+
 do n=rmin,rmax
+
+write(6,*) "Treating dimer number:    ", n
+
+if ( vers .eq. 'randm' ) then
+write(popc,'(a5,i5.5,a4)') 'Popc-', n, '.dat'
+write(hmti,'(a5,i5.5,a4)') 'Hamt-', n, '.dat'
+write(norm,'(a5,i5.5,a4)') 'Norm-', n, '.dat'
+open(44,file=popc)
+open(45,file=hmti)
+open(46,file=norm)
+endif
 
 Ham      = 0.0
 TransHam = 0.0
@@ -372,24 +391,22 @@ elseif ( aA .ne. aB ) then
 call make_Ham_he
 TransHam(0,1) = TransDip_Ana_h1e(n)
 TransHam(0,2) = TransDip_Ana_h2e(n)
-TransHam(0,3) = TransDip_Ana_h1e(n)
-TransHam(0,4) = TransDip_Ana_h2e(n)
-TransHam(0,5) = TransDip_Fit_h1e_he(aR(n),aR(n+1))*1d-33
-TransHam(0,6) = TransDip_Fit_h2e_he(aR(n),aR(n+1))*1d-33
-TransHam(0,7) = TransDip_Fit_h1e_he(aR(n),aR(n+1))*1d-33
-TransHam(0,8) = TransDip_Fit_h2e_he(aR(n),aR(n+1))*1d-33
+TransHam(0,3) = TransDip_Ana_h1e(n+nsys)
+TransHam(0,4) = TransDip_Ana_h2e(n+nsys)
+TransHam(0,5) = TransDip_Fit_h1e_he(aR(n),aR(n+nsys))*1d-33
+TransHam(0,6) = TransDip_Fit_h2e_he(aR(n),aR(n+nsys))*1d-33
+TransHam(0,7) = TransDip_Fit_h1e_he(aR(n),aR(n+nsys))*1d-33
+TransHam(0,8) = TransDip_Fit_h2e_he(aR(n),aR(n+nsys))*1d-33
 do i=1,nstates-1
 TransHam(i,0) = TransHam(0,i)
 enddo
 
 endif
 
-if ( ( vers .eq. "rdmho" ) .or. ( vers .eq. "rdmhe" ) ) then
+if ( vers .eq. "randm" ) then
 
-write(21,*) "# Number QDA QDB linker"
-write(21,*) n , aR(n), aR(n), linker(n)
-write(27,*) "# Number QDA QDB linker"
-write(27,*) n , aR(n), aR(n), linker(n)
+write(21,*) n , aR(n), aR(n+nsys), linker(n)
+write(27,*) n , aR(n), aR(n+nsys), linker(n)
 
 do i=0,nstates-1
 write(21,'(9es14.6e2)') (real(Ham(i,j)), j=0,nstates-1)
@@ -422,13 +439,12 @@ xc0 = dcmplx(c0,0.0)
 xc = 0.0
 xc(:,0) = xc0(:)
 
-if ( vers .eq. "dimer" ) then
-
+if ( hamilt .eq. "y" ) then
 do t=0,ntime
  
 xtime = dcmplx(t*timestep,0.0)
 
-write(23,*) real(xtime)
+write(45,*) real(xtime)
 
 do i=0,nstates-1
    do j=0,nstates-1
@@ -440,12 +456,10 @@ xHamt(i,j,t)  = xHam(i,j) - pulse1 * xTransHam(i,j) * xEd * cos(xomega*(xtime-xt
                                                             exp(-1.0*(xtime-xt03)**2/(2*(xwidth**2)))
 enddo
 
-write(23,'(9es14.6e2)') (real(xHamt(i,k,t)), k=0,nstates-1)
+write(45,'(9es14.6e2)') (real(xHamt(i,k,t)), k=0,nstates-1)
 
 enddo
-
-write(23,*) 
-
+write(45,*) 
 enddo
 
 endif
@@ -513,21 +527,30 @@ xc(i,t+1) = xc(i,t)+(xh/6)*(k1(i)+2*k2(i)+2*k3(i)+k4(i))
 enddo
 
 !!!NORM
-!write(26,*) real(xtime), &
-!real(xc(1,t))**2+aimag(xc(1,t))**2+real(xc(2,t))**2+aimag(xc(2,t))**2+real(xc(3,t))**2+aimag(xc(3,t))**2+&
-!real(xc(4,t))**2+aimag(xc(4,t))**2+real(xc(5,t))**2+aimag(xc(5,t))**2+real(xc(6,t))**2+aimag(xc(6,t))**2+&
-!real(xc(7,t))**2+aimag(xc(7,t))**2+real(xc(8,t))**2+aimag(xc(8,t))**2+real(xc(0,t))**2+aimag(xc(0,t))**2
-!
-!!!!!POPULATIONS
-!write(25,*) real(xtime), real(xc(0,t))**2+aimag(xc(0,t))**2, real(xc(1,t))**2+aimag(xc(1,t))**2,&
-!                         real(xc(2,t))**2+aimag(xc(2,t))**2, real(xc(3,t))**2+aimag(xc(3,t))**2,&
-!                         real(xc(4,t))**2+aimag(xc(4,t))**2, real(xc(5,t))**2+aimag(xc(5,t))**2,&
-!                         real(xc(6,t))**2+aimag(xc(6,t))**2, real(xc(7,t))**2+aimag(xc(7,t))**2,&
-!                         real(xc(8,t))**2+aimag(xc(8,t))**2
+write(46,*) real(xtime), &
+real(xc(1,t))**2+aimag(xc(1,t))**2+real(xc(2,t))**2+aimag(xc(2,t))**2+real(xc(3,t))**2+aimag(xc(3,t))**2+&
+real(xc(4,t))**2+aimag(xc(4,t))**2+real(xc(5,t))**2+aimag(xc(5,t))**2+real(xc(6,t))**2+aimag(xc(6,t))**2+&
+real(xc(7,t))**2+aimag(xc(7,t))**2+real(xc(8,t))**2+aimag(xc(8,t))**2+real(xc(0,t))**2+aimag(xc(0,t))**2
+
+!!!!POPULATIONS
+write(44,*) real(xtime), real(xc(0,t))**2+aimag(xc(0,t))**2, real(xc(1,t))**2+aimag(xc(1,t))**2,&
+                         real(xc(2,t))**2+aimag(xc(2,t))**2, real(xc(3,t))**2+aimag(xc(3,t))**2,&
+                         real(xc(4,t))**2+aimag(xc(4,t))**2, real(xc(5,t))**2+aimag(xc(5,t))**2,&
+                         real(xc(6,t))**2+aimag(xc(6,t))**2, real(xc(7,t))**2+aimag(xc(7,t))**2,&
+                         real(xc(8,t))**2+aimag(xc(8,t))**2
 
 enddo
 
+close(44)
+close(45)
+close(46)
+
 enddo
+
+
+call cpu_time(finish)
+
+write(6,*) finish - start
 
 endif
 
@@ -541,8 +564,8 @@ elseif ( vers .eq. 'randm') then
 call makeOutputRandm
 endif
 
-call system("mkdir output-`date +%x | sed 's/\//-/g'`-`date +%r | sed 's/:/-/g'`")
-call system("'mv *dat `ls -lrth output-* | tail -n 1 | awk '{print $9}'`")
+!call system("mkdir output-`date +%x | sed 's/\//-/g'`-`date +%r | sed 's/:/-/g'`")
+!call system("mv *dat `ls -lrth | tail -n 1 | awk '{print $9}'`")
 
 deallocate(E,diffe,diffh,minEe,minEh)
 

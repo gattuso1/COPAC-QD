@@ -5,7 +5,8 @@ use Constants
 implicit none
 
    character*5 :: vers
-   character*1 :: o_Norm, o_Over, o_Coul, o_DipS, o_Osci, o_Exti, o_DipD, dyn
+   character*64 :: popc, hmti, norm
+   character*1 :: o_Norm, o_Over, o_Coul, o_DipS, o_Osci, o_Exti, o_DipD, dyn, hamilt
    integer :: ndots, n, rmin, rmax, nsys, npulses, nstates, ntime, i, j, t
    real(dp) :: aA, aB, me, mh, eps, epsout, V0, omegaLO, rhoe, rhoh, slope, V0eV, minr, maxr, rsteps, side
    real(dp) :: dispQD, displink, rdmlinker, rdmQDA, rdmQDB, link, t01, t02, t03, timestep, totaltime, omega, phase, width, Ed
@@ -26,7 +27,7 @@ contains
 subroutine getVariables
 
 NAMELIST /version/ vers
-NAMELIST /outputs/ o_Norm,o_Over,o_Coul,o_DipS,o_Osci,o_Exti,o_DipD,dyn
+NAMELIST /outputs/ o_Norm,o_Over,o_Coul,o_DipS,o_Osci,o_Exti,o_DipD,dyn,hamilt
 NAMELIST /elecSt/ me,mh,eps,epsout,V0eV,omegaLO,slope,side
 NAMELIST /pulses/ nstates,npulses,t01,t02,t03,timestep,totaltime,omega,phase,width,Ed
 NAMELIST /syst_single/ aA
@@ -50,8 +51,6 @@ if ( dyn .eq. 'y' ) then
 
 rewind 150
 read(150,NML=pulses)
-
-
 
 xhbar      = dcmplx(hbar,0.0)
 xh         = dcmplx(timestep,0.0)
@@ -97,6 +96,11 @@ pulse2 = 0.0
 pulse3 = 0.0
 endif
 
+endif
+
+if ( vers .eq. 'randm' ) then
+rewind 150
+read(150,NML=syst_random)
 endif
 
 
@@ -175,9 +179,6 @@ enddo
 
 else if ( ( vers .eq. 'randm' ) .and. ( aA .eq. aB ) ) then
 
-rewind 150
-read(150,NML=syst_random)
-
 allocate(aR(nsys))
 allocate(linker(nsys))
 allocate(epsin(nsys))
@@ -203,10 +204,7 @@ V0e(n)=-1*(-3.49+2.47*(1d9*2*aR(n))**(-1.32))*elec
 V0h(n)=-1*(-5.23-0.74*(1d9*2*aR(n))**(-0.95))*elec
 enddo
 
-else if ( ( vers .eq. 'randm' ) .and. ( aA .eq. aB ) ) then
-
-rewind 150
-read(150,NML=syst_random)
+else if ( ( vers .eq. 'randm' ) .and. ( aA .ne. aB ) ) then
 
 allocate(aR(2*nsys))
 allocate(linker(2*nsys))
@@ -215,26 +213,29 @@ allocate(epsR(2*nsys))
 allocate(V0e(2*nsys))
 allocate(V0h(2*nsys))
 
+linker = link
+
 call random_seed()
-linker(:) = link
 
 rmin = 1
-rmax = nsys
+rmax = 2*nsys
 
-do n = 1,2*nsys
-   if ( n .le. nsys ) then 
-      call random_number(rdmQDA)
-      rdmQDA    = 2*(rdmQDA-0.5)
-      aR(n)     = (rdmQDA)*dispQD*aA+aA
-   elseif ( n .gt. nsys ) then
-      call random_number(rdmQDB)
-      rdmQDB    = 2*(rdmQDB-0.5)
-      aR(n+nsys)= (rdmQDB)*dispQD*aB+aB
-   endif
+do n = 1,nsys
+call random_number(rdmQDA)
+call random_number(rdmQDB)
+rdmQDA    = 2*(rdmQDA-0.5)
+rdmQDB    = 2*(rdmQDB-0.5)
+aR(n)     = (rdmQDA)*dispQD*aA+aA
+aR(n+nsys)= (rdmQDB)*dispQD*aB+aB
 epsin(n) = 1.0 + (eps - 1.0) / (1.0 + (0.75d-9/(2*aR(n)))**1.2)
+epsin(n+nsys) = 1.0 + (eps - 1.0) / (1.0 + (0.75d-9/(2*aR(n+nsys)))**1.2)
 epsR(n)= 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-(36/35)*aR(n)/rhoe)+exp(-(36/35)*aR(n)/rhoh))/2))
+epsR(n+nsys)= 1.0/((1.0/epsin(n+nsys))-((1.0/epsin(n+nsys))-(1.0/(epsin(n+nsys)+3.5)))*&
+                  (1-(exp(-(36/35)*aR(n+nsys)/rhoe)+exp(-(36/35)*aR(n+nsys)/rhoh))/2))
 V0e(n)=-1*(-3.49+2.47*(1d9*2*aR(n))**(-1.32))*elec
+V0e(n+nsys)=-1*(-3.49+2.47*(1d9*2*aR(n+nsys))**(-1.32))*elec
 V0h(n)=-1*(-5.23-0.74*(1d9*2*aR(n))**(-0.95))*elec
+V0h(n+nsys)=-1*(-5.23-0.74*(1d9*2*aR(n+nsys))**(-0.95))*elec
 enddo
 
 endif 

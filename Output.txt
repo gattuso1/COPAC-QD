@@ -1,30 +1,22 @@
- Random homodimers
+ Random heterodimers
 
 
  The process has generated the following files:
 
- Dimers.dat
-          contains radius QDA, radius QDA, linker length
- Etransitions.dat
-          contains radius QDA, radius QDA, linker length, energy transition h1e, energy transition h2e
- Ham0.dat
-          contains Hamiltonian of 0th order
- Pulse.dat
-          contains the pulse(s)
- TransHam.dat
-          contains the transition dipole moment matrix elements
- Hamt.dat
-          contains the time dependent Hamiltonian
- Popc.dat
-          contains the population evolution of each state |c**2(t)|
- Norm.dat
-          contains the time dependent norm
+Dimers.dat            contains radius QDA, radius QDB, linker length
+Etransitions.dat      contains radius QDA, radius QDB, linker length, Eh1e, Eh2e
+Ham0.dat              contains Hamiltonian of 0th order
+Pulse.dat             contains the pulse(s)
+TransHam.dat          contains the transition dipole moment matrix elements
+Hamt.dat              contains the time dependent Hamiltonian of dimer n
+Popc.dat              contains the population evolution of each state |c**2(t)| of dimer n
+Norm.dat              contains the time dependent norm of dimer n
 
 
 
  The initial parameters are:
 
-Number of dimers                     :   10
+Number of dimers                     :    5
 Average radius of QDA                :  0.0000
 Average radius of QDB                :  0.0000
 Average length of linker             :  0.0000
@@ -43,7 +35,7 @@ Number of states        :   9
 Number of pulses        :   1
 t0 of pulse             :   5.000000E-15
 Time step               :   2.000000E-17
-Time length of dynamic  :   5.000000E-14
+Time length of dynamic  :   5.000000E-13
 Omega                   :   3.600000E+15
 Phase                   :   3.141593E+00
 Width                   :   5.000000E-16

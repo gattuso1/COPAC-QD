@@ -179,11 +179,22 @@ open(60,file='Output.txt',form='formatted')
 open(40,file="Dimer.dat")
 open(11,file='Etransitions.dat')
 
+write(40,'("#     Number                  QDA                       QDB                    linker")')
+if ( aA .eq. aB) then
+write(11,'(a12,18x,a3,23x,a3,20x,a6,22x,a4,22x,a4)') "#     Number", "QDA", "QDB", "linker", "Eh1e", "Eh2e"
+else if ( aA .ne. aB) then
+write(11,'(a12,18x,a3,23x,a3,20x,a6,22x,a4,21x,a5,21x,a5,21x,a5)') "#     Number", "QDA", "QDB", "linker", "Eh1eA", "Eh2eA", &
+                                                                   "Eeh1B", "Eeh2B"
+endif
+
 do n = rmin, rmax
-write(40,*) "# Number QDA QDB linker"
+if ( aA .eq. aB) then
 write(40,*) n, aR(n), aR(n), linker(n)
-write(11,*) "# Number QDA QDB linker Eh1e Eh2e"
 write(11,*) n, aR(n), aR(n), linker(n), Eeh1(n), Eeh2(n)
+else if ( aA .ne. aB) then
+write(40,*) n, aR(n), aR(n+nsys), linker(n)
+write(11,*) n, aR(n), aR(n+nsys), linker(n), Eeh1(n), Eeh2(n), Eeh1(n+nsys), Eeh2(n+nsys)
+endif
 enddo
 
 if ( ( vers .eq. 'randm' ) .and. ( aA .eq. aB ) ) then
@@ -200,9 +211,9 @@ write(60,'("Etransitions.dat      contains radius QDA, radius QDB, linker length
 write(60,'("Ham0.dat              contains Hamiltonian of 0th order")')
 write(60,'("Pulse.dat             contains the pulse(s)")')
 write(60,'("TransHam.dat          contains the transition dipole moment matrix elements")')
-write(60,'("Hamt.dat              contains the time dependent Hamiltonian")')
-write(60,'("Popc.dat              contains the population evolution of each state |c**2(t)|")')
-write(60,'("Norm.dat              contains the time dependent norm")')
+write(60,'("Hamt.dat              contains the time dependent Hamiltonian of dimer n")')
+write(60,'("Popc.dat              contains the population evolution of each state |c**2(t)| of dimer n")')
+write(60,'("Norm.dat              contains the time dependent norm of dimer n")')
 write(60,*)
 write(60,*)
 write(60,*)

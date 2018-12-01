@@ -4,9 +4,9 @@ fort*
 *.mod
 fort*
 *.dat
-QD-s
+QD_quest
 *.def
-WaveFunctiond
-QD-range.f90
 gnu*
 *eps
+output-*
+*txt
