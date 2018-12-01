@@ -71,11 +71,6 @@ allocate(Oscillator_Ana_h1e(rmax+1))
 allocate(Oscillator_Ana_h2e(rmax+1))
 allocate(ExctCoef_h1e(rmax+1))
 allocate(ExctCoef_h2e(rmax+1))
-!allocate((rmax+1))
-!allocate((rmax+1))
-!allocate((rmax+1))
-!allocate((rmax+1))
-!allocate((rmax+1))
 
 open(11,file='Eh1e.dat')
 open(12,file='Eh2e.dat')
@@ -83,8 +78,6 @@ open(13,file='wavefunctionA.dat')
 open(14,file='wavefunctionB.dat')
 open(15,file='radialdisA.dat')
 open(16,file='radialdisB.dat')
-open(17,file='TransDip-local.dat')
-open(18,file='TransDip-CT.dat')
 
 k=1
 
@@ -342,21 +335,33 @@ if ( dyn .eq. 'y' ) then
 open(21,file='Ham0.dat')
 open(22,file='Pulse.dat')
 open(23,file='Hamt.dat')
-open(24,file='Realc.dat')
 open(25,file='Popc.dat')
 open(26,file='Norm.dat')
+open(27,file='TransHam.dat')
+
+do t=0,ntime
+
+xtime = dcmplx(t*timestep,0.0)
+
+write(22,*) real(xtime) , real(pulse1 * xEd * cos(xomega*(xtime-xt01)+xphase) * exp(-1.0*(xtime-xt01)**2/(2*(xwidth**2)))) , &
+                          real(pulse2 * xEd * cos(xomega*(xtime-xt02)+xphase) * exp(-1.0*(xtime-xt02)**2/(2*(xwidth**2)))) , &
+                          real(pulse3 * xEd * cos(xomega*(xtime-xt03)+xphase) * exp(-1.0*(xtime-xt03)**2/(2*(xwidth**2))))
+
+enddo
+
+do n=rmin,rmax
 
 Ham      = 0.0
 TransHam = 0.0
 
 if ( aA .eq. aB ) then
 call make_Ham_ho
-TransHam(0,1) = TransDip_Ana_h1e(1)
-TransHam(0,2) = TransDip_Ana_h2e(2)
+TransHam(0,1) = TransDip_Ana_h1e(n)
+TransHam(0,2) = TransDip_Ana_h2e(n)
 TransHam(0,3) = TransHam(0,1)
 TransHam(0,4) = TransHam(0,2)
-TransHam(0,5) = TransDip_Fit_h1e_ho(aR(1),link)*1d-33
-TransHam(0,6) = TransDip_Fit_h2e_ho(aR(2),link)*1d-33
+TransHam(0,5) = TransDip_Fit_h1e_ho(aR(n),link)*1d-33
+TransHam(0,6) = TransDip_Fit_h2e_ho(aR(n),link)*1d-33
 TransHam(0,7) = TransHam(0,5)
 TransHam(0,8) = TransHam(0,6)
 do i=1,nstates-1
@@ -365,27 +370,39 @@ enddo
 
 elseif ( aA .ne. aB ) then
 call make_Ham_he
-TransHam(0,1) = TransDip_Ana_h1e(1)
-TransHam(0,2) = TransDip_Ana_h2e(1)
-TransHam(0,3) = TransDip_Ana_h1e(2)
-TransHam(0,4) = TransDip_Ana_h2e(2)
-TransHam(0,5) = TransDip_Fit_h1e_he(aR(1),aR(2))*1d-33
-TransHam(0,6) = TransDip_Fit_h2e_he(aR(1),aR(2))*1d-33
-TransHam(0,7) = TransDip_Fit_h1e_he(aR(1),aR(2))*1d-33
-TransHam(0,8) = TransDip_Fit_h2e_he(aR(1),aR(2))*1d-33
+TransHam(0,1) = TransDip_Ana_h1e(n)
+TransHam(0,2) = TransDip_Ana_h2e(n)
+TransHam(0,3) = TransDip_Ana_h1e(n)
+TransHam(0,4) = TransDip_Ana_h2e(n)
+TransHam(0,5) = TransDip_Fit_h1e_he(aR(n),aR(n+1))*1d-33
+TransHam(0,6) = TransDip_Fit_h2e_he(aR(n),aR(n+1))*1d-33
+TransHam(0,7) = TransDip_Fit_h1e_he(aR(n),aR(n+1))*1d-33
+TransHam(0,8) = TransDip_Fit_h2e_he(aR(n),aR(n+1))*1d-33
 do i=1,nstates-1
 TransHam(i,0) = TransHam(0,i)
 enddo
 
 endif
 
-!do i=0,nstates-1
-!write(21,'(9es14.6e2)') (real(Ham(i,j)), j=0,nstates-1)
-!enddo
-!
-!do i=0,nstates-1
-!write(6,'(9es14.6e2)') (real(TransHam(i,j)), j=0,nstates-1)
-!enddo
+if ( ( vers .eq. "rdmho" ) .or. ( vers .eq. "rdmhe" ) ) then
+
+write(21,*) "# Number QDA QDB linker"
+write(21,*) n , aR(n), aR(n), linker(n)
+write(27,*) "# Number QDA QDB linker"
+write(27,*) n , aR(n), aR(n), linker(n)
+
+do i=0,nstates-1
+write(21,'(9es14.6e2)') (real(Ham(i,j)), j=0,nstates-1)
+enddo
+
+do i=0,nstates-1
+write(27,'(9es14.6e2)') (real(TransHam(i,j)), j=0,nstates-1)
+enddo
+
+write(21,*) 
+write(27,*) 
+
+endif
 
 !!!!!INITIAL POPULATIONS
 c0(0) = 1.0
@@ -404,9 +421,8 @@ xTransHam = dcmplx(TransHam,0.0)
 xc0 = dcmplx(c0,0.0)
 xc = 0.0
 xc(:,0) = xc0(:)
-xt01 = dcmplx(t01,0.0)
-xt02 = dcmplx(t02,0.0)
-xt03 = dcmplx(t03,0.0)
+
+if ( vers .eq. "dimer" ) then
 
 do t=0,ntime
  
@@ -416,9 +432,12 @@ write(23,*) real(xtime)
 
 do i=0,nstates-1
    do j=0,nstates-1
-xHamt(i,j,t)  = xHam(i,j) - xTransHam(i,j) * xEd * cos(xomega*(xtime-xt01)+xphase) * exp(-1.0*(xtime-xt01)**2/(2*(xwidth**2))) &
-                          - xTransHam(i,j) * xEd * cos(xomega*(xtime-xt01)+xphase) * exp(-1.0*(xtime-xt02)**2/(2*(xwidth**2))) &
-                          - xTransHam(i,j) * xEd * cos(xomega*(xtime-xt01)+xphase) * exp(-1.0*(xtime-xt03)**2/(2*(xwidth**2)))
+xHamt(i,j,t)  = xHam(i,j) - pulse1 * xTransHam(i,j) * xEd * cos(xomega*(xtime-xt01)+xphase) * &
+                                                            exp(-1.0*(xtime-xt01)**2/(2*(xwidth**2))) &
+                          - pulse2 * xTransHam(i,j) * xEd * cos(xomega*(xtime-xt01)+xphase) * &
+                                                            exp(-1.0*(xtime-xt02)**2/(2*(xwidth**2))) &
+                          - pulse3 * xTransHam(i,j) * xEd * cos(xomega*(xtime-xt01)+xphase) * &
+                                                            exp(-1.0*(xtime-xt03)**2/(2*(xwidth**2)))
 enddo
 
 write(23,'(9es14.6e2)') (real(xHamt(i,k,t)), k=0,nstates-1)
@@ -429,13 +448,11 @@ write(23,*)
 
 enddo
 
+endif
+
 do t=0,ntime
 
 xtime = dcmplx(t*timestep,0.0)
-
-write(22,*) real(xtime) , real(xEd * cos(xomega*(xtime-xt01)+xphase) * exp(-1.0*(xtime-xt01)**2/(2*(xwidth**2)))) , &
-                          real(xEd * cos(xomega*(xtime-xt02)+xphase) * exp(-1.0*(xtime-xt02)**2/(2*(xwidth**2)))) , &
-                          real(xEd * cos(xomega*(xtime-xt03)+xphase) * exp(-1.0*(xtime-xt03)**2/(2*(xwidth**2)))) 
 
 k1 =dcmplx(0.0,0.0)
 k2 =dcmplx(0.0,0.0)
@@ -445,9 +462,9 @@ k4 =dcmplx(0.0,0.0)
 do i=0,nstates-1
 do j=0,nstates-1
 k1(i) = k1(i) + (-1.0)*(im/xhbar)*&
-(xHam(i,j) - xTransHam(i,j) * xEd * cos(xomega*(xtime-xt01)+xphase) * exp(-1.0*(xtime-xt01)**2/(2*(xwidth**2))) - &
-             xTransHam(i,j) * xEd * cos(xomega*(xtime-xt02)+xphase) * exp(-1.0*(xtime-xt02)**2/(2*(xwidth**2))) - &
-             xTransHam(i,j) * xEd * cos(xomega*(xtime-xt03)+xphase) * exp(-1.0*(xtime-xt03)**2/(2*(xwidth**2))))*&
+(xHam(i,j) - pulse1 * xTransHam(i,j) * xEd * cos(xomega*(xtime-xt01)+xphase) * exp(-1.0*(xtime-xt01)**2/(2*(xwidth**2))) - &
+             pulse2 * xTransHam(i,j) * xEd * cos(xomega*(xtime-xt02)+xphase) * exp(-1.0*(xtime-xt02)**2/(2*(xwidth**2))) - &
+             pulse3 * xTransHam(i,j) * xEd * cos(xomega*(xtime-xt03)+xphase) * exp(-1.0*(xtime-xt03)**2/(2*(xwidth**2))))*&
 xc(j,t)
 enddo
 enddo
@@ -455,9 +472,12 @@ enddo
 do i=0,nstates-1
 do j=0,nstates-1
 k2(i) = k2(i) + (-1.0)*(im/xhbar)*&
-(xHam(i,j) - xTransHam(i,j) * xEd * cos(xomega*((xtime-xt01)+xh/2)+xphase) * exp(-1.0*((xtime+xh/2)-xt01)**2/(2*(xwidth)**2)) - &
-             xTransHam(i,j) * xEd * cos(xomega*((xtime-xt02)+xh/2)+xphase) * exp(-1.0*((xtime+xh/2)-xt02)**2/(2*(xwidth)**2)) - &
-             xTransHam(i,j) * xEd * cos(xomega*((xtime-xt03)+xh/2)+xphase) * exp(-1.0*((xtime+xh/2)-xt03)**2/(2*(xwidth)**2)))*&
+(xHam(i,j) - pulse1 * xTransHam(i,j) * xEd * cos(xomega*((xtime-xt01)+xh/2)+xphase) * & 
+                                             exp(-1.0*((xtime+xh/2)-xt01)**2/(2*(xwidth)**2)) - &
+             pulse2 * xTransHam(i,j) * xEd * cos(xomega*((xtime-xt02)+xh/2)+xphase) * &
+                                             exp(-1.0*((xtime+xh/2)-xt02)**2/(2*(xwidth)**2)) - &
+             pulse3 * xTransHam(i,j) * xEd * cos(xomega*((xtime-xt03)+xh/2)+xphase) * & 
+                                             exp(-1.0*((xtime+xh/2)-xt03)**2/(2*(xwidth)**2)))*&
 (xc(j,t)+(xh/2)*k1(j))
 enddo
 enddo
@@ -465,9 +485,12 @@ enddo
 do i=0,nstates-1
 do j=0,nstates-1
 k3(i) = k3(i) + (-1.0)*(im/xhbar)*&
-(xHam(i,j) - xTransHam(i,j) * xEd * cos(xomega*((xtime-xt01)+xh/2)+xphase) * exp(-1.0*((xtime+xh/2)-xt01)**2/(2*(xwidth)**2)) - &
-             xTransHam(i,j) * xEd * cos(xomega*((xtime-xt02)+xh/2)+xphase) * exp(-1.0*((xtime+xh/2)-xt02)**2/(2*(xwidth)**2)) - &
-             xTransHam(i,j) * xEd * cos(xomega*((xtime-xt03)+xh/2)+xphase) * exp(-1.0*((xtime+xh/2)-xt03)**2/(2*(xwidth)**2)))*&
+(xHam(i,j) - pulse1 * xTransHam(i,j) * xEd * cos(xomega*((xtime-xt01)+xh/2)+xphase) * &
+                                             exp(-1.0*((xtime+xh/2)-xt01)**2/(2*(xwidth)**2)) - &
+             pulse2 * xTransHam(i,j) * xEd * cos(xomega*((xtime-xt02)+xh/2)+xphase) * &
+                                             exp(-1.0*((xtime+xh/2)-xt02)**2/(2*(xwidth)**2)) - &
+             pulse3 * xTransHam(i,j) * xEd * cos(xomega*((xtime-xt03)+xh/2)+xphase) * &
+                                             exp(-1.0*((xtime+xh/2)-xt03)**2/(2*(xwidth)**2)))*&
 (xc(j,t)+(xh/2)*k2(j))
 enddo
 enddo
@@ -475,9 +498,12 @@ enddo
 do i=0,nstates-1
 do j=0,nstates-1
 k4(i) = k4(i) + (-1.0)*(im/xhbar)*&
-(xHam(i,j) - xTransHam(i,j) * xEd * cos(xomega*((xtime-xt01)+xh)+xphase) * exp(-1.0*((xtime+xh)-xt01)**2/(2*(xwidth)**2)) - &
-             xTransHam(i,j) * xEd * cos(xomega*((xtime-xt02)+xh)+xphase) * exp(-1.0*((xtime+xh)-xt02)**2/(2*(xwidth)**2)) -&
-             xTransHam(i,j) * xEd * cos(xomega*((xtime-xt03)+xh)+xphase) * exp(-1.0*((xtime+xh)-xt03)**2/(2*(xwidth)**2)))*&
+(xHam(i,j) - pulse1 * xTransHam(i,j) * xEd * cos(xomega*((xtime-xt01)+xh)+xphase) * &
+                                             exp(-1.0*((xtime+xh)-xt01)**2/(2*(xwidth)**2)) - &
+             pulse2 * xTransHam(i,j) * xEd * cos(xomega*((xtime-xt02)+xh)+xphase) * &
+                                             exp(-1.0*((xtime+xh)-xt02)**2/(2*(xwidth)**2)) -&
+             pulse3 * xTransHam(i,j) * xEd * cos(xomega*((xtime-xt03)+xh)+xphase) * &
+                                             exp(-1.0*((xtime+xh)-xt03)**2/(2*(xwidth)**2)))*&
 (xc(j,t)+xh*k3(j))
 enddo
 enddo
@@ -487,17 +513,19 @@ xc(i,t+1) = xc(i,t)+(xh/6)*(k1(i)+2*k2(i)+2*k3(i)+k4(i))
 enddo
 
 !!!NORM
-write(26,*) real(xtime), &
-real(xc(1,t))**2+aimag(xc(1,t))**2+real(xc(2,t))**2+aimag(xc(2,t))**2+real(xc(3,t))**2+aimag(xc(3,t))**2+&
-real(xc(4,t))**2+aimag(xc(4,t))**2+real(xc(5,t))**2+aimag(xc(5,t))**2+real(xc(6,t))**2+aimag(xc(6,t))**2+&
-real(xc(7,t))**2+aimag(xc(7,t))**2+real(xc(8,t))**2+aimag(xc(8,t))**2+real(xc(0,t))**2+aimag(xc(0,t))**2
+!write(26,*) real(xtime), &
+!real(xc(1,t))**2+aimag(xc(1,t))**2+real(xc(2,t))**2+aimag(xc(2,t))**2+real(xc(3,t))**2+aimag(xc(3,t))**2+&
+!real(xc(4,t))**2+aimag(xc(4,t))**2+real(xc(5,t))**2+aimag(xc(5,t))**2+real(xc(6,t))**2+aimag(xc(6,t))**2+&
+!real(xc(7,t))**2+aimag(xc(7,t))**2+real(xc(8,t))**2+aimag(xc(8,t))**2+real(xc(0,t))**2+aimag(xc(0,t))**2
+!
+!!!!!POPULATIONS
+!write(25,*) real(xtime), real(xc(0,t))**2+aimag(xc(0,t))**2, real(xc(1,t))**2+aimag(xc(1,t))**2,&
+!                         real(xc(2,t))**2+aimag(xc(2,t))**2, real(xc(3,t))**2+aimag(xc(3,t))**2,&
+!                         real(xc(4,t))**2+aimag(xc(4,t))**2, real(xc(5,t))**2+aimag(xc(5,t))**2,&
+!                         real(xc(6,t))**2+aimag(xc(6,t))**2, real(xc(7,t))**2+aimag(xc(7,t))**2,&
+!                         real(xc(8,t))**2+aimag(xc(8,t))**2
 
-!!!!POPULATIONS
-write(25,*) real(xtime), real(xc(0,t))**2+aimag(xc(0,t))**2, real(xc(1,t))**2+aimag(xc(1,t))**2,&
-                         real(xc(2,t))**2+aimag(xc(2,t))**2, real(xc(3,t))**2+aimag(xc(3,t))**2,&
-                         real(xc(4,t))**2+aimag(xc(4,t))**2, real(xc(5,t))**2+aimag(xc(5,t))**2,&
-                         real(xc(6,t))**2+aimag(xc(6,t))**2, real(xc(7,t))**2+aimag(xc(7,t))**2,&
-                         real(xc(8,t))**2+aimag(xc(8,t))**2
+enddo
 
 enddo
 
@@ -509,11 +537,12 @@ elseif ( vers .eq. 'dimer') then
 call makeOutputDimer
 elseif ( vers .eq. 'range') then
 call makeOutputRange
-elseif ( vers .eq. 'rdmho') then
-call makeOutputRdmho
-elseif ( vers .eq. 'rdmhe') then
-call makeOutputRdmhe
+elseif ( vers .eq. 'randm') then
+call makeOutputRandm
 endif
+
+call system("mkdir output-`date +%x | sed 's/\//-/g'`-`date +%r | sed 's/:/-/g'`")
+call system("'mv *dat `ls -lrth output-* | tail -n 1 | awk '{print $9}'`")
 
 deallocate(E,diffe,diffh,minEe,minEh)
 

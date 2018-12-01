@@ -1,0 +1,51 @@
+ Random homodimers
+
+
+ The process has generated the following files:
+
+ Dimers.dat
+          contains radius QDA, radius QDA, linker length
+ Etransitions.dat
+          contains radius QDA, radius QDA, linker length, energy transition h1e, energy transition h2e
+ Ham0.dat
+          contains Hamiltonian of 0th order
+ Pulse.dat
+          contains the pulse(s)
+ TransHam.dat
+          contains the transition dipole moment matrix elements
+ Hamt.dat
+          contains the time dependent Hamiltonian
+ Popc.dat
+          contains the population evolution of each state |c**2(t)|
+ Norm.dat
+          contains the time dependent norm
+
+
+
+ The initial parameters are:
+
+Number of dimers                     :   10
+Average radius of QDA                :  0.0000
+Average radius of QDB                :  0.0000
+Average length of linker             :  0.0000
+Size dispersion of QDA radius        :  0.0500
+Length dispersion of linker          :  0.0500
+Electron effective mass              :  0.0000 m0
+Hole effective mass                  :  0.0000 m0
+Bulk dielectric constant             :  9.5600
+Ligands dielectric constant          :  2.3000
+Bulk band gap                        :  1.7500
+
+
+ The initial parameters of the dynamic are:
+
+Number of states        :   9
+Number of pulses        :   1
+t0 of pulse             :   5.000000E-15
+Time step               :   2.000000E-17
+Time length of dynamic  :   5.000000E-14
+Omega                   :   3.600000E+15
+Phase                   :   3.141593E+00
+Width                   :   5.000000E-16
+Power                   :   5.142000E+08
+

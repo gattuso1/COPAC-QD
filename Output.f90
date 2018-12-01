@@ -9,8 +9,9 @@ contains
 
 subroutine makeOutputSingle
 
+open(60,file='Output.txt',form='formatted')
+
 if ( vers .eq. 'singl') then
-open(60,file='Output_dimer.txt',form='formatted')
 
 write(60,*) "Single QD"
 write(60,*) 
@@ -53,10 +54,15 @@ end subroutine makeOutputSingle
 
 subroutine makeOutputDimer
 
-if ( vers .eq. 'dimer') then
-open(60,file='Output_dimer.txt',form='formatted')
+open(60,file='Output.txt',form='formatted')
 
-write(60,*) "DIMER OF QD"
+if ( vers .eq. 'dimer') then
+
+if ( aA .eq. aB ) then
+write(60,*) "Results for a QD homodimer"
+elseif ( aA .ne. aB ) then
+write(60,*) "Results for a QD heterodimer"
+endif
 write(60,*) 
 write(60,*) "The wavefunction of states e, h1 and h2 on QDA has been stored in:"
 write(60,*) "The wavefunction of states e, h1 and h2 on QDB has been stored in:"
@@ -83,7 +89,10 @@ write(60,'("Coulomb correction h12               :",ES23.4E2,ES30.4E2)') Cb_eh2(
 write(60,'("Norm e                               :",ES23.4E2,ES30.4E2)') Norm_Ana_e(1), Norm_Ana_e(2)
 write(60,'("Norm h1                              :",ES23.4E2,ES30.4E2)') Norm_Ana_h1(1), Norm_Ana_h1(2) 
 write(60,'("Norm h2                              :",ES23.4E2,ES30.4E2)') Norm_Ana_h2(1), Norm_Ana_h2(2)
-write(60,'("                                                  /          \                  /          \")')
+write(60,*)
+write(60,'("                                                   /       \                      /      \  ")')
+write(60,'("                                                  /         \                    /        \ ")')
+write(60,'("                                                 /           \                  /          \")')
 write(60,*)
 write(60,'(47x,"h1e",12x, "h2e",12x, "h1e",12x, "h2e")')
 write(60,'("Wavefunction overlap                 :",4f15.6)') OverlapAna_h1e(1), OverlapAna_h2e(1), &
@@ -100,10 +109,17 @@ write(60,*)
 write(60,*) "The initial parameters of the dynamic are:"
 write(60,*)
 write(60,'("Number of states        :",2x,i2)')   nstates  
-write(60,'("Number of pulse         :",2x,i2)')   npulses  
+write(60,'("Number of pulses        :",2x,i2)')   npulses  
+if ( npulses .eq. 1 ) then
+write(60,'("t0 of pulse             :",ES15.6E2)')   t01      
+elseif ( npulses .ge. 2 ) then
 write(60,'("t0 of first pulse       :",ES15.6E2)')   t01      
-write(60,'("t1 of first pulse       :",ES15.6E2)')   t02      
-write(60,'("t2 of first pulse       :",ES15.6E2)')   t03      
+write(60,'("t0 of second pulse      :",ES15.6E2)')   t02      
+elseif ( npulses .eq. 3 ) then
+write(60,'("t0 of first pulse       :",ES15.6E2)')   t01      
+write(60,'("t0 of second pulse      :",ES15.6E2)')   t02      
+write(60,'("t0 of third pulse       :",ES15.6E2)')   t03      
+endif
 write(60,'("Time step               :",ES15.6E2)')   timestep 
 write(60,'("Time length of dynamic  :",ES15.6E2)')   totaltime
 write(60,'("Omega                   :",ES15.6E2)')   omega    
@@ -135,6 +151,8 @@ end subroutine makeOutputDimer
 
 subroutine makeOutputRange
 
+open(60,file='Output.txt',form='formatted')
+
 write(60,*) "Range of single QD"
 write(60,*)
 write(60,*) "The wavefunction of states e, h1 and h2 on QDA has been stored in:"
@@ -154,46 +172,78 @@ enddo
 
 end subroutine makeOutputRange
 
-subroutine makeOutputRdmho
+subroutine makeOutputRandm
 
-write(60,*) "Random homodimer"
+open(60,file='Output.txt',form='formatted')
+
+open(40,file="Dimer.dat")
+open(11,file='Etransitions.dat')
+
+do n = rmin, rmax
+write(40,*) "# Number QDA QDB linker"
+write(40,*) n, aR(n), aR(n), linker(n)
+write(11,*) "# Number QDA QDB linker Eh1e Eh2e"
+write(11,*) n, aR(n), aR(n), linker(n), Eeh1(n), Eeh2(n)
+enddo
+
+if ( ( vers .eq. 'randm' ) .and. ( aA .eq. aB ) ) then
+write(60,*) "Random homodimers"
+else if ( ( vers .eq. 'randm' ) .and. ( aA .ne. aB ) ) then
+write(60,*) "Random heterodimers"
+endif
 write(60,*)
-write(60,*) "The wavefunction of states e, h1 and h2 on QDA has been stored in:"
-write(60,*) "The wavefunction of states e, h1 and h2 on QDB has been stored in:"
+write(60,*)
+write(60,*) "The process has generated the following files:"
+write(60,*)
+write(60,'("Dimers.dat            contains radius QDA, radius QDB, linker length")')
+write(60,'("Etransitions.dat      contains radius QDA, radius QDB, linker length, Eh1e, Eh2e")')
+write(60,'("Ham0.dat              contains Hamiltonian of 0th order")')
+write(60,'("Pulse.dat             contains the pulse(s)")')
+write(60,'("TransHam.dat          contains the transition dipole moment matrix elements")')
+write(60,'("Hamt.dat              contains the time dependent Hamiltonian")')
+write(60,'("Popc.dat              contains the population evolution of each state |c**2(t)|")')
+write(60,'("Norm.dat              contains the time dependent norm")')
+write(60,*)
+write(60,*)
 write(60,*)
 write(60,*) "The initial parameters are:"
 write(60,*)
+write(60,'("Number of dimers                     :",i5)') nsys
+write(60,'("Average radius of QDA                :",f8.4)') aA
+write(60,'("Average radius of QDB                :",f8.4)') aB
+write(60,'("Average length of linker             :",f8.4)') link
+write(60,'("Size dispersion of QDA radius        :",f8.4)') dispQD
+write(60,'("Length dispersion of linker          :",f8.4)') displink
 write(60,'("Electron effective mass              :",f8.4," m0")') me
 write(60,'("Hole effective mass                  :",f8.4," m0")') mh
 write(60,'("Bulk dielectric constant             :",f8.4)')      eps
 write(60,'("Ligands dielectric constant          :",f8.4)')      epsout
 write(60,'("Bulk band gap                        :",f8.4)')      V0eV
-
-do n = rmin, rmax
-write(11,*) aR(n), linker(n),  Eeh1(n), Eeh2(n)
-enddo
-
-end subroutine makeOutputRdmho
-
-subroutine makeOutputRdmhe
-
-write(60,*) "Random heterodimer"
 write(60,*)
-write(60,*) "The wavefunction of states e, h1 and h2 on QDA has been stored in:"
-write(60,*) "The wavefunction of states e, h1 and h2 on QDB has been stored in:"
 write(60,*)
-write(60,*) "The initial parameters are:"
+write(60,*) "The initial parameters of the dynamic are:"
 write(60,*)
-write(60,'("Electron effective mass              :",f8.4," m0")') me
-write(60,'("Hole effective mass                  :",f8.4," m0")') mh
-write(60,'("Bulk dielectric constant             :",f8.4)')      eps
-write(60,'("Ligands dielectric constant          :",f8.4)')      epsout
-write(60,'("Bulk band gap                        :",f8.4)')      V0eV
+write(60,'("Number of states        :",2x,i2)')   nstates
+write(60,'("Number of pulses        :",2x,i2)')   npulses
+if ( npulses .eq. 1 ) then
+write(60,'("t0 of pulse             :",ES15.6E2)')   t01
+elseif ( npulses .ge. 2 ) then
+write(60,'("t0 of first pulse       :",ES15.6E2)')   t01
+write(60,'("t0 of second pulse      :",ES15.6E2)')   t02
+elseif ( npulses .eq. 3 ) then
+write(60,'("t0 of first pulse       :",ES15.6E2)')   t01
+write(60,'("t0 of second pulse      :",ES15.6E2)')   t02
+write(60,'("t0 of third pulse       :",ES15.6E2)')   t03
+endif
+write(60,'("Time step               :",ES15.6E2)')   timestep
+write(60,'("Time length of dynamic  :",ES15.6E2)')   totaltime
+write(60,'("Omega                   :",ES15.6E2)')   omega
+write(60,'("Phase                   :",ES15.6E2)')   phase
+write(60,'("Width                   :",ES15.6E2)')   width
+write(60,'("Power                   :",ES15.6E2)')   Ed
+write(60,*)
 
-do n = rmin, rmax
-write(11,*) aR(n), linker(n),  Eeh1(n), Eeh2(n)
-enddo
 
-end subroutine makeOutputRdmhe
+end subroutine makeOutputRandm
 
 end module Output

@@ -1,0 +1,263 @@
+#!/bin/bash
+
+##exc exp(a+b)
+for f in 13 14 24
+
+do 
+
+cat > make_fit_$f-ex <<EOF
+set encoding utf8
+set terminal postscript eps enhanced color solid "Times-Roman" 20
+set output 'Fit-D$f-ex.eps'
+
+FIT_LIMIT=1.0e-18
+
+set xrange [0.999998e-9:3.0000001e-9]
+set yrange [0.000001e-9:2.000001e-9]
+#set zrange [1e-6:*]
+
+d3=1e9
+d4=1e9
+
+f4(x,y) =  d1+d2*exp(-(d3*x+d4*y))
+
+fit f4(x,y) 'D$f-ex.dat' u (\$1):(\$2):(\$3) via d1,d2,d3,d4
+
+splot 'D$f-ex.dat' u (\$1):(\$2):3 w l lw 3 t 'Theo.',  \
+f4(x,y) w l t 'Fit'
+
+EOF
+
+gnuplot make_fit_$f-ex 2> gnufit_$f-ex
+
+grep -E  'd1.*+/-' gnufit_$f-ex | awk '{print "a'$f'_1e =", $3}' >> Parameters-ex.dat 
+grep -E  'd2.*+/-' gnufit_$f-ex | awk '{print "a'$f'_2e =", $3}' >> Parameters-ex.dat 
+grep -E  'd3.*+/-' gnufit_$f-ex | awk '{print "a'$f'_3e =", $3}' >> Parameters-ex.dat 
+grep -E  'd4.*+/-' gnufit_$f-ex | awk '{print "a'$f'_4e =", $3}' >> Parameters-ex.dat
+
+done
+
+##dir exp(a+b)
+for f in 55 66 
+
+do
+
+cat > make_fit_$f-dir <<EOF
+set encoding utf8
+set terminal postscript eps enhanced color solid "Times-Roman" 20
+set output 'Fit-D$f-dir.eps'
+
+FIT_LIMIT=1.0e-18
+
+set xrange [0.999998e-9:3.0000001e-9]
+set yrange [0.000001e-9:2.000001e-9]
+#set zrange [1e-6:*]
+
+d3=1e9
+d4=1e9
+
+f4(x,y) =  d1+d2*exp(-(d3*x+d4*y))
+
+fit f4(x,y) 'D$f-dir.dat' u (\$1):(\$2):(\$3) via d1,d2,d3,d4
+
+splot 'D$f-dir.dat' u (\$1):(\$2):3 w l lw 3 t 'Theo.',  \
+f4(x,y) w l t 'Fit'
+
+EOF
+
+gnuplot make_fit_$f-dir 2> gnufit_$f-dir
+
+grep -E  'd1.*+/-' gnufit_$f-dir | awk '{print "a'$f'_1d =", $3}' >> Parameters-dir.dat
+grep -E  'd2.*+/-' gnufit_$f-dir | awk '{print "a'$f'_2d =", $3}' >> Parameters-dir.dat
+grep -E  'd3.*+/-' gnufit_$f-dir | awk '{print "a'$f'_3d =", $3}' >> Parameters-dir.dat
+grep -E  'd4.*+/-' gnufit_$f-dir | awk '{print "a'$f'_4d =", $3}' >> Parameters-dir.dat
+
+done
+
+#+dir exp(a)/b
+for f in 57 13 15 17 24 26 28 68 56 57
+
+do
+
+cat > make_fit_$f-dir <<EOF
+set encoding utf8
+set terminal postscript eps enhanced color solid "Times-Roman" 20
+set output 'Fit-D$f-dir.eps'
+
+FIT_LIMIT=1.0e-18
+set isosamples 50
+set format z "10^{%L}"
+set format x "{%1.1t}"
+set ytics ("0.5" 0.5e-9,"1.0" 1.0e-9,"1.5" 1.5e-9,"2.0" 2.0e-9,"2.5" 2.5e-9,"3.0" 3.0e-9,"3.5" 3.5e-9,"4.0" 4e-9)  offset -0.5,-0.5,-0.5
+set xtics offset  2,-0.5,-0.5
+set view 110,320
+
+set xrange [0.999998e-9:3.0000001e-9]
+set yrange [0.000001e-9:2.000001e-9]
+set zrange [1e-7:*]
+
+set logscale z
+
+d2=1e-9
+d4=1e9
+
+f4(x,y) =  d1+(d2/x)**d3*exp(-d4*y) 
+
+fit f4(x,y) 'D$f-dir.dat' u (\$1):(\$2):(\$3) via d1,d2,d3,d4
+
+set zrange [1e-6:*]
+
+splot 'D$f-dir.dat' u (\$1):(\$2):3 w l lw 3 t 'Theo.',  \
+f4(x,y) w l t 'Fit'
+
+EOF
+
+gnuplot make_fit_$f-dir 2> gnufit_$f-dir
+
+grep -E  'd1.*+/-' gnufit_$f-dir | awk '{print "a'$f'_1d =", $3}' >> Parameters-dir.dat
+grep -E  'd2.*+/-' gnufit_$f-dir | awk '{print "a'$f'_2d =", $3}' >> Parameters-dir.dat
+grep -E  'd3.*+/-' gnufit_$f-dir | awk '{print "a'$f'_3d =", $3}' >> Parameters-dir.dat
+grep -E  'd4.*+/-' gnufit_$f-dir | awk '{print "a'$f'_4d =", $3}' >> Parameters-dir.dat
+
+done
+
+#+exc exp(a)/b
+for f in 15 17 55 66 57 26 28 68 57
+
+do
+
+cat > make_fit_$f-ex <<EOF
+set encoding utf8
+set terminal postscript eps enhanced color solid "Times-Roman" 20
+set output 'Fit-D$f-ex.eps'
+
+FIT_LIMIT=1.0e-18
+set isosamples 50
+set format z "10^{%L}"
+set format x "{%1.1t}"
+set ytics ("0.5" 0.5e-9,"1.0" 1.0e-9,"1.5" 1.5e-9,"2.0" 2.0e-9,"2.5" 2.5e-9,"3.0" 3.0e-9,"3.5" 3.5e-9,"4.0" 4e-9)  offset -0.5,-0.5,-0.5
+set xtics offset  2,-0.5,-0.5
+set view 110,320
+
+set xrange [0.999998e-9:3.0000001e-9]
+set yrange [0.000001e-9:2.000001e-9]
+set zrange [1e-7:*]
+
+set logscale z
+
+d2=1e-9
+d4=1e9
+
+f4(x,y) =  d1+(d2/x)**d3*exp(-d4*y) 
+
+fit f4(x,y) 'D$f-ex.dat' u (\$1):(\$2):(\$3) via d1,d2,d3,d4
+
+set zrange [1e-6:*]
+
+splot 'D$f-ex.dat' u (\$1):(\$2):3 w l lw 3 t 'Theo.',  \
+f4(x,y) w l t 'Fit'
+
+EOF
+
+gnuplot make_fit_$f-ex 2> gnufit_$f-ex
+
+grep -E  'd1.*+/-' gnufit_$f-ex | awk '{print "a'$f'_1e =", $3}' >> Parameters-ex.dat
+grep -E  'd2.*+/-' gnufit_$f-ex | awk '{print "a'$f'_2e =", $3}' >> Parameters-ex.dat
+grep -E  'd3.*+/-' gnufit_$f-ex | awk '{print "a'$f'_3e =", $3}' >> Parameters-ex.dat
+grep -E  'd4.*+/-' gnufit_$f-ex | awk '{print "a'$f'_4e =", $3}' >> Parameters-ex.dat
+
+done
+
+#-exc exp(a)/b
+for f in 25 27 16 18 58 56
+
+do
+
+cat > make_fit_$f-ex <<EOF
+set encoding utf8
+set terminal postscript eps enhanced color solid "Times-Roman" 20
+set output 'Fit-D$f-ex.eps'
+
+FIT_LIMIT=1.0e-18
+set isosamples 50
+set format z "10^{%L}"
+set format x "{%1.1t}"
+set ytics ("0.5" 0.5e-9,"1.0" 1.0e-9,"1.5" 1.5e-9,"2.0" 2.0e-9,"2.5" 2.5e-9,"3.0" 3.0e-9,"3.5" 3.5e-9,"4.0" 4e-9)  offset -0.5,-0.5,-0.5
+set xtics offset  2,-0.5,-0.5
+set view 110,320
+
+set xrange [0.999998e-9:3.0000001e-9]
+set yrange [0.000001e-9:2.000001e-9]
+set zrange [1e-7:*]
+
+set logscale z
+
+d2=1e-9
+d4=1e9
+
+f4(x,y) =  d1+(d2/x)**d3*exp(-d4*y) 
+
+fit f4(x,y) 'D$f-ex.dat' u (\$1):(\$2):(abs(\$3)) via d1,d2,d3,d4
+
+set zrange [1e-6:*]
+
+splot 'D$f-ex.dat' u (\$1):(\$2):(abs(\$3)) w l lw 3 t 'Theo.',  \
+f4(x,y) w l t 'Fit'
+
+EOF
+
+gnuplot make_fit_$f-ex 2> gnufit_$f-ex
+
+grep -E  'd1.*+/-' gnufit_$f-ex | awk '{print "a'$f'_1e =", $3}' >> Parameters-ex.dat
+grep -E  'd2.*+/-' gnufit_$f-ex | awk '{print "a'$f'_2e =", $3}' >> Parameters-ex.dat
+grep -E  'd3.*+/-' gnufit_$f-ex | awk '{print "a'$f'_3e =", $3}' >> Parameters-ex.dat
+grep -E  'd4.*+/-' gnufit_$f-ex | awk '{print "a'$f'_4e =", $3}' >> Parameters-ex.dat
+
+done
+
+#-dir exp(a)/b
+for f in 25 18 27 16 14 58
+
+do
+
+cat > make_fit_$f-dir <<EOF
+set encoding utf8
+set terminal postscript eps enhanced color solid "Times-Roman" 20
+set output 'Fit-D$f-dir.eps'
+
+FIT_LIMIT=1.0e-18
+set isosamples 50
+set format z "10^{%L}"
+set format x "{%1.1t}"
+set ytics ("0.5" 0.5e-9,"1.0" 1.0e-9,"1.5" 1.5e-9,"2.0" 2.0e-9,"2.5" 2.5e-9,"3.0" 3.0e-9,"3.5" 3.5e-9,"4.0" 4e-9)  offset -0.5,-0.5,-0.5
+set xtics offset  2,-0.5,-0.5
+set view 110,320
+
+set xrange [0.999998e-9:3.0000001e-9]
+set yrange [0.000001e-9:2.000001e-9]
+set zrange [1e-7:*]
+
+set logscale z
+
+d2=1e-9
+d4=1e9
+
+f4(x,y) =  d1+(d2/x)**d3*exp(-d4*y) 
+
+fit f4(x,y) 'D$f-dir.dat' u (\$1):(\$2):(abs(\$3)) via d1,d2,d3,d4
+
+set zrange [1e-6:*]
+
+splot 'D$f-dir.dat' u (\$1):(\$2):(abs(\$3)) w l lw 3 t 'Theo.',  \
+f4(x,y) w l t 'Fit'
+
+EOF
+
+gnuplot make_fit_$f-dir 2> gnufit_$f-dir
+
+grep -E  'd1.*+/-' gnufit_$f-dir | awk '{print "a'$f'_1d =", $3}' >> Parameters-dir.dat
+grep -E  'd2.*+/-' gnufit_$f-dir | awk '{print "a'$f'_2d =", $3}' >> Parameters-dir.dat
+grep -E  'd3.*+/-' gnufit_$f-dir | awk '{print "a'$f'_3d =", $3}' >> Parameters-dir.dat
+grep -E  'd4.*+/-' gnufit_$f-dir | awk '{print "a'$f'_4d =", $3}' >> Parameters-dir.dat
+
+done

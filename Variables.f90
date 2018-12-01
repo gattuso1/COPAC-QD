@@ -9,6 +9,7 @@ implicit none
    integer :: ndots, n, rmin, rmax, nsys, npulses, nstates, ntime, i, j, t
    real(dp) :: aA, aB, me, mh, eps, epsout, V0, omegaLO, rhoe, rhoh, slope, V0eV, minr, maxr, rsteps, side
    real(dp) :: dispQD, displink, rdmlinker, rdmQDA, rdmQDB, link, t01, t02, t03, timestep, totaltime, omega, phase, width, Ed
+   real(dp) :: pulse1, pulse2, pulse3
    real(dp),allocatable :: aR(:), aRA(:), aRB(:), epsin(:), epsR(:), V0e(:), V0h(:), linker(:)
    real(dp),allocatable :: epsinA(:), epsinB(:), epsRA(:), epsRB(:), V0eA(:), V0eB(:), V0hA(:), V0hB(:)
    real(dp),allocatable :: Eeh1(:), Eeh2(:), Cb_eh1(:), Cb_eh2(:), Norm_Ana_e(:), Norm_Ana_h1(:), Norm_Ana_h2(:)
@@ -31,8 +32,7 @@ NAMELIST /pulses/ nstates,npulses,t01,t02,t03,timestep,totaltime,omega,phase,wid
 NAMELIST /syst_single/ aA
 NAMELIST /syst_dimer/ aA,aB,link
 NAMELIST /syst_range/ rsteps,minr,maxr,link
-NAMELIST /syst_random_homo/ nsys,aA,aB,link,displink,dispQD
-NAMELIST /syst_random_hetero/ nsys,aA,aB,link,dispQD
+NAMELIST /syst_random/ nsys,aA,aB,link,displink,dispQD
 
 open(150,file='QD_quest.def',form='formatted')
 read(150,NML=version)
@@ -50,6 +50,8 @@ if ( dyn .eq. 'y' ) then
 
 rewind 150
 read(150,NML=pulses)
+
+
 
 xhbar      = dcmplx(hbar,0.0)
 xh         = dcmplx(timestep,0.0)
@@ -80,6 +82,20 @@ allocate(k1(0:nstates-1))
 allocate(k2(0:nstates-1))
 allocate(k3(0:nstates-1))
 allocate(k4(0:nstates-1))
+
+if ( npulses .eq. 3) then
+pulse1 = 1.0
+pulse2 = 1.0
+pulse3 = 1.0
+elseif ( npulses .eq. 2) then
+pulse1 = 1.0
+pulse2 = 1.0
+pulse3 = 0.0
+elseif ( npulses .eq. 1) then
+pulse1 = 1.0
+pulse2 = 0.0
+pulse3 = 0.0
+endif
 
 endif
 
@@ -157,10 +173,10 @@ V0e(n)=-1*(-3.49+2.47*(1d9*2*aR(n))**(-1.32))*elec
 V0h(n)=-1*(-5.23-0.74*(1d9*2*aR(n))**(-0.95))*elec
 enddo
 
-else if ( vers .eq. 'rdmho' ) then
+else if ( ( vers .eq. 'randm' ) .and. ( aA .eq. aB ) ) then
 
 rewind 150
-read(150,NML=syst_random_homo)
+read(150,NML=syst_random)
 
 allocate(aR(nsys))
 allocate(linker(nsys))
@@ -187,12 +203,10 @@ V0e(n)=-1*(-3.49+2.47*(1d9*2*aR(n))**(-1.32))*elec
 V0h(n)=-1*(-5.23-0.74*(1d9*2*aR(n))**(-0.95))*elec
 enddo
 
-else if ( vers .eq. 'rdmhe' ) then
-
-write(6,*) 'OK'
+else if ( ( vers .eq. 'randm' ) .and. ( aA .eq. aB ) ) then
 
 rewind 150
-read(150,NML=syst_random_hetero)
+read(150,NML=syst_random)
 
 allocate(aR(2*nsys))
 allocate(linker(2*nsys))

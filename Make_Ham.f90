@@ -527,17 +527,17 @@ Ham(1,1) = Eeh1(1) - Cb_eh1(1)
 Ham(2,2) = Eeh1(2) - Cb_eh1(2)
 Ham(3,3) = Ham(1,1)
 Ham(4,4) = Ham(2,2)
-Ham(5,5) = minEe(1,2) + minEh(1,1) + V0 - 1.0 * elec*(a55_1d_he + a55_2d_he / (aA**a55_3d_he * aB**a55_4d_he)) &
-                                      + 2 * elec*(a55_1e_he + a55_2e_he / (aA**a55_3e_he * aB**a55_4e_he))
+Ham(5,5) = minEe(1,2) + minEh(1,1) + V0 - 1.0 * elec*(a55_1d_he + a55_2d_he / ((aR(1)*1d9)**a55_3d_he * (aR(2)*1d9)**a55_4d_he)) &
+                                      + 2 * elec*(a55_1e_he + a55_2e_he / ((aR(1)*1d9)**a55_3e_he * (aR(2)*1d9)**a55_4e_he))
                                   
-Ham(6,6) = minEe(1,2) + minEh(1,2) + V0 - 1.0 * elec*(a66_1d_he + a66_2d_he / (aA**a66_3d_he * aB**a66_4d_he)) &
-                                      + 2 * elec*(a66_1e_he + a66_2e_he / (aA**a66_3e_he * aB**a66_4e_he)) 
+Ham(6,6) = minEe(1,2) + minEh(1,2) + V0 - 1.0 * elec*(a66_1d_he + a66_2d_he / ((aR(1)*1d9)**a66_3d_he * (aR(2)*1d9)**a66_4d_he)) &
+                                      + 2 * elec*(a66_1e_he + a66_2e_he / ((aR(1)*1d9)**a66_3e_he * (aR(2)*1d9)**a66_4e_he)) 
                                   
-Ham(7,7) = minEe(1,1) + minEh(1,1) + V0 - 1.0 * elec*(a77_1d_he + a77_2d_he / (aA**a77_3d_he * aB**a77_4d_he)) &
-                                      + 2 * elec*(a77_1e_he + a77_2e_he / (aA**a77_3e_he * aB**a77_4e_he))
+Ham(7,7) = minEe(1,1) + minEh(1,1) + V0 - 1.0 * elec*(a77_1d_he + a77_2d_he / ((aR(1)*1d9)**a77_3d_he * (aR(2)*1d9)**a77_4d_he)) &
+                                      + 2 * elec*(a77_1e_he + a77_2e_he / ((aR(1)*1d9)**a77_3e_he * (aR(2)*1d9)**a77_4e_he))
 
-Ham(8,8) = minEe(1,1) + minEh(2,2) + V0 - 1.0 * elec*(a88_1d_he + a88_2d_he / (aA**a88_3d_he * aB**a88_4d_he)) &
-                                      + 2 * elec*(a88_1e_he + a88_2e_he / (aA**a88_3e_he * aB**a88_4e_he))
+Ham(8,8) = minEe(1,1) + minEh(2,2) + V0 - 1.0 * elec*(a88_1d_he + a88_2d_he / ((aR(1)*1d9)**a88_3d_he * (aR(2)*1d9)**a88_4d_he)) &
+                                      + 2 * elec*(a88_1e_he + a88_2e_he / ((aR(1)*1d9)**a88_3e_he * (aR(2)*1d9)**a88_4e_he))
 
 Ham(0,1) = 0.0 
 Ham(0,2) = 0.0 
@@ -556,92 +556,89 @@ Ham(6,0) = Ham(0,6)
 Ham(7,0) = Ham(0,7)
 Ham(8,0) = Ham(0,8)
 
-Ham(1,2) = - 1.0 * elec*(a12_1d_he + a12_2d_he / exp(aA*a12_3d_he)) &
-             + 2 * elec*(a12_1e_he + a12_2e_he / exp(aA*a12_3e_he))
+Ham(1,2) = - 1.0 * elec*(a12_1d_he + a12_2d_he / exp((aR(1)*1d9)*a12_3d_he)) &
+             + 2 * elec*(a12_1e_he + a12_2e_he / exp((aR(1)*1d9)*a12_3e_he))
 
-Ham(1,3) = - 1.0 * elec*(a13_1d_he + a13_2d_he / (aA**a13_3d_he * aB**a13_4d_he)) &
-             + 2 * elec*(a13_1e_he + a13_2e_he / (aA**a13_3e_he * aB**a13_4e_he))
+Ham(1,3) = - 1.0 * elec*(a13_1d_he + a13_2d_he / ((aR(1)*1d9)**a13_3d_he * (aR(2)*1d9)**a13_4d_he)) &
+             + 2 * elec*(a13_1e_he + a13_2e_he / ((aR(1)*1d9)**a13_3e_he * (aR(2)*1d9)**a13_4e_he))
 
-Ham(1,4) = - 1.0 * elec*(a14_1d_he + a14_2d_he / (aA**a14_3d_he * aB**a14_4d_he)) &
-             + 2 * elec*(a14_1e_he + a14_2e_he / (aA**a14_3e_he * aB**a14_4e_he))
+Ham(1,4) = - 1.0 * elec*(a14_1d_he + a14_2d_he / ((aR(1)*1d9)**a14_3d_he * (aR(2)*1d9)**a14_4d_he)) &
+             + 2 * elec*(a14_1e_he + a14_2e_he / ((aR(1)*1d9)**a14_3e_he * (aR(2)*1d9)**a14_4e_he))
 
-Ham(1,5) = - 1.0 * elec*(a15_1d_he + a15_2d_he / (aA**a15_3d_he * aB**a15_4d_he)) &
-             + 2 * elec*(a15_1e_he + a15_2e_he / (aA**a15_3e_he * aB**a15_4e_he))
+Ham(1,5) = - 1.0 * elec*(a15_1d_he + a15_2d_he / ((aR(1)*1d9)**a15_3d_he * (aR(2)*1d9)**a15_4d_he)) &
+             + 2 * elec*(a15_1e_he + a15_2e_he / ((aR(1)*1d9)**a15_3e_he * (aR(2)*1d9)**a15_4e_he))
 
-Ham(1,6) = - 1.0 *( -1.0 * elec*(a16_1d_he + a16_2d_he / (aA**a16_3d_he * aB**a16_4d_he)) &
-                     + 2 * elec*(a16_1e_he + a16_2e_he / (aA**a16_3e_he * aB**a16_4e_he)))
+Ham(1,6) = - 1.0 *( -1.0 * elec*(a16_1d_he + a16_2d_he / ((aR(1)*1d9)**a16_3d_he * (aR(2)*1d9)**a16_4d_he)) &
+                     + 2 * elec*(a16_1e_he + a16_2e_he / ((aR(1)*1d9)**a16_3e_he * (aR(2)*1d9)**a16_4e_he)))
 
-Ham(1,7) = - 1.0 * elec*(a17_1d_he + a17_2d_he / (aA**a17_3d_he * aB**a17_4d_he)) &
-             + 2 * elec*(a17_1e_he + a17_2e_he / (aA**a17_3e_he * aB**a17_4e_he))
+Ham(1,7) = - 1.0 * elec*(a17_1d_he + a17_2d_he / ((aR(1)*1d9)**a17_3d_he * (aR(2)*1d9)**a17_4d_he)) &
+             + 2 * elec*(a17_1e_he + a17_2e_he / ((aR(1)*1d9)**a17_3e_he * (aR(2)*1d9)**a17_4e_he))
 
-Ham(1,8) =  - 1.0 *( -1.0 * elec*(a18_1d_he + a18_2d_he / (aA**a18_3d_he * aB**a18_4d_he)) &
-                      + 2 * elec*(a18_1e_he + a18_2e_he / (aA**a18_3e_he * aB**a18_4e_he)))
+Ham(1,8) =  - 1.0 *( -1.0 * elec*(a18_1d_he + a18_2d_he / ((aR(1)*1d9)**a18_3d_he * (aR(2)*1d9)**a18_4d_he)) &
+                      + 2 * elec*(a18_1e_he + a18_2e_he / ((aR(1)*1d9)**a18_3e_he * (aR(2)*1d9)**a18_4e_he)))
 
-Ham(2,3) = - 1.0 * elec*(a23_1d_he + a23_2d_he / (aA**a23_3d_he * aB**a23_4d_he)) &
-             + 2 * elec*(a23_1e_he + a23_2e_he / (aA**a23_3e_he * aB**a23_4e_he))
+Ham(2,3) = - 1.0 * elec*(a23_1d_he + a23_2d_he / ((aR(1)*1d9)**a23_3d_he * (aR(2)*1d9)**a23_4d_he)) &
+             + 2 * elec*(a23_1e_he + a23_2e_he / ((aR(1)*1d9)**a23_3e_he * (aR(2)*1d9)**a23_4e_he))
 
-Ham(2,4) = - 1.0 * elec*(a24_1d_he + a24_2d_he / (aA**a24_3d_he * aB**a24_4d_he)) &
-             + 2 * elec*(a24_1e_he + a24_2e_he / (aA**a24_3e_he * aB**a24_4e_he))
+Ham(2,4) = - 1.0 * elec*(a24_1d_he + a24_2d_he / ((aR(1)*1d9)**a24_3d_he * (aR(2)*1d9)**a24_4d_he)) &
+             + 2 * elec*(a24_1e_he + a24_2e_he / ((aR(1)*1d9)**a24_3e_he * (aR(2)*1d9)**a24_4e_he))
 
-Ham(2,5) =  - 1.0 *( -1.0 * elec*(a25_1d_he + a25_2d_he / (aA**a25_3d_he * aB**a25_4d_he)) &
-                      + 2 * elec*(a25_1e_he + a25_2e_he / (aA**a25_3e_he * aB**a25_4e_he)))
+Ham(2,5) =  - 1.0 *( -1.0 * elec*(a25_1d_he + a25_2d_he / ((aR(1)*1d9)**a25_3d_he * (aR(2)*1d9)**a25_4d_he)) &
+                      + 2 * elec*(a25_1e_he + a25_2e_he / ((aR(1)*1d9)**a25_3e_he * (aR(2)*1d9)**a25_4e_he)))
 
-Ham(2,6) =  - 1.0 * elec*(a26_1d_he + a26_2d_he / (aA**a26_3d_he * aB**a26_4d_he)) &
-              + 2 * elec*(a26_1e_he + a26_2e_he / (aA**a26_3e_he * aB**a26_4e_he))
+Ham(2,6) =  - 1.0 * elec*(a26_1d_he + a26_2d_he / ((aR(1)*1d9)**a26_3d_he * (aR(2)*1d9)**a26_4d_he)) &
+              + 2 * elec*(a26_1e_he + a26_2e_he / ((aR(1)*1d9)**a26_3e_he * (aR(2)*1d9)**a26_4e_he))
 
-Ham(2,7) =  - 1.0 *( -1.0 * elec*(a27_1d_he + a27_2d_he / (aA**a27_3d_he * aB**a27_4d_he)) &
-                      + 2 * elec*(a27_1e_he + a27_2e_he / (aA**a27_3e_he * aB**a27_4e_he)))
+Ham(2,7) =  - 1.0 *( -1.0 * elec*(a27_1d_he + a27_2d_he / ((aR(1)*1d9)**a27_3d_he * (aR(2)*1d9)**a27_4d_he)) &
+                      + 2 * elec*(a27_1e_he + a27_2e_he / ((aR(1)*1d9)**a27_3e_he * (aR(2)*1d9)**a27_4e_he)))
 
-Ham(2,8) =  - 1.0 * elec*(a28_1d_he + a28_2d_he / (aA**a28_3d_he * aB**a28_4d_he)) &
-              + 2 * elec*(a28_1e_he + a28_2e_he / (aA**a28_3e_he * aB**a28_4e_he))
+Ham(2,8) =  - 1.0 * elec*(a28_1d_he + a28_2d_he / ((aR(1)*1d9)**a28_3d_he * (aR(2)*1d9)**a28_4d_he)) &
+              + 2 * elec*(a28_1e_he + a28_2e_he / ((aR(1)*1d9)**a28_3e_he * (aR(2)*1d9)**a28_4e_he))
 
-Ham(3,4) = - 1.0 * elec*(a12_1d_he + a12_2d_he / exp(aB*a12_3d_he)) &
-             + 2 * elec*(a12_1e_he + a12_2e_he / exp(aB*a12_3e_he))
+Ham(3,4) = - 1.0 * elec*(a12_1d_he + a12_2d_he / exp((aR(2)*1d9)*a12_3d_he)) &
+             + 2 * elec*(a12_1e_he + a12_2e_he / exp((aR(2)*1d9)*a12_3e_he))
 
-Ham(3,5) =  - 1.0 * elec*(a35_1d_he + a35_2d_he / (aA**a35_3d_he * aB**a35_4d_he)) &
-              + 2 * elec*(a35_1e_he + a35_2e_he / (aA**a35_3e_he * aB**a35_4e_he))
+Ham(3,5) =  - 1.0 * elec*(a35_1d_he + a35_2d_he / ((aR(1)*1d9)**a35_3d_he * (aR(2)*1d9)**a35_4d_he)) &
+              + 2 * elec*(a35_1e_he + a35_2e_he / ((aR(1)*1d9)**a35_3e_he * (aR(2)*1d9)**a35_4e_he))
 
-Ham(3,6) =  - 1.0 * elec*(a36_1d_he + a36_2d_he / (aA**a36_3d_he * aB**a36_4d_he)) &
-              + 2 * elec*(a36_1e_he + a36_2e_he / (aA**a36_3e_he * aB**a36_4e_he))
+Ham(3,6) =  - 1.0 * elec*(a36_1d_he + a36_2d_he / ((aR(1)*1d9)**a36_3d_he * (aR(2)*1d9)**a36_4d_he)) &
+              + 2 * elec*(a36_1e_he + a36_2e_he / ((aR(1)*1d9)**a36_3e_he * (aR(2)*1d9)**a36_4e_he))
 
-Ham(3,7) =  - 1.0 * elec*(a37_1d_he + a37_2d_he / (aA**a37_3d_he * aB**a37_4d_he)) &
-              + 2 * elec*(a37_1e_he + a37_2e_he / (aA**a37_3e_he * aB**a37_4e_he))
+Ham(3,7) =  - 1.0 * elec*(a37_1d_he + a37_2d_he / ((aR(1)*1d9)**a37_3d_he * (aR(2)*1d9)**a37_4d_he)) &
+              + 2 * elec*(a37_1e_he + a37_2e_he / ((aR(1)*1d9)**a37_3e_he * (aR(2)*1d9)**a37_4e_he))
 
-Ham(3,8) =  - 1.0 * elec*(a38_1d_he + a38_2d_he / (aA**a38_3d_he * aB**a38_4d_he)) &
-              + 2 * elec*(a38_1e_he + a38_2e_he / (aA**a38_3e_he * aB**a38_4e_he))
+Ham(3,8) =  - 1.0 * elec*(a38_1d_he + a38_2d_he / ((aR(1)*1d9)**a38_3d_he * (aR(2)*1d9)**a38_4d_he)) &
+              + 2 * elec*(a38_1e_he + a38_2e_he / ((aR(1)*1d9)**a38_3e_he * (aR(2)*1d9)**a38_4e_he))
 
-Ham(4,5) =  - 1.0 * elec*(a45_1d_he + a45_2d_he / (aA**a45_3d_he * aB**a45_4d_he)) &
-              + 2 * elec*(a45_1e_he + a45_2e_he / (aA**a45_3e_he * aB**a45_4e_he))
+Ham(4,5) =  - 1.0 * elec*(a45_1d_he + a45_2d_he / ((aR(1)*1d9)**a45_3d_he * (aR(2)*1d9)**a45_4d_he)) &
+              + 2 * elec*(a45_1e_he + a45_2e_he / ((aR(1)*1d9)**a45_3e_he * (aR(2)*1d9)**a45_4e_he))
 
-Ham(4,6) =  - 1.0 * elec*(a46_1d_he + a46_2d_he / (aA**a46_3d_he * aB**a46_4d_he)) &
-              + 2 * elec*(a46_1e_he + a46_2e_he / (aA**a46_3e_he * aB**a46_4e_he))
+Ham(4,6) =  - 1.0 * elec*(a46_1d_he + a46_2d_he / ((aR(1)*1d9)**a46_3d_he * (aR(2)*1d9)**a46_4d_he)) &
+              + 2 * elec*(a46_1e_he + a46_2e_he / ((aR(1)*1d9)**a46_3e_he * (aR(2)*1d9)**a46_4e_he))
 
-Ham(4,7) =  - 1.0 * elec*(a47_1d_he + a47_2d_he / (aA**a47_3d_he * aB**a47_4d_he)) &
-              + 2 * elec*(a47_1e_he + a47_2e_he / (aA**a47_3e_he * aB**a47_4e_he))
+Ham(4,7) =  - 1.0 * elec*(a47_1d_he + a47_2d_he / ((aR(1)*1d9)**a47_3d_he * (aR(2)*1d9)**a47_4d_he)) &
+              + 2 * elec*(a47_1e_he + a47_2e_he / ((aR(1)*1d9)**a47_3e_he * (aR(2)*1d9)**a47_4e_he))
 
-Ham(4,8) =  - 1.0 * elec*(a48_1d_he + a48_2d_he / (aA**a48_3d_he * aB**a48_4d_he)) &
-              + 2 * elec*(a48_1e_he + a48_2e_he / (aA**a48_3e_he * aB**a48_4e_he))
+Ham(4,8) =  - 1.0 * elec*(a48_1d_he + a48_2d_he / ((aR(1)*1d9)**a48_3d_he * (aR(2)*1d9)**a48_4d_he)) &
+              + 2 * elec*(a48_1e_he + a48_2e_he / ((aR(1)*1d9)**a48_3e_he * (aR(2)*1d9)**a48_4e_he))
 
-Ham(5,6) = - 1.0 * elec*(a56_1d_he + a56_2d_he / (aA**a56_3d_he * aB**a56_4d_he)) &
-             + 2 * elec*(a56_1e_he + a56_2e_he / (aA**a56_3e_he * aB**a56_4e_he))
+Ham(5,6) = - 1.0 * elec*(a56_1d_he + a56_2d_he / ((aR(1)*1d9)**a56_3d_he * (aR(2)*1d9)**a56_4d_he)) &
+             + 2 * elec*(a56_1e_he + a56_2e_he / ((aR(1)*1d9)**a56_3e_he * (aR(2)*1d9)**a56_4e_he))
 
-Ham(5,7) = - 1.0 * elec*(a57_1d_he + a57_2d_he / (aA**a57_3d_he * aB**a57_4d_he)) & 
-             + 2 * elec*(a57_1e_he + a57_2e_he / (aA**a57_3e_he * aB**a57_4e_he))   
+Ham(5,7) = - 1.0 * elec*(a57_1d_he + a57_2d_he / ((aR(1)*1d9)**a57_3d_he * (aR(2)*1d9)**a57_4d_he)) & 
+             + 2 * elec*(a57_1e_he + a57_2e_he / ((aR(1)*1d9)**a57_3e_he * (aR(2)*1d9)**a57_4e_he))   
 
-Ham(5,8) = - 1.0 * elec*(a58_1d_he + a58_2d_he / (aA**a58_3d_he * aB**a58_4d_he)) & 
-             + 2 * elec*(a58_1e_he + a58_2e_he / (aA**a58_3e_he * aB**a58_4e_he))   
+Ham(5,8) = - 1.0 * elec*(a58_1d_he + a58_2d_he / ((aR(1)*1d9)**a58_3d_he * (aR(2)*1d9)**a58_4d_he)) & 
+             + 2 * elec*(a58_1e_he + a58_2e_he / ((aR(1)*1d9)**a58_3e_he * (aR(2)*1d9)**a58_4e_he))   
 
-Ham(6,7) = - 1.0 * elec*(a67_1d_he + a67_2d_he / (aA**a67_3d_he * aB**a67_4d_he)) & 
-             + 2 * elec*(a67_1e_he + a67_2e_he / (aA**a67_3e_he * aB**a67_4e_he))   
+Ham(6,7) = - 1.0 * elec*(a67_1d_he + a67_2d_he / ((aR(1)*1d9)**a67_3d_he * (aR(2)*1d9)**a67_4d_he)) & 
+             + 2 * elec*(a67_1e_he + a67_2e_he / ((aR(1)*1d9)**a67_3e_he * (aR(2)*1d9)**a67_4e_he))   
 
-Ham(6,8) = - 1.0 * elec*(a68_1d_he + a68_2d_he / (aA**a68_3d_he * aB**a68_4d_he)) & 
-             + 2 * elec*(a68_1e_he + a68_2e_he / (aA**a68_3e_he * aB**a68_4e_he))   
+Ham(6,8) = - 1.0 * elec*(a68_1d_he + a68_2d_he / ((aR(1)*1d9)**a68_3d_he * (aR(2)*1d9)**a68_4d_he)) & 
+             + 2 * elec*(a68_1e_he + a68_2e_he / ((aR(1)*1d9)**a68_3e_he * (aR(2)*1d9)**a68_4e_he))   
 
-Ham(7,8) = - 1.0 * elec*(a78_1d_he + a78_2d_he / (aA**a78_3d_he * aB**a78_4d_he)) &
-             + 2 * elec*(a78_1e_he + a78_2e_he / (aA**a78_3e_he * aB**a78_4e_he))
-
-aA = aA * 1d-9
-aB = aB * 1d-9
+Ham(7,8) = - 1.0 * elec*(a78_1d_he + a78_2d_he / ((aR(1)*1d9)**a78_3d_he * (aR(2)*1d9)**a78_4d_he)) &
+             + 2 * elec*(a78_1e_he + a78_2e_he / ((aR(1)*1d9)**a78_3e_he * (aR(2)*1d9)**a78_4e_he))
 
 Ham(2,1) = Ham(1,2)
 Ham(3,1) = Ham(1,3)
