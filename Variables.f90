@@ -5,9 +5,9 @@ use Constants
 implicit none
 
    character*5 :: vers
-   character*64 :: popc, hmti, norm
+   character*64 :: popc, hmti, norm, tdmM, hmt0
    character*1 :: o_Norm, o_Over, o_Coul, o_DipS, o_Osci, o_Exti, o_DipD, dyn, hamilt
-   integer :: ndots, n, rmin, rmax, nsys, npulses, nstates, ntime, i, j, t
+   integer :: ndots, n, rmin, rmax, nsys, npulses, nstates, ntime, i, j, t, lwork, info
    real(dp) :: aA, aB, me, mh, eps, epsout, V0, omegaLO, rhoe, rhoh, slope, V0eV, minr, maxr, rsteps, side
    real(dp) :: dispQD, displink, rdmlinker, rdmQDA, rdmQDB, link, t01, t02, t03, timestep, totaltime, omega, phase, width, Ed
    real(dp) :: pulse1, pulse2, pulse3
@@ -15,7 +15,7 @@ implicit none
    real(dp),allocatable :: epsinA(:), epsinB(:), epsRA(:), epsRB(:), V0eA(:), V0eB(:), V0hA(:), V0hB(:)
    real(dp),allocatable :: Eeh1(:), Eeh2(:), Cb_eh1(:), Cb_eh2(:), Norm_Ana_e(:), Norm_Ana_h1(:), Norm_Ana_h2(:)
    real(dp),allocatable :: OverlapAna_h1e(:), OverlapAna_h2e(:), Cb_Num_eh1(:), Cb_Num_eh1_eh2(:), Cb_Num_eh2(:)
-   real(dp),allocatable :: minEe(:,:),minEh(:,:)
+   real(dp),allocatable :: minEe(:,:),minEh(:,:), TransDip_Num_h1e(:), TransDip_Num_h2e(:), work(:), lambda(:)
    real(dp),allocatable :: TransDip_Ana_h1e(:), TransDip_Ana_h2e(:), Oscillator_Ana_h1e(:), Oscillator_Ana_h2e(:)
    real(dp),allocatable :: ExctCoef_h1e(:), ExctCoef_h2e(:), Ham(:,:), E0(:), c0(:), TransHam(:,:), Hamt(:,:,:), c(:,:)
    complex(KIND=8) :: ct1, ct2, ct3, ct4, xt01, xt02, xt03, xhbar, im, xwidth, xomega , xEd, xh, xphase, xtime
@@ -106,6 +106,8 @@ endif
 
 if ( vers .eq. 'singl' ) then
 
+write(6,*) "You are requesting me to tackle a single QD"
+
 allocate(aR(1))
 allocate(linker(1))
 allocate(epsin(1))
@@ -137,6 +139,12 @@ allocate(V0h(2))
 rewind 150
 read(150,NML=syst_dimer)
 
+if ( aA .eq. aB ) then
+write(6,*) "You are requesting me to tackle a homodimer QD"
+else if ( aA .ne. aB ) then
+write(6,*) "You are requesting me to tackle a heterodimer QD"
+endif
+
 aR(1) = aA
 aR(2) = aB
 linker(:) = link
@@ -152,6 +160,8 @@ V0h(n)=-1*(-5.23-0.74*(1d9*2*aR(n))**(-0.95))*elec
 enddo
 
 else if ( vers .eq. 'range' ) then
+
+write(6,*) "You are requesting me to tackle a range of QD"
 
 rewind 150
 read(150,NML=syst_range)
@@ -179,6 +189,8 @@ enddo
 
 else if ( ( vers .eq. 'randm' ) .and. ( aA .eq. aB ) ) then
 
+write(6,*) "You are requesting me to tackle a random set of homodimer QD"
+
 allocate(aR(nsys))
 allocate(linker(nsys))
 allocate(epsin(nsys))
@@ -205,6 +217,8 @@ V0h(n)=-1*(-5.23-0.74*(1d9*2*aR(n))**(-0.95))*elec
 enddo
 
 else if ( ( vers .eq. 'randm' ) .and. ( aA .ne. aB ) ) then
+
+write(6,*) "You are requesting me to tackle a random set of heterodimer QD"
 
 allocate(aR(2*nsys))
 allocate(linker(2*nsys))

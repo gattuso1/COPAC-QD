@@ -63,9 +63,17 @@ write(60,*) "Results for a QD homodimer"
 elseif ( aA .ne. aB ) then
 write(60,*) "Results for a QD heterodimer"
 endif
+
 write(60,*) 
-write(60,*) "The wavefunction of states e, h1 and h2 on QDA has been stored in:"
-write(60,*) "The wavefunction of states e, h1 and h2 on QDB has been stored in:"
+write(60,*) 
+write(60,*) "The process has generated the following files:"
+write(60,*) 
+write(60,'("Ham0.dat              contains Hamiltonian of 0th order")')
+write(60,'("Pulse.dat             contains the pulse(s)")')
+write(60,'("TransHam.dat          contains the transition dipole moment matrix elements")')
+write(60,'("Hamt.dat              contains the time dependent Hamiltonian of dimer n")')
+write(60,'("Popc.dat              contains the population evolution of each state |c**2(t)| of dimer n")')
+write(60,'("Norm.dat              contains the time dependent norm of dimer n")')
 write(60,*) 
 write(60,*) "The initial parameters are:"
 write(60,*)
@@ -77,15 +85,11 @@ write(60,'("Bulk band gap                        :",f8.4)')      V0eV
 write(60,*)
 write(60,*)
 write(60,*)
-write(60,'(56x,"QDA" , 22x, "QDB")')
+write(60,'(54x,"QDA" , 27x, "QDB")')
 write(60,'("Radius                               :",ES23.4E2,ES30.4E2)') aR(1) , aR(2)
 write(60,'("Confining potential electron         :",ES23.4E2,ES30.4E2)') V0e(1), V0e(2)
 write(60,'("Confining potential holes            :",ES23.4E2,ES30.4E2)') V0h(1), V0h(2)
 write(60,'("Dielectric constant                  :",ES23.4E2,ES30.4E2)') epsin(1), epsin(2)
-write(60,'("Transition energy h1e                :",ES23.4E2,ES30.4E2)') Eeh1(1)/elec, Eeh1(2)/elec
-write(60,'("Transition energy h2e                :",ES23.4E2,ES30.4E2)') Eeh2(1)/elec, Eeh2(2)/elec
-write(60,'("Coulomb correction h1e               :",ES23.4E2,ES30.4E2)') Cb_eh1(1)/elec, Cb_eh1(2)/elec
-write(60,'("Coulomb correction h12               :",ES23.4E2,ES30.4E2)') Cb_eh2(1)/elec, Cb_eh2(2)/elec
 write(60,'("Norm e                               :",ES23.4E2,ES30.4E2)') Norm_Ana_e(1), Norm_Ana_e(2)
 write(60,'("Norm h1                              :",ES23.4E2,ES30.4E2)') Norm_Ana_h1(1), Norm_Ana_h1(2) 
 write(60,'("Norm h2                              :",ES23.4E2,ES30.4E2)') Norm_Ana_h2(1), Norm_Ana_h2(2)
@@ -93,16 +97,30 @@ write(60,*)
 write(60,'("                                                   /       \                      /      \  ")')
 write(60,'("                                                  /         \                    /        \ ")')
 write(60,'("                                                 /           \                  /          \")')
-write(60,*)
+write(60,*) "Local States"
 write(60,'(47x,"h1e",12x, "h2e",12x, "h1e",12x, "h2e")')
+write(60,'("Transition energies                  :",4ES15.4E2)') Eeh1(1)/elec, Eeh2(1)/elec, Eeh1(2)/elec, Eeh2(2)/elec
+write(60,'("Coulomb correction                   :",4ES15.4E2)') Cb_eh1(1)/elec, Cb_eh2(1)/elec, &
+                                                                         Cb_eh1(2)/elec, Cb_eh2(2)/elec
 write(60,'("Wavefunction overlap                 :",4f15.6)') OverlapAna_h1e(1), OverlapAna_h2e(1), &
                                                                OverlapAna_h1e(2), OverlapAna_h2e(2)
-write(60,'("Transition dipole moment             :",4ES15.4E2)') 
-write(60,'("Transition dipole moment (fit)       :",4ES15.4E2)') TransHam(0,5), TransHam(0,6), TransHam(0,7), TransHam(0,8) 
+write(60,'("Transition dipole moment             :",4ES15.4E2)') TransHam(0,1), TransHam(0,2), TransHam(0,3), TransHam(0,4) 
 write(60,'("Oscillator strength                  :",4ES15.4E2)') Oscillator_Ana_h1e(1), Oscillator_Ana_h2e(1), &
                                                                 Oscillator_Ana_h1e(2), Oscillator_Ana_h2e(2)
 write(60,'("Extinction coefficient               :",4ES15.4E2)') ExctCoef_h1e(1), ExctCoef_h2e(1), ExctCoef_h1e(2), ExctCoef_h2e(2)
 write(60,'("Coulomb correction                   :",4ES15.4E2)') Cb_Num_eh1(rmax+1), Cb_Num_eh2(1), Cb_Num_eh1(2), Cb_Num_eh2(2)
+write(60,*)
+write(60,*)
+write(60,*) "Charge transfer states: "
+write(60,'(47x," 5 ",12x, " 6 ",12x, " 7 ",12x, " 8 ")')
+write(60,'("Transition energies                  :",4ES15.4E2)') Ham(5,5), Ham(6,6), Ham(7,7), Ham(8,8)
+!write(60,'("Coulomb correction                   :",4ES15.4E2)') (minEe(1,2) + minEh(1,1) + V0 - Ham(5,5)), &
+!                                                                 (minEe(1,2) + minEh(2,1) + V0 - Ham(6,6)), &
+!                                                                 (minEe(1,1) + minEh(1,2) + V0 - Ham(7,7)), &
+!                                                                 (minEe(1,1) + minEh(2,1) + V0 - Ham(8,8))
+write(60,'("Transition dipole moment (fit)       :",4ES15.4E2)') TransHam(0,5), TransHam(0,6), TransHam(0,7), TransHam(0,8)
+write(60,*)
+write(60,*)
 write(60,*)
 write(60,*)
 write(60,*)
@@ -220,16 +238,16 @@ write(60,*)
 write(60,*) "The initial parameters are:"
 write(60,*)
 write(60,'("Number of dimers                     :",i5)') nsys
-write(60,'("Average radius of QDA                :",f8.4)') aA
-write(60,'("Average radius of QDB                :",f8.4)') aB
-write(60,'("Average length of linker             :",f8.4)') link
-write(60,'("Size dispersion of QDA radius        :",f8.4)') dispQD
-write(60,'("Length dispersion of linker          :",f8.4)') displink
-write(60,'("Electron effective mass              :",f8.4," m0")') me
-write(60,'("Hole effective mass                  :",f8.4," m0")') mh
-write(60,'("Bulk dielectric constant             :",f8.4)')      eps
-write(60,'("Ligands dielectric constant          :",f8.4)')      epsout
-write(60,'("Bulk band gap                        :",f8.4)')      V0eV
+write(60,'("Average radius of QDA                :",ES14.4E2)') aA
+write(60,'("Average radius of QDB                :",ES14.4E2)') aB
+write(60,'("Average length of linker             :",ES14.4E2)') link
+write(60,'("Size dispersion of QDA radius        :",f10.4)') dispQD
+write(60,'("Length dispersion of linker          :",f10.4)') displink
+write(60,'("Electron effective mass              :",f10.4," m0")') me
+write(60,'("Hole effective mass                  :",f10.4," m0")') mh
+write(60,'("Bulk dielectric constant             :",f10.4)')      eps
+write(60,'("Ligands dielectric constant          :",f10.4)')      epsout
+write(60,'("Bulk band gap                        :",f10.4)')      V0eV
 write(60,*)
 write(60,*)
 write(60,*) "The initial parameters of the dynamic are:"

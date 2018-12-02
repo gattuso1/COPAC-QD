@@ -67,6 +67,8 @@ allocate(Cb_Num_eh1_eh2(rmax+1))
 allocate(Cb_Num_eh2(rmax+1))
 allocate(TransDip_Ana_h1e(rmax+1))
 allocate(TransDip_Ana_h2e(rmax+1))
+allocate(TransDip_Num_h1e(rmax+1))
+allocate(TransDip_Num_h2e(rmax+1))
 allocate(Oscillator_Ana_h1e(rmax+1))
 allocate(Oscillator_Ana_h2e(rmax+1))
 allocate(ExctCoef_h1e(rmax+1))
@@ -179,10 +181,10 @@ Eeh2(n) = (minEe(1,n)+minEh(2,n))+V0-Cb_eh2(n)
 !Dipole moment 
 if ( o_DipS == 'y' ) then
 TransDip_Ana_h1e(n) = abs(TransDip_Ana(Ae(n),Ah1(n),Be(n),Bh1(n),kine(n),kinh1(n),koute(n),kouth1(n),aR(n)))
-!TransDip_Num_h1e(n) = abs(TransDip_Num(Ae(n),Ah1(n),Be(n),Bh1(n),kine(n),kinh1(n),koute(n),kouth1(n),aR(n)))/Cm_to_D 
+!TransDip_Num_h1e(n) = abs(TransDip_Num(Ae(n),Ah1(n),Be(n),Bh1(n),kine(n),kinh1(n),koute(n),kouth1(n),aR(n)))
 !TransDip_EMA_h1e(n) = abs(TransDip_EMA(Eeh1(n),aR(n)))/Cm_to_D
 TransDip_Ana_h2e(n) = abs(TransDip_Ana(Ae(n),Ah2(n),Be(n),Bh2(n),kine(n),kinh2(n),koute(n),kouth2(n),aR(n)))
-!TransDip_Num_h2e(n) = abs(TransDip_Num(Ae(n),Ah2(n),Be(n),Bh2(n),kine(n),kinh2(n),koute(n),kouth2(n),aR(n)))/Cm_to_D
+!TransDip_Num_h2e(n) = abs(TransDip_Num(Ae(n),Ah2(n),Be(n),Bh2(n),kine(n),kinh2(n),koute(n),kouth2(n),aR(n)))
 !TransDip_EMA_h2e(n) = abs(TransDip_EMA(Eeh2(n),aR(n)))/Cm_to_D
 endif
 
@@ -330,15 +332,11 @@ enddo
 
 if ( dyn .eq. 'y' ) then 
 
-open(21,file='Ham0.dat')
 open(22,file='Pulse.dat')
-open(23,file='Hamt.dat')
-open(25,file='Popc.dat')
-open(26,file='Norm.dat')
-open(27,file='TransHam.dat')
-
-write(21,'("#     Number                  QDA                       QDB                    linker")')
-write(27,'("#     Number                  QDA                       QDB                    linker")')
+open(42,file='TransMat.dat')
+open(43,file='Ham0.dat')
+write(42,'("#     Number                  QDA                       QDB                    linker")')
+write(43,'("#     Number                  QDA                       QDB                    linker")')
 write(22,'("#  time                      pulse1                    pulse2                    pulse3")')
 
 do t=0,ntime
@@ -351,15 +349,19 @@ write(22,*) real(xtime) , real(pulse1 * xEd * cos(xomega*(xtime-xt01)+xphase) * 
 
 enddo
 
-if ( aA .ne. aB ) then
+!if ( (vers .eq. 'dimer' ) .and. ( aA .ne. aB ) ) then
+if ( (vers .eq. 'dimer' ) ) then
+nsys = 1
+rmax = 1
+elseif ( (vers .eq. 'randm' ) .and. ( aA .ne. aB ) ) then
 rmax = nsys
 endif 
 
-call cpu_time(start)
+!call cpu_time(start)
 
 do n=rmin,rmax
 
-write(6,*) "Treating dimer number:    ", n
+write(6,*) "Computing dimer number:    ", n
 
 if ( vers .eq. 'randm' ) then
 write(popc,'(a5,i5.5,a4)') 'Popc-', n, '.dat'
@@ -368,6 +370,10 @@ write(norm,'(a5,i5.5,a4)') 'Norm-', n, '.dat'
 open(44,file=popc)
 open(45,file=hmti)
 open(46,file=norm)
+else if ( vers .eq. 'dimer') then
+open(44,file='Popc.dat')
+open(45,file='Hamt.dat')
+open(46,file='Norm.dat')
 endif
 
 Ham      = 0.0
@@ -403,23 +409,16 @@ enddo
 
 endif
 
-if ( vers .eq. "randm" ) then
-
-write(21,*) n , aR(n), aR(n+nsys), linker(n)
-write(27,*) n , aR(n), aR(n+nsys), linker(n)
-
+write(42,*) n , aR(n), aR(n+nsys), linker(n)
+write(43,*) n , aR(n), aR(n+nsys), linker(n)
 do i=0,nstates-1
-write(21,'(9es14.6e2)') (real(Ham(i,j)), j=0,nstates-1)
+write(43,'(9es14.6e2)') (real(Ham(i,j)), j=0,nstates-1)
 enddo
-
 do i=0,nstates-1
-write(27,'(9es14.6e2)') (real(TransHam(i,j)), j=0,nstates-1)
+write(42,'(9es14.6e2)') (real(TransHam(i,j)), j=0,nstates-1)
 enddo
-
-write(21,*) 
-write(27,*) 
-
-endif
+write(42,*) 
+write(43,*) 
 
 !!!!!INITIAL POPULATIONS
 c0(0) = 1.0
@@ -545,12 +544,47 @@ close(44)
 close(45)
 close(46)
 
+
+if ( vers .eq. 'dimer' ) then
+write(6,*)
+write(6,*)
+
+write(6,*) "Initial Hamiltonian"
+
+do i = 1,nstates-1
+write(6,"(i2,8f12.6)") i, (Ham(i,j)/elec, j=1,nstates-1)
+enddo
+write(6,*)
+
+allocate(lambda(1:nstates-1))
+allocate(work(1))
+
+call dsyev('V','U', nstates-1, Ham, nstates-1, lambda, Work, -1, info)
+lwork=nint(work(1))
+deallocate (work)
+allocate(work(lwork))
+call dsyev('V', 'U', nstates-1, Ham, nstates-1, lambda, Work, lwork, info)
+deallocate (work)
+write(6,*)
+
+write(6,*) "Eigenvalues"
+write(6,"(8ES12.4E2)") (lambda(i)/elec, i=1,nstates-1)
+write(6,*)
+write(6,*) "Eigenvectors"
+do i = 1,nstates-1
+write(6,"(i2,8f8.4)") i, (Ham(i,j), j=1,nstates-1)
+enddo
+deallocate(lambda)
+
+endif
+
+
 enddo
 
 
-call cpu_time(finish)
+!call cpu_time(finish)
 
-write(6,*) finish - start
+!write(6,*) finish - start
 
 endif
 

@@ -1,10 +1,8 @@
- Random heterodimers
+ Results for a QD homodimer
 
 
  The process has generated the following files:
 
-Dimers.dat            contains radius QDA, radius QDB, linker length
-Etransitions.dat      contains radius QDA, radius QDB, linker length, Eh1e, Eh2e
 Ham0.dat              contains Hamiltonian of 0th order
 Pulse.dat             contains the pulse(s)
 TransHam.dat          contains the transition dipole moment matrix elements
@@ -12,16 +10,8 @@ Hamt.dat              contains the time dependent Hamiltonian of dimer n
 Popc.dat              contains the population evolution of each state |c**2(t)| of dimer n
 Norm.dat              contains the time dependent norm of dimer n
 
-
-
  The initial parameters are:
 
-Number of dimers                     :    5
-Average radius of QDA                :  0.0000
-Average radius of QDB                :  0.0000
-Average length of linker             :  0.0000
-Size dispersion of QDA radius        :  0.0500
-Length dispersion of linker          :  0.0500
 Electron effective mass              :  0.0000 m0
 Hole effective mass                  :  0.0000 m0
 Bulk dielectric constant             :  9.5600
@@ -29,15 +19,76 @@ Ligands dielectric constant          :  2.3000
 Bulk band gap                        :  1.7500
 
 
+
+                                                      QDA                           QDB
+Radius                               :             1.0000E-09                    1.0000E-09
+Confining potential electron         :             4.0065E-19                    4.0065E-19
+Confining potential holes            :             8.9931E-19                    8.9931E-19
+Dielectric constant                  :             7.5433E+00                    7.5433E+00
+Norm e                               :             1.0000E+00                    1.0000E+00
+Norm h1                              :             1.0000E+00                    1.0000E+00
+Norm h2                              :             1.0000E+00                    1.0000E+00
+
+                                                   /       \                      /      \  
+                                                  /         \                    /        \ 
+                                                 /           \                  /          \
+ Local States
+                                               h1e            h2e            h1e            h2e
+Transition energies                  :     2.8762E+00     4.0241E+00     2.8762E+00     4.0241E+00
+Coulomb correction                   :     2.6680E-01     2.4348E-01     2.6680E-01     2.4348E-01
+Wavefunction overlap                 :       0.928120       0.291826       0.928120       0.291826
+Transition dipole moment             :     9.1744E-29     6.2048E-29     9.1744E-29     6.2048E-29
+Oscillator strength                  :************************************************************
+Extinction coefficient               :************************************************************
+Coulomb correction                   :************************************************************
+
+
+ Charge transfer states: 
+                                                5              6              7              8 
+Transition energies                  :    -5.3487E-04     7.0709E-01     4.4613E-19     6.2991E-19
+Transition dipole moment (fit)       :     7.3112E-33     6.7426E-33     7.3112E-33     6.7426E-33
+
+
+
+
+
  The initial parameters of the dynamic are:
 
 Number of states        :   9
-Number of pulses        :   1
-t0 of pulse             :   5.000000E-15
+Number of pulses        :   3
+t0 of first pulse       :   5.000000E-15
+t0 of second pulse      :   3.000000E-14
 Time step               :   2.000000E-17
 Time length of dynamic  :   5.000000E-13
 Omega                   :   3.600000E+15
 Phase                   :   3.141593E+00
 Width                   :   5.000000E-16
-Power                   :   5.142000E+08
+Power                   :   5.142000E+09
 
+
+
+ The 0th order Hamiltonian is:
+
+            0             1             2             3             4             5             6             7             8
+ 0   -5.038802E+16 -1.993847E+14  4.413412E+18  4.412742E+18  3.367647E+14 -3.566821E+15 -3.160384E+15  4.413292E+18  0.000000E+00
+ 1    2.993885E+12  3.362017E+14 -1.721259E+15  2.152673E+15 -1.655990E+15  4.413412E+18 -3.249847E+16  5.952176E-04 -1.108967E-03
+ 2    3.137922E+15  1.294421E+15 -2.396829E+15  1.655357E+15  2.196768E+15  2.064897E+15 -3.249762E+16 -1.708202E-04  2.769591E-04
+ 3    6.629814E+14  5.005017E+16  5.139458E+14  1.319251E+15 -3.420336E+14 -4.413293E+18 -2.487550E+15 -1.123546E-03 -1.412522E-03
+ 4    4.413129E+18 -4.413130E+18 -4.413413E+18  2.831321E+15 -2.956307E+15  2.196014E+14 -1.909226E+15 -3.157090E-04 -1.418013E-03
+ 5    5.005042E+16 -9.358653E+14  2.960177E+15 -1.691041E+14 -2.029437E+15 -3.338396E+15 -2.478731E+15  1.150940E-06  5.296249E-06
+ 6   -2.205212E+15 -5.038739E+16  5.685520E+14  4.412743E+18  4.413411E+18  2.043506E+15  4.413291E+18  5.296249E-06  9.620630E-06
+ 7   -4.413125E+18 -6.966503E+14  4.414083E+18 -1.011038E+15 -8.418934E+14 -3.283561E+16 -3.283533E+16  2.784530E+00 -8.086709E-04
+ 8    4.413126E+18  1.487090E+15  1.552099E+15 -4.414083E+18  1.138951E+15 -4.413289E+18 -1.344457E+15 -8.086709E-04  3.931574E+00
+
+ And the transition dipole matrix is:
+
+            0             1             2             3             4             5             6             7             8
+ 0    0.000000E+00  2.750426E+01  1.860142E+01  2.750426E+01  1.860142E+01  2.191845E-03  2.021371E-03  2.191845E-03  2.021371E-03
+ 1    2.750426E+01  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00
+ 2    1.860142E+01  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00
+ 3    2.750426E+01  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00
+ 4    1.860142E+01  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00
+ 5    2.191845E-03  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00
+ 6    2.021371E-03  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00
+ 7    2.191845E-03  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00
+ 8    2.021371E-03  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00

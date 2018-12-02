@@ -663,7 +663,7 @@ real(dp) function Ana_out_out(m,B1,B2,k1,k2,a)
 end function Ana_out_out
 
 !Transition dipole inside dot volume, spherical symmetry
-real(dp) function TransDip_Num(A1,A2,B1,B2,kin1,kin2,kout1,kout2,r)
+real(dp) function TransDip_Num(A1,B1,kin1,kout1,A2,B2,kin2,kout2,r)
 
       implicit none
       integer :: i, m
