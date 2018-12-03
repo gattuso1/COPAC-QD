@@ -42,11 +42,11 @@ read(150,NML=version)
 read(150,NML=outputs)
 read(150,NML=elecSt)
 
-im         = dcmplx(0.0,1.0)
+im         = dcmplx(0.0d0,1.0d0)
 me         = me*m0
 mh         = mh*m0
-rhoe       = 1.0/sqrt((2*me*omegaLO)/hbar)
-rhoh       = 1.0/sqrt((2*mh*omegaLO)/hbar)
+rhoe       = 1.0d0/sqrt((2*me*omegaLO)/hbar)
+rhoh       = 1.0d0/sqrt((2*mh*omegaLO)/hbar)
 V0         = V0eV*elec
 
 if ( dyn .eq. 'y' ) then
@@ -54,15 +54,15 @@ if ( dyn .eq. 'y' ) then
 rewind 150
 read(150,NML=pulses)
 
-xhbar      = dcmplx(hbar,0.0)
-xh         = dcmplx(timestep,0.0)
-xt01       = dcmplx(t01,0.0)
-xt02       = dcmplx(t02,0.0)
-xt03       = dcmplx(t03,0.0)
-xphase     = dcmplx(phase,0.0)
-xomega     = dcmplx(omega,0.0)
-xwidth     = dcmplx(width,0.0)
-xEd        = dcmplx(Ed,0.0)
+xhbar      = dcmplx(hbar,0.0d0)
+xh         = dcmplx(timestep,0.0d0)
+xt01       = dcmplx(t01,0.0d0)
+xt02       = dcmplx(t02,0.0d0)
+xt03       = dcmplx(t03,0.0d0)
+xphase     = dcmplx(phase,0.0d0)
+xomega     = dcmplx(omega,0.0d0)
+xwidth     = dcmplx(width,0.0d0)
+xEd        = dcmplx(Ed,0.0d0)
 ntime      = nint(totaltime/timestep)
 phase      = pi
 
@@ -85,17 +85,17 @@ allocate(k3(0:nstates-1))
 allocate(k4(0:nstates-1))
 
 if ( npulses .eq. 3) then
-pulse1 = 1.0
-pulse2 = 1.0
-pulse3 = 1.0
+pulse1 = 1.d0 
+pulse2 = 1.d0
+pulse3 = 1.d0
 elseif ( npulses .eq. 2) then
-pulse1 = 1.0
-pulse2 = 1.0
-pulse3 = 0.0
+pulse1 = 1.d0
+pulse2 = 1.d0
+pulse3 = 0.d0
 elseif ( npulses .eq. 1) then
-pulse1 = 1.0
-pulse2 = 0.0
-pulse3 = 0.0
+pulse1 = 1.d0
+pulse2 = 0.d0
+pulse3 = 0.d0
 endif
 
 endif

@@ -30,7 +30,7 @@ side      =  0.5d-9      !Width of side buffer of integration box
 &pulses !Parameters of quantum dynamic and pulses
 nstates   = 9           !Total number of excitons + GS
 npulses   = 1           !Number of pulses (up to 3)
-t01       = 12.0d-14     !Pulse 1 centered at (s)
+t01       = 50.0d-14     !Pulse 1 centered at (s)
 t02       = 30.0d-14     !Pulse 2 centered at (s)
 t03       = 12.0d-14     !Pulse 3 centered at (s)
 timestep  = 20d-18      !Time step of quantum dynamic
@@ -39,7 +39,7 @@ omega     = 0.65d15      !Frequency (s-1)
 !omega     = 8.0d15      !Frequency (s-1)
 !phase     = pi Careful here, it is defined in the code
 width     = 10d-15       !Width of the pulse (s) 
-Ed        = 5.142d9     !Field strength (V/m so far)
+Ed        = 5.142d8     !Field strength (V/m so far)
 !Ed        = 2.0d9     !Field strength (V/m so far)
 /
 
@@ -62,7 +62,7 @@ link   = 1.0d-9      !Linker length
 /
 
 &syst_random !Parameters of a random distribution of dimers either homo (aA=aB) or hetero (aA!=aB,linker fixed)
-nsys      = 1000          !Number of dimers
+nsys      = 10         !Number of dimers
 aA        = 1.0d-9      !Radius of QDA
 aB        = 3.0d-9      !Radius of QDB
 link      = 0.2d-9      !Linker length  (if hetero must be 0.2 nm so far)

@@ -202,11 +202,11 @@ real(dp) function TransDip_Fit_h1e_ho(a,b)
       real(dp) :: d1,d2,d3,d4,a,b
 
 d1 = -1.53548d-07
-d2 = 52.6179
-d3 = 4.36573
-d4 = 9.86824
+d2 = 52.6179d0
+d3 = 4.36573d0
+d4 = 9.86824d0
 
-TransDip_Fit_h1e_ho =  d1 + d2 / ((a*1d9)**d3) * exp(-1.0*d4*b*1d9)
+TransDip_Fit_h1e_ho =  d1 + d2 / ((a*1d9)**d3) * exp(-1.0d0*d4*b*1d9)
 
 end function TransDip_Fit_h1e_ho
 
@@ -217,9 +217,9 @@ real(dp) function TransDip_Fit_h2e_ho(a,b)
       real(dp) :: d1,d2,d3,d4,a,b
 
 d1   = 2.20868d-06      
-d2   = 39.8905          
-d3   = 9.61212          
-d4   = 8.88849
+d2   = 39.8905d0          
+d3   = 9.61212d0          
+d4   = 8.88849d0
 
 !link=1.0nm
 !d1              = 1.09021e-05    
@@ -227,7 +227,7 @@ d4   = 8.88849
 !d3              = 1.82566        
 !d4              = 2.70059
 
-TransDip_Fit_h2e_ho =  d1 + d2 / ((a*1d9)**d3) * exp(-1.0*d4*b*1d9)
+TransDip_Fit_h2e_ho =  d1 + d2 / ((a*1d9)**d3) * exp(-1.0d0*d4*b*1d9)
 
 end function TransDip_Fit_h2e_ho
 
@@ -252,12 +252,12 @@ real(dp) function TransDip_Fit_h2e_he(a,b)
       implicit none
       real(dp) :: d1,d2,d3,d4,a,b
 
-d1              = 0.159035
-d2              = 79.9838
-d3              = 0.96669
-d4              = 1.9961
+d1              = 0.159035d0
+d2              = 79.9838d0
+d3              = 0.96669d0
+d4              = 1.9961d0
 
-TransDip_Fit_h2e_he =  d1 + d2*((a*1d9-d3))*exp(-2*(a*1d9))/((b*1d9)**d4)
+TransDip_Fit_h2e_he =  d1 + d2*((a*1d9-d3))*exp(-2.0d0*(a*1d9))/((b*1d9)**d4)
 
 end function TransDip_Fit_h2e_he
 

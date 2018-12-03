@@ -154,36 +154,40 @@ Bh2(n)=Ah2(n)*sin(kinh2(n)*aR(n))*exp(kouth2(n)*aR(n))
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !Comlomb correction (analytical) between electron and holes
 
-I1eh1(n)=(Ae(n)**2*Ah1(n)**2*aR(n)/4)*(1-sin(2*kine(n)*aR(n))/(2*kine(n)*aR(n))-s13adf(2*kine(n)*aR(n),ifail)/(2*kine(n)*aR(n))+&
-         (s13adf(2*kine(n)*aR(n)-2*kinh1(n)*aR(n),ifail)+s13adf(2*kine(n)*aR(n)+2*kinh1(n)*aR(n),ifail))/(4*kine(n)*aR(n))) + &
-        (Ae(n)**2*Ah1(n)**2*aR(n)/4)*(1-sin(2*kinh1(n)*aR(n))/(2*kinh1(n)*aR(n))-s13adf(2*kinh1(n)*aR(n),ifail)/(2*kinh1(n)*aR(n))+&
-         (s13adf(2*kinh1(n)*aR(n)-2*kine(n)*aR(n),ifail)+s13adf(2*kinh1(n)*aR(n)+2*kine(n)*aR(n),ifail))/(4*kinh1(n)*aR(n))) 
+I1eh1(n)=(Ae(n)**2*Ah1(n)**2*aR(n)/4.d0)*(1-sin(2.d0*kine(n)*aR(n))/(2.d0*kine(n)*aR(n))-&
+s13adf(2.d0*kine(n)*aR(n),ifail)/(2.d0*kine(n)*aR(n))+&
+(s13adf(2.d0*kine(n)*aR(n)-2*kinh1(n)*aR(n),ifail)+s13adf(2.d0*kine(n)*aR(n)+2*kinh1(n)*aR(n),ifail))/(4.d0*kine(n)*aR(n))) + &
+(Ae(n)**2*Ah1(n)**2*aR(n)/4.d0)*(1-sin(2.d0*kinh1(n)*aR(n))/(2.d0*kinh1(n)*aR(n))-&
+s13adf(2.d0*kinh1(n)*aR(n),ifail)/(2.d0*kinh1(n)*aR(n))+&
+(s13adf(2.d0*kinh1(n)*aR(n)-2*kine(n)*aR(n),ifail)+s13adf(2.d0*kinh1(n)*aR(n)+2*kine(n)*aR(n),ifail))/(4.d0*kinh1(n)*aR(n))) 
 
-I2eh1(n)=(Ae(n)**2*Bh1(n)**2*aR(n)/2)*(1-sin(2*kine(n)*aR(n))/(2*kine(n)*aR(n)))*eone(2*kouth1(n)*aR(n))+&
-         (Ah1(n)**2*Be(n)**2*aR(n)/2)*(1-sin(2*kinh1(n)*aR(n))/(2*kinh1(n)*aR(n)))*eone(2*koute(n)*aR(n))
+I2eh1(n)=(Ae(n)**2*Bh1(n)**2*aR(n)/2)*(1-sin(2.d0*kine(n)*aR(n))/(2.d0*kine(n)*aR(n)))*eone(2.d0*kouth1(n)*aR(n))+&
+         (Ah1(n)**2*Be(n)**2*aR(n)/2)*(1-sin(2.d0*kinh1(n)*aR(n))/(2.d0*kinh1(n)*aR(n)))*eone(2.d0*koute(n)*aR(n))
 
-I3eh1(n)=(Be(n)**2*Bh1(n)**2*aR(n)/(2*koute(n)*aR(n))*(exp(-2*koute(n)*aR(n))*& 
-      eone(2*kouth1(n)*aR(n))-eone(2*koute(n)*aR(n)+2*kouth1(n)*aR(n))))+&
-      (Be(n)**2*Bh1(n)**2*aR(n)/(2*kouth1(n)*aR(n))*(exp(-2*kouth1(n)*aR(n))*&
-      eone(2*koute(n)*aR(n))-eone(2*kouth1(n)*aR(n)+2*koute(n)*aR(n))))
+I3eh1(n)=(Be(n)**2*Bh1(n)**2*aR(n)/(2.d0*koute(n)*aR(n))*(exp(-2*koute(n)*aR(n))*& 
+      eone(2.d0*kouth1(n)*aR(n))-eone(2.d0*koute(n)*aR(n)+2*kouth1(n)*aR(n))))+&
+      (Be(n)**2*Bh1(n)**2*aR(n)/(2.d0*kouth1(n)*aR(n))*(exp(-2*kouth1(n)*aR(n))*&
+      eone(2.d0*koute(n)*aR(n))-eone(2.d0*kouth1(n)*aR(n)+2*koute(n)*aR(n))))
 
-I1eh2(n)=(Ae(n)**2*Ah2(n)**2*aR(n)/4)*(1-sin(2*kine(n)*aR(n))/(2*kine(n)*aR(n))-s13adf(2*kine(n)*aR(n),ifail)/(2*kine(n)*aR(n))+&
-         (s13adf(2*kine(n)*aR(n)-2*kinh2(n)*aR(n),ifail)+s13adf(2*kine(n)*aR(n)+2*kinh2(n)*aR(n),ifail))/(4*kine(n)*aR(n))) + &
-        (Ae(n)**2*Ah2(n)**2*aR(n)/4)*(1-sin(2*kinh2(n)*aR(n))/(2*kinh2(n)*aR(n))-s13adf(2*kinh2(n)*aR(n),ifail)/(2*kinh1(n)*aR(n))+&
-         (s13adf(2*kinh2(n)*aR(n)-2*kine(n)*aR(n),ifail)+s13adf(2*kinh2(n)*aR(n)+2*kine(n)*aR(n),ifail))/(4*kinh2(n)*aR(n))) 
+I1eh2(n)=(Ae(n)**2*Ah2(n)**2*aR(n)/4.d0)*(1-sin(2.d0*kine(n)*aR(n))/(2.d0*kine(n)*aR(n))-&
+s13adf(2.d0*kine(n)*aR(n),ifail)/(2.d0*kine(n)*aR(n))+&
+(s13adf(2.d0*kine(n)*aR(n)-2*kinh2(n)*aR(n),ifail)+s13adf(2.d0*kine(n)*aR(n)+2*kinh2(n)*aR(n),ifail))/(4.d0*kine(n)*aR(n))) + &
+(Ae(n)**2*Ah2(n)**2*aR(n)/4.d0)*(1-sin(2.d0*kinh2(n)*aR(n))/(2.d0*kinh2(n)*aR(n))-&
+s13adf(2.d0*kinh2(n)*aR(n),ifail)/(2.d0*kinh1(n)*aR(n))+&
+(s13adf(2.d0*kinh2(n)*aR(n)-2*kine(n)*aR(n),ifail)+s13adf(2.d0*kinh2(n)*aR(n)+2*kine(n)*aR(n),ifail))/(4.d0*kinh2(n)*aR(n))) 
 
-I2eh2(n)=(Ae(n)**2*Bh2(n)**2*aR(n)/2)*(1-sin(2*kine(n)*aR(n))/(2*kine(n)*aR(n)))*eone(2*kouth2(n)*aR(n))+&
-         (Ah2(n)**2*Be(n)**2*aR(n)/2)*(1-sin(2*kinh2(n)*aR(n))/(2*kinh2(n)*aR(n)))*eone(2*koute(n)*aR(n))
+I2eh2(n)=(Ae(n)**2*Bh2(n)**2*aR(n)/2)*(1-sin(2.d0*kine(n)*aR(n))/(2.d0*kine(n)*aR(n)))*eone(2.d0*kouth2(n)*aR(n))+&
+         (Ah2(n)**2*Be(n)**2*aR(n)/2)*(1-sin(2.d0*kinh2(n)*aR(n))/(2.d0*kinh2(n)*aR(n)))*eone(2.d0*koute(n)*aR(n))
 
-I3eh2(n)=(Be(n)**2*Bh2(n)**2*aR(n)/(2*koute(n)*aR(n))*(exp(-2*koute(n)*aR(n))*&
-       eone(2*kouth2(n)*aR(n))-eone(2*koute(n)*aR(n)+2*kouth2(n)*aR(n))))+&
-         (Be(n)**2*Bh2(n)**2*aR(n)/(2*kouth2(n)*aR(n))*(exp(-2*kouth2(n)*aR(n))*&
-       eone(2*koute(n)*aR(n))-eone(2*kouth2(n)*aR(n)+2*koute(n)*aR(n))))
+I3eh2(n)=(Be(n)**2*Bh2(n)**2*aR(n)/(2.d0*koute(n)*aR(n))*(exp(-2*koute(n)*aR(n))*&
+       eone(2.d0*kouth2(n)*aR(n))-eone(2.d0*koute(n)*aR(n)+2*kouth2(n)*aR(n))))+&
+         (Be(n)**2*Bh2(n)**2*aR(n)/(2.d0*kouth2(n)*aR(n))*(exp(-2*kouth2(n)*aR(n))*&
+       eone(2.d0*koute(n)*aR(n))-eone(2.d0*kouth2(n)*aR(n)+2*koute(n)*aR(n))))
 
 
-Cb_eh1(n)=(elec**2/(4*pi*epsin(n)*eps0))*(I1eh1(n)+I2eh1(n)+I3eh1(n))
+Cb_eh1(n)=(elec**2/(4.d0*pi*epsin(n)*eps0))*(I1eh1(n)+I2eh1(n)+I3eh1(n))
 
-Cb_eh2(n)=(elec**2/(4*pi*epsin(n)*eps0))*(I1eh2(n)+I2eh2(n)+I3eh2(n))
+Cb_eh2(n)=(elec**2/(4.d0*pi*epsin(n)*eps0))*(I1eh2(n)+I2eh2(n)+I3eh2(n))
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 Eeh1(n) = (minEe(1,n)+minEh(1,n))+V0-Cb_eh1(n) 
@@ -446,15 +450,15 @@ write(42,*)
 write(43,*) 
 
 !!!!!INITIAL POPULATIONS
-c0(0) = 1.0
-c0(1) = 0.0
-c0(2) = 0.0
-c0(3) = 0.0
-c0(4) = 0.0
-c0(5) = 0.0
-c0(6) = 0.0
-c0(7) = 0.0
-c0(8) = 0.0
+c0(0) = 1/sqrt(2.d0) !.0d0 
+c0(1) = 0.0d0
+c0(2) = 0.0d0
+c0(3) = 0.0d0
+c0(4) = 1/sqrt(2.d0) !.0d0
+c0(5) = 0.0d0
+c0(6) = 0.0d0
+c0(7) = 0.0d0
+c0(8) = 0.0d0 
 
 xHam = dcmplx(Ham,0.0d0)
 xHamt(:,:,0) = xHam(:,:)
@@ -474,7 +478,7 @@ enddo
 if ( hamilt .eq. "y" ) then
 do t=0,ntime
  
-xtime = dcmplx(t*timestep,0.0)
+xtime = dcmplx(t*timestep,0.0d0)
 
 write(45,*) real(xtime)
 

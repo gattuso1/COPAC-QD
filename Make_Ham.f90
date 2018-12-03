@@ -3,67 +3,67 @@ module Make_Ham
 use Constants
 use Variables
 
-real(dp), parameter :: a12_1d_ho = 0.00876695
-real(dp), parameter :: a12_2d_ho = 0.0346284
+real(dp), parameter :: a12_1d_ho = 0.00876695d0
+real(dp), parameter :: a12_2d_ho = 0.0346284d0
 real(dp), parameter :: a12_3d_ho = 8.94293d+08
-real(dp), parameter :: a12_1e_ho = 0.000588561
-real(dp), parameter :: a12_2e_ho = 0.231987
+real(dp), parameter :: a12_1e_ho = 0.000588561d0
+real(dp), parameter :: a12_2e_ho = 0.231987d0
 real(dp), parameter :: a12_3e_ho = 1.64474d+09
-real(dp), parameter :: a55_1d_ho = 0.019678
-real(dp), parameter :: a55_2d_ho = 0.26841
+real(dp), parameter :: a55_1d_ho = 0.019678d0
+real(dp), parameter :: a55_2d_ho = 0.26841d0
 real(dp), parameter :: a55_3d_ho = 1.22231d+09
 real(dp), parameter :: a55_4d_ho = 4.6499d+08
-real(dp), parameter :: a66_1d_ho = 0.0196255
-real(dp), parameter :: a66_2d_ho = 0.270825
+real(dp), parameter :: a66_1d_ho = 0.0196255d0
+real(dp), parameter :: a66_2d_ho = 0.270825d0
 real(dp), parameter :: a66_3d_ho = 1.21959d+09
 real(dp), parameter :: a66_4d_ho = 4.64529d+08
 real(dp), parameter :: a13_1d_ho = -6.07575d-08
 real(dp), parameter :: a13_2d_ho = 1.94165d-10
-real(dp), parameter :: a13_3d_ho = 6.65937
+real(dp), parameter :: a13_3d_ho = 6.65937d0
 real(dp), parameter :: a13_4d_ho = 1.34041d+10
 real(dp), parameter :: a15_1d_ho = -3.03287d-06
 real(dp), parameter :: a15_2d_ho = 3.28361d-10
-real(dp), parameter :: a15_3d_ho = 4.53023
+real(dp), parameter :: a15_3d_ho = 4.53023d0
 real(dp), parameter :: a15_4d_ho = 5.84667d+09
 real(dp), parameter :: a17_1d_ho = -1.18454d-08
 real(dp), parameter :: a17_2d_ho = 1.93051d-10
-real(dp), parameter :: a17_3d_ho = 4.90209
+real(dp), parameter :: a17_3d_ho = 4.90209d0
 real(dp), parameter :: a17_4d_ho = 1.05339d+10
 real(dp), parameter :: a24_1d_ho = 2.01287d-08
 real(dp), parameter :: a24_2d_ho = 3.13757d-10
-real(dp), parameter :: a24_3d_ho = 7.90071
+real(dp), parameter :: a24_3d_ho = 7.90071d0
 real(dp), parameter :: a24_4d_ho = 1.42154d+10
 real(dp), parameter :: a26_1d_ho = -4.09828d-06
 real(dp), parameter :: a26_2d_ho = 3.25598d-10
-real(dp), parameter :: a26_3d_ho = 4.51295
+real(dp), parameter :: a26_3d_ho = 4.51295d0
 real(dp), parameter :: a26_4d_ho = 5.72301d+09
 real(dp), parameter :: a28_1d_ho = -3.33925d-07
 real(dp), parameter :: a28_2d_ho = 2.72707d-10
-real(dp), parameter :: a28_3d_ho = 5.15739
+real(dp), parameter :: a28_3d_ho = 5.15739d0
 real(dp), parameter :: a28_4d_ho = 8.8487d+09
 real(dp), parameter :: a68_1d_ho = 4.1131d-08
 real(dp), parameter :: a68_2d_ho = 3.2414d-10
-real(dp), parameter :: a68_3d_ho = 8.09373
+real(dp), parameter :: a68_3d_ho = 8.09373d0
 real(dp), parameter :: a68_4d_ho = 1.42896d+10
-real(dp), parameter :: a56_1d_ho = -0.000176992
+real(dp), parameter :: a56_1d_ho = -0.000176992d0
 real(dp), parameter :: a56_2d_ho = 3.09602d-14
-real(dp), parameter :: a56_3d_ho = 0.663239
+real(dp), parameter :: a56_3d_ho = 0.663239d0
 real(dp), parameter :: a56_4d_ho = 1.32932d+08
 real(dp), parameter :: a57_1d_ho = -9.32088d-09
 real(dp), parameter :: a57_2d_ho = 2.35068d-10
-real(dp), parameter :: a57_3d_ho = 7.27929
+real(dp), parameter :: a57_3d_ho = 7.27929d0
 real(dp), parameter :: a57_4d_ho = 1.57266d+10
 real(dp), parameter :: a25_1d_ho = 1.8281d-06
 real(dp), parameter :: a25_2d_ho = 3.02171d-10
-real(dp), parameter :: a25_3d_ho = 6.27232
+real(dp), parameter :: a25_3d_ho = 6.27232d0
 real(dp), parameter :: a25_4d_ho = 1.89898d+10
 real(dp), parameter :: a18_1d_ho = -2.4777d-07
 real(dp), parameter :: a18_2d_ho = 2.29293d-10
-real(dp), parameter :: a18_3d_ho = 5.01759
+real(dp), parameter :: a18_3d_ho = 5.01759d0
 real(dp), parameter :: a18_4d_ho = 9.33159d+09
 real(dp), parameter :: a27_1d_ho = -1.20211d-07
 real(dp), parameter :: a27_2d_ho = 2.29099d-10
-real(dp), parameter :: a27_3d_ho = 5.02518
+real(dp), parameter :: a27_3d_ho = 5.02518d0
 real(dp), parameter :: a27_4d_ho = 9.60451d+09
 real(dp), parameter :: a16_1d_ho = -7.52249d-07
 real(dp), parameter :: a16_2d_ho = 4.62924d-11
@@ -71,79 +71,79 @@ real(dp), parameter :: a16_3d_ho = 3.28286d0
 real(dp), parameter :: a16_4d_ho = 3.92155d+09
 real(dp), parameter :: a14_1d_ho = 2.21733d-08
 real(dp), parameter :: a14_2d_ho = 2.79711d-10
-real(dp), parameter :: a14_3d_ho = 7.71956
+real(dp), parameter :: a14_3d_ho = 7.71956d0
 real(dp), parameter :: a14_4d_ho = 1.51704d+10
 real(dp), parameter :: a58_1d_ho = -4.36445d-08
 real(dp), parameter :: a58_2d_ho = 2.60451d-10
-real(dp), parameter :: a58_3d_ho = 7.39341
+real(dp), parameter :: a58_3d_ho = 7.39341d0
 real(dp), parameter :: a58_4d_ho = 1.41517d+10
-real(dp), parameter :: a13_1e_ho = 0.0172999
-real(dp), parameter :: a13_2e_ho = 0.167727
+real(dp), parameter :: a13_1e_ho = 0.0172999d0
+real(dp), parameter :: a13_2e_ho = 0.167727d0
 real(dp), parameter :: a13_3e_ho = 1.06735d+09
 real(dp), parameter :: a13_4e_ho = 4.93919d+08
-real(dp), parameter :: a14_1e_ho = -0.00397311
-real(dp), parameter :: a14_2e_ho = -0.105774
+real(dp), parameter :: a14_1e_ho = -0.00397311d0
+real(dp), parameter :: a14_2e_ho = -0.105774d0
 real(dp), parameter :: a14_3e_ho = 1.38848d+09
 real(dp), parameter :: a14_4e_ho = 3.93184d+08
-real(dp), parameter :: a24_1e_ho = 0.000964533
-real(dp), parameter :: a24_2e_ho = 0.0633182
+real(dp), parameter :: a24_1e_ho = 0.000964533d0
+real(dp), parameter :: a24_2e_ho = 0.0633182d0
 real(dp), parameter :: a24_3e_ho = 1.71083d+09
 real(dp), parameter :: a24_4e_ho = 3.59354d+08
 real(dp), parameter :: a15_1e_ho = -3.07142d-07
 real(dp), parameter :: a15_2e_ho = 2.92033d-10
-real(dp), parameter :: a15_3e_ho = 5.14692
+real(dp), parameter :: a15_3e_ho = 5.14692d0
 real(dp), parameter :: a15_4e_ho = 6.99873d+09
 real(dp), parameter :: a17_1e_ho = -4.63489d-07
 real(dp), parameter :: a17_2e_ho = 2.48465d-10
-real(dp), parameter :: a17_3e_ho = 4.72745
+real(dp), parameter :: a17_3e_ho = 4.72745d0
 real(dp), parameter :: a17_4e_ho = 7.36577d+09
 real(dp), parameter :: a55_1e_ho = -3.37156d-08
 real(dp), parameter :: a55_2e_ho = 2.66642d-10
-real(dp), parameter :: a55_3e_ho = 7.74613
+real(dp), parameter :: a55_3e_ho = 7.74613d0
 real(dp), parameter :: a55_4e_ho = 1.31425d+10
 real(dp), parameter :: a66_1e_ho = -1.60013d-08
 real(dp), parameter :: a66_2e_ho = 3.05203d-10
-real(dp), parameter :: a66_3e_ho = 7.65275
+real(dp), parameter :: a66_3e_ho = 7.65275d0
 real(dp), parameter :: a66_4e_ho = 1.30185d+10
 real(dp), parameter :: a26_1e_ho = -3.0698d-07
 real(dp), parameter :: a26_2e_ho = 2.81903d-10
-real(dp), parameter :: a26_3e_ho = 5.35289
+real(dp), parameter :: a26_3e_ho = 5.35289d0
 real(dp), parameter :: a26_4e_ho = 6.74812d+09
 real(dp), parameter :: a28_1e_ho = -2.97071d-07
 real(dp), parameter :: a28_2e_ho = 2.61368d-10
-real(dp), parameter :: a28_3e_ho = 5.14267
+real(dp), parameter :: a28_3e_ho = 5.14267d0
 real(dp), parameter :: a28_4e_ho = 7.10254d+09
 real(dp), parameter :: a68_1e_ho = -2.58585d-08
 real(dp), parameter :: a68_2e_ho = 3.06916d-10
-real(dp), parameter :: a68_3e_ho = 7.70315
+real(dp), parameter :: a68_3e_ho = 7.70315d0
 real(dp), parameter :: a68_4e_ho = 1.31844d+10
 real(dp), parameter :: a57_1e_ho = -2.78302d-08
 real(dp), parameter :: a57_2e_ho = 2.13605d-10
-real(dp), parameter :: a57_3e_ho = 6.92294
+real(dp), parameter :: a57_3e_ho = 6.92294d0
 real(dp), parameter :: a57_4e_ho = 1.48671d+10
 real(dp), parameter :: a25_1e_ho = -1.21351d-07
 real(dp), parameter :: a25_2e_ho = 2.66787d-10
-real(dp), parameter :: a25_3e_ho = 5.52544
+real(dp), parameter :: a25_3e_ho = 5.52544d0
 real(dp), parameter :: a25_4e_ho = 7.04239d+09
 real(dp), parameter :: a27_1e_ho = -4.37725d-07
 real(dp), parameter :: a27_2e_ho = 2.31345d-10
-real(dp), parameter :: a27_3e_ho = 5.15123
+real(dp), parameter :: a27_3e_ho = 5.15123d0
 real(dp), parameter :: a27_4e_ho = 7.02434d+09
 real(dp), parameter :: a16_1e_ho = -1.48139d-06
 real(dp), parameter :: a16_2e_ho = 2.86902d-10
-real(dp), parameter :: a16_3e_ho = 4.72314
+real(dp), parameter :: a16_3e_ho = 4.72314d0
 real(dp), parameter :: a16_4e_ho = 6.71625d+09
 real(dp), parameter :: a18_1e_ho = -1.33651d-06
 real(dp), parameter :: a18_2e_ho = 2.70946d-10
-real(dp), parameter :: a18_3e_ho = 4.60265
+real(dp), parameter :: a18_3e_ho = 4.60265d0
 real(dp), parameter :: a18_4e_ho = 7.01259d+09
 real(dp), parameter :: a58_1e_ho = 7.84145d-08
 real(dp), parameter :: a58_2e_ho = 3.26014d-10
-real(dp), parameter :: a58_3e_ho = 8.50289
+real(dp), parameter :: a58_3e_ho = 8.50289d0
 real(dp), parameter :: a58_4e_ho = 1.4545d+10
 real(dp), parameter :: a56_1e_ho = -2.51904d-08
 real(dp), parameter :: a56_2e_ho = 2.89506d-10
-real(dp), parameter :: a56_3e_ho = 7.77886
+real(dp), parameter :: a56_3e_ho = 7.77886d0
 real(dp), parameter :: a56_4e_ho = 1.31881d+10
 
 real(dp), parameter :: a12_1d_he = 0.00876695
@@ -397,17 +397,15 @@ contains
 
 subroutine make_Ham_ho
 
-write(6,*) a16_3d_ho,a24_3d_ho
-
 Ham(0,0) = 0.0
 Ham(1,1) = Eeh1(1) - Cb_eh1(1)
 Ham(2,2) = Eeh2(1) - Cb_eh2(1)                                                                         
 Ham(3,3) = Ham(1,1)
 Ham(4,4) = Ham(2,2)
-Ham(5,5) = Eeh1(1) - elec*(a55_1d_ho + a55_2d_ho * exp(-1.0*(a55_3d_ho*aR(1) + a55_4d_ho*link))) &
-                                  + 2*elec*(a55_1e_ho + a55_2e_ho * exp(-1.0*(a55_3e_ho*aR(1) + a55_4e_ho*link)))
-Ham(6,6) = Eeh2(2) - elec*(a66_1d_ho + a66_2d_ho * exp(-1.0*(a66_3d_ho*aR(1) + a66_4d_ho*link))) &
-                                  + 2*elec*(a66_1e_ho + a66_2e_ho * exp(-1.0*(a66_3e_ho*aR(1) + a66_4e_ho*link)))
+Ham(5,5) = Eeh1(1) - elec*(a55_1d_ho + a55_2d_ho * exp(-1.0d0*(a55_3d_ho*aR(1) + a55_4d_ho*link))) &
+                                  + 2*elec*(a55_1e_ho + a55_2e_ho * exp(-1.0d0*(a55_3e_ho*aR(1) + a55_4e_ho*link)))
+Ham(6,6) = Eeh2(2) - elec*(a66_1d_ho + a66_2d_ho * exp(-1.0d0*(a66_3d_ho*aR(1) + a66_4d_ho*link))) &
+                                  + 2*elec*(a66_1e_ho + a66_2e_ho * exp(-1.0d0*(a66_3e_ho*aR(1) + a66_4e_ho*link)))
 Ham(7,7) = Ham(5,5)
 Ham(8,8) = Ham(6,6)
 Ham(0,1) = 0.0 
@@ -427,43 +425,43 @@ Ham(6,0) = Ham(0,6)
 Ham(7,0) = Ham(0,7)
 Ham(8,0) = Ham(0,8)
 
-Ham(1,2) = - 1.0 * elec*(a12_1d_ho + a12_2d_ho / exp(aR(1)*a12_3d_ho)) &
-             - 2 * elec*(a12_1e_ho + a12_2e_ho / exp(aR(1)*a12_3e_ho))
+Ham(1,2) = - 1.0d0 * elec*(a12_1d_ho + a12_2d_ho / exp(aR(1)*a12_3d_ho)) &
+             - 2.0d0 * elec*(a12_1e_ho + a12_2e_ho / exp(aR(1)*a12_3e_ho))
 
-Ham(1,3) = - 1.0 * elec*(a13_1d_ho + a13_2d_ho * exp(-1.0*(a13_3d_ho*aR(1) + a13_4d_ho*link))) &
-             + 2 * elec*(a13_1e_ho + a13_2e_ho * exp(-1.0*(a13_3e_ho*aR(1) + a13_4e_ho*link)))
+Ham(1,3) = - 1.0d0 * elec*(a13_1d_ho + a13_2d_ho * exp(-1.0d0*(a13_3d_ho*aR(1) + a13_4d_ho*link))) &
+             + 2.0d0 * elec*(a13_1e_ho + a13_2e_ho * exp(-1.0d0*(a13_3e_ho*aR(1) + a13_4e_ho*link)))
 
-Ham(1,4) = - 1.0 * elec*(a14_1d_ho + a14_2d_ho * exp(-1.0*(a14_3d_ho*aR(1) + a14_4d_ho*link))) &
-             + 2 * elec*(a14_1e_ho + a14_2e_ho * exp(-1.0*(a14_3e_ho*aR(1) + a14_4e_ho*link)))
+Ham(1,4) = - 1.0d0 * elec*(a14_1d_ho + a14_2d_ho * exp(-1.0d0*(a14_3d_ho*aR(1) + a14_4d_ho*link))) &
+             + 2.0d0 * elec*(a14_1e_ho + a14_2e_ho * exp(-1.0d0*(a14_3e_ho*aR(1) + a14_4e_ho*link)))
 
-Ham(1,5) = - 1.0 * elec*(a15_1d_ho + (a15_2d_ho/aR(1))**a15_3d_ho * exp(-1.0*a15_4d_ho*link)) &
-             + 2 * elec*(a15_1e_ho + (a15_2e_ho/aR(1))**a15_3e_ho * exp(-1.0*a15_4e_ho*link))
+Ham(1,5) = - 1.0d0 * elec*(a15_1d_ho + (a15_2d_ho/aR(1))**a15_3d_ho * exp(-1.0d0*a15_4d_ho*link)) &
+             + 2.0d0 * elec*(a15_1e_ho + (a15_2e_ho/aR(1))**a15_3e_ho * exp(-1.0d0*a15_4e_ho*link))
 
-Ham(1,6) = - 1.0 *( -1.0 * elec * (a16_1d_ho + (a16_2d_ho/aR(1))**a16_3d_ho * exp(-1.0*a16_4d_ho*link)) &
-                     + 2 * elec * (a16_1e_ho + (a16_2e_ho/aR(1))**a16_3e_ho * exp(-1.0*a16_4e_ho*link)))
+Ham(1,6) = - 1.0d0 *( -1.0d0 * elec * (a16_1d_ho + (a16_2d_ho/aR(1))**a16_3d_ho * exp(-1.0d0*a16_4d_ho*link)) &
+                     + 2.0d0 * elec * (a16_1e_ho + (a16_2e_ho/aR(1))**a16_3e_ho * exp(-1.0d0*a16_4e_ho*link)))
 
-Ham(1,7) = - 1.0 * elec*(a17_1d_ho + (a17_2d_ho/aR(1))**a17_3d_ho * exp(-1.0*a17_4d_ho*link)) &
-             + 2 * elec*(a17_1e_ho + (a17_2e_ho/aR(1))**a17_3e_ho * exp(-1.0*a17_4e_ho*link))
+Ham(1,7) = - 1.0d0 * elec*(a17_1d_ho + (a17_2d_ho/aR(1))**a17_3d_ho * exp(-1.0d0*a17_4d_ho*link)) &
+             + 2.0d0 * elec*(a17_1e_ho + (a17_2e_ho/aR(1))**a17_3e_ho * exp(-1.0d0*a17_4e_ho*link))
 
-Ham(1,8) =  - 1.0 *( -1.0 * elec * (a18_1d_ho + (a18_2d_ho/aR(1))**a18_3d_ho * exp(-1.0*a18_4d_ho*link)) &
-                      + 2 * elec * (a18_1e_ho + (a18_2e_ho/aR(1))**a18_3e_ho * exp(-1.0*a18_4e_ho*link)))
+Ham(1,8) =  - 1.0d0 *( -1.0d0 * elec * (a18_1d_ho + (a18_2d_ho/aR(1))**a18_3d_ho * exp(-1.0d0*a18_4d_ho*link)) &
+                      + 2.0d0 * elec * (a18_1e_ho + (a18_2e_ho/aR(1))**a18_3e_ho * exp(-1.0d0*a18_4e_ho*link)))
 
 Ham(2,3) = Ham(1,4)
 
-Ham(2,4) = - 1.0 * elec*(a24_1d_ho + a24_2d_ho * exp(-1.0*(a24_3d_ho*aR(1) + a24_4d_ho*link))) &
-             + 2 * elec*(a24_1e_ho + a24_2e_ho * exp(-1.0*(a24_3e_ho*aR(1) + a24_4e_ho*link)))
+Ham(2,4) = - 1.0d0 * elec*(a24_1d_ho + a24_2d_ho * exp(-1.0d0*(a24_3d_ho*aR(1) + a24_4d_ho*link))) &
+             + 2.0d0 * elec*(a24_1e_ho + a24_2e_ho * exp(-1.0d0*(a24_3e_ho*aR(1) + a24_4e_ho*link)))
 
-Ham(2,5) =  - 1.0 *( -1.0 * elec*(a25_1d_ho + (a25_2d_ho/aR(1))**a25_3d_ho * exp(-1.0*a25_4d_ho*link)) &
-                      + 2 * elec*(a25_1e_ho + (a25_2e_ho/aR(1))**a25_3e_ho * exp(-1.0*a25_4e_ho*link)))
+Ham(2,5) =  - 1.0d0 *( -1.0d0 * elec*(a25_1d_ho + (a25_2d_ho/aR(1))**a25_3d_ho * exp(-1.0d0*a25_4d_ho*link)) &
+                      + 2.0d0 * elec*(a25_1e_ho + (a25_2e_ho/aR(1))**a25_3e_ho * exp(-1.0d0*a25_4e_ho*link)))
 
-Ham(2,6) =  - 1.0 * elec*(a26_1d_ho + (a26_2d_ho/aR(1))**a26_3d_ho * exp(-1.0*a26_4d_ho*link)) &
-              + 2 * elec*(a26_1e_ho + (a26_2e_ho/aR(1))**a26_3e_ho * exp(-1.0*a26_4e_ho*link))
+Ham(2,6) =  - 1.0d0 * elec*(a26_1d_ho + (a26_2d_ho/aR(1))**a26_3d_ho * exp(-1.0d0*a26_4d_ho*link)) &
+              + 2.0d0 * elec*(a26_1e_ho + (a26_2e_ho/aR(1))**a26_3e_ho * exp(-1.0d0*a26_4e_ho*link))
 
-Ham(2,7) =  - 1.0 *( -1.0 * elec * (a27_1d_ho + (a27_2d_ho/aR(1))**a27_3d_ho * exp(-1.0*a27_4d_ho*link)) &
-                      + 2 * elec * (a27_1e_ho + (a27_2e_ho/aR(1))**a27_3e_ho * exp(-1.0*a27_4e_ho*link)))
+Ham(2,7) =  - 1.0d0 *( -1.0d0 * elec * (a27_1d_ho + (a27_2d_ho/aR(1))**a27_3d_ho * exp(-1.0d0*a27_4d_ho*link)) &
+                      + 2.0d0 * elec * (a27_1e_ho + (a27_2e_ho/aR(1))**a27_3e_ho * exp(-1.0d0*a27_4e_ho*link)))
 
-Ham(2,8) =  - 1.0 * elec*(a28_1d_ho + (a28_2d_ho/aR(1))**a28_3d_ho * exp(-1.0*a28_4d_ho*link)) &
-              + 2 * elec*(a28_1e_ho + (a28_2e_ho/aR(1))**a28_3e_ho * exp(-1.0*a28_4e_ho*link))
+Ham(2,8) =  - 1.0d0 * elec*(a28_1d_ho + (a28_2d_ho/aR(1))**a28_3d_ho * exp(-1.0d0*a28_4d_ho*link)) &
+              + 2.0d0 * elec*(a28_1e_ho + (a28_2e_ho/aR(1))**a28_3e_ho * exp(-1.0d0*a28_4e_ho*link))
 
 Ham(3,4) = Ham(1,2)
 Ham(3,5) = Ham(1,7)
@@ -475,19 +473,19 @@ Ham(4,6) = Ham(2,8)
 Ham(4,7) = Ham(2,5)
 Ham(4,8) = Ham(2,6)
 
-Ham(5,6) = - 1.0 * elec*(a56_1d_ho + (a56_2d_ho/aR(1))**a56_3d_ho * exp(-1.0*a56_4d_ho*link)) &
-             + 2 * elec*(a56_1e_ho + (a56_2e_ho/aR(1))**a56_3e_ho * exp(-1.0*a56_4e_ho*link))
+Ham(5,6) = - 1.0d0 * elec*(a56_1d_ho + (a56_2d_ho/aR(1))**a56_3d_ho * exp(-1.0d0*a56_4d_ho*link)) &
+             + 2.0d0 * elec*(a56_1e_ho + (a56_2e_ho/aR(1))**a56_3e_ho * exp(-1.0d0*a56_4e_ho*link))
 
-Ham(5,7) = - 1.0 * elec*(a57_1d_ho + (a57_2d_ho/aR(1))**a57_3d_ho * exp(-1.0*a57_4d_ho*link)) &
-             + 2 * elec*(a57_1e_ho + (a57_2e_ho/aR(1))**a57_3e_ho * exp(-1.0*a57_4e_ho*link))
+Ham(5,7) = - 1.0d0 * elec*(a57_1d_ho + (a57_2d_ho/aR(1))**a57_3d_ho * exp(-1.0d0*a57_4d_ho*link)) &
+             + 2.0d0 * elec*(a57_1e_ho + (a57_2e_ho/aR(1))**a57_3e_ho * exp(-1.0d0*a57_4e_ho*link))
 
-Ham(5,8) = - 1.0 * elec*(a58_1d_ho + (a58_2d_ho/aR(1))**a58_3d_ho * exp(-1.0*a58_4d_ho*link)) &
-             + 2 * elec*(a58_1e_ho + (a58_2e_ho/aR(1))**a58_3e_ho * exp(-1.0*a58_4e_ho*link))
+Ham(5,8) = - 1.0d0 * elec*(a58_1d_ho + (a58_2d_ho/aR(1))**a58_3d_ho * exp(-1.0d0*a58_4d_ho*link)) &
+             + 2.0d0 * elec*(a58_1e_ho + (a58_2e_ho/aR(1))**a58_3e_ho * exp(-1.0d0*a58_4e_ho*link))
 
 Ham(6,7) = Ham(5,8)
 
-Ham(6,8) = - 1.0 * elec*(a68_1d_ho + (a68_2d_ho/aR(1))**a68_3d_ho * exp(-1.0*a68_4d_ho*link)) &
-             + 2 * elec*(a68_1e_ho + (a68_2e_ho/aR(1))**a68_3e_ho * exp(-1.0*a68_4e_ho*link))
+Ham(6,8) = - 1.0d0 * elec*(a68_1d_ho + (a68_2d_ho/aR(1))**a68_3d_ho * exp(-1.0d0*a68_4d_ho*link)) &
+             + 2.0d0 * elec*(a68_1e_ho + (a68_2e_ho/aR(1))**a68_3e_ho * exp(-1.0d0*a68_4e_ho*link))
 
 Ham(7,8) = Ham(5,6)
 
