@@ -221,6 +221,12 @@ d2   = 39.8905
 d3   = 9.61212          
 d4   = 8.88849
 
+!link=1.0nm
+!d1              = 1.09021e-05    
+!d2              = 0.0028037      
+!d3              = 1.82566        
+!d4              = 2.70059
+
 TransDip_Fit_h2e_ho =  d1 + d2 / ((a*1d9)**d3) * exp(-1.0*d4*b*1d9)
 
 end function TransDip_Fit_h2e_ho

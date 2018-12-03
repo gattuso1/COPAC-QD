@@ -67,7 +67,7 @@ real(dp), parameter :: a27_3d_ho = 5.02518
 real(dp), parameter :: a27_4d_ho = 9.60451d+09
 real(dp), parameter :: a16_1d_ho = -7.52249d-07
 real(dp), parameter :: a16_2d_ho = 4.62924d-11
-real(dp), parameter :: a16_3d_ho = 3.28286
+real(dp), parameter :: a16_3d_ho = 3.28286d0
 real(dp), parameter :: a16_4d_ho = 3.92155d+09
 real(dp), parameter :: a14_1d_ho = 2.21733d-08
 real(dp), parameter :: a14_2d_ho = 2.79711d-10
@@ -396,6 +396,8 @@ real(dp), parameter :: a78_4e_he = 4.39769
 contains
 
 subroutine make_Ham_ho
+
+write(6,*) a16_3d_ho,a24_3d_ho
 
 Ham(0,0) = 0.0
 Ham(1,1) = Eeh1(1) - Cb_eh1(1)

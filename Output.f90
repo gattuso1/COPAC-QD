@@ -82,6 +82,7 @@ write(60,'("Hole effective mass                  :",f8.4," m0")') mh
 write(60,'("Bulk dielectric constant             :",f8.4)')      eps
 write(60,'("Ligands dielectric constant          :",f8.4)')      epsout
 write(60,'("Bulk band gap                        :",f8.4)')      V0eV
+write(60,'("Linker length                        :",ES23.4E2)')      link
 write(60,*)
 write(60,*)
 write(60,*)
@@ -113,7 +114,7 @@ write(60,*)
 write(60,*)
 write(60,*) "Charge transfer states: "
 write(60,'(47x," 5 ",12x, " 6 ",12x, " 7 ",12x, " 8 ")')
-write(60,'("Transition energies                  :",4ES15.4E2)') Ham(5,5), Ham(6,6), Ham(7,7), Ham(8,8)
+write(60,'("Transition energies                  :",4ES15.4E2)') real(xHam(5,5)), real(xHam(6,6)), real(xHam(7,7)), real(xHam(8,8))
 !write(60,'("Coulomb correction                   :",4ES15.4E2)') (minEe(1,2) + minEh(1,1) + V0 - Ham(5,5)), &
 !                                                                 (minEe(1,2) + minEh(2,1) + V0 - Ham(6,6)), &
 !                                                                 (minEe(1,1) + minEh(1,2) + V0 - Ham(7,7)), &
@@ -151,7 +152,7 @@ write(60,*) "The 0th order Hamiltonian is:"
 write(60,*) 
 write(60,'(11x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2)') "0",  "1", "2", "3", "4", "5", "6", "7", "8"
 do i=0,nstates-1
-write(60,'(i2,2x,9es14.6e2)') i, (real(Ham(i,j))/elec, j=0,nstates-1)  
+write(60,'(i2,2x,9es14.6e2)') i, (real(xHam(i,j))/elec, j=0,nstates-1)  
 enddo
 
 write(60,*) 

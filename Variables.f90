@@ -1,6 +1,7 @@
 module Variables
 
 use Constants
+use Normal
 
 implicit none
 
@@ -8,9 +9,10 @@ implicit none
    character*64 :: popc, hmti, norm, tdmM, hmt0, outputdir
    character*1 :: o_Norm, o_Over, o_Coul, o_DipS, o_Osci, o_Exti, o_DipD, dyn, hamilt
    integer :: ndots, n, rmin, rmax, nsys, npulses, nstates, ntime, i, j, t, lwork, info
+   integer,allocatable :: seed(:)
    real(dp) :: aA, aB, me, mh, eps, epsout, V0, omegaLO, rhoe, rhoh, slope, V0eV, minr, maxr, rsteps, side
    real(dp) :: dispQD, displink, rdmlinker, rdmQDA, rdmQDB, link, t01, t02, t03, timestep, totaltime, omega, phase, width, Ed
-   real(dp) :: pulse1, pulse2, pulse3
+   real(dp) :: pulse1, pulse2, pulse3, test, r4_normal_ab
    real(dp),allocatable :: aR(:), aRA(:), aRB(:), epsin(:), epsR(:), V0e(:), V0h(:), linker(:)
    real(dp),allocatable :: epsinA(:), epsinB(:), epsRA(:), epsRB(:), V0eA(:), V0eB(:), V0hA(:), V0hB(:)
    real(dp),allocatable :: Eeh1(:), Eeh2(:), Cb_eh1(:), Cb_eh2(:), Norm_Ana_e(:), Norm_Ana_h1(:), Norm_Ana_h2(:)
@@ -18,9 +20,9 @@ implicit none
    real(dp),allocatable :: minEe(:,:),minEh(:,:), TransDip_Num_h1e(:), TransDip_Num_h2e(:), work(:), lambda(:)
    real(dp),allocatable :: TransDip_Ana_h1e(:), TransDip_Ana_h2e(:), Oscillator_Ana_h1e(:), Oscillator_Ana_h2e(:)
    real(dp),allocatable :: ExctCoef_h1e(:), ExctCoef_h2e(:), Ham(:,:), E0(:), c0(:), TransHam(:,:), Hamt(:,:,:), c(:,:)
-   complex(KIND=8) :: ct1, ct2, ct3, ct4, xt01, xt02, xt03, xhbar, im, xwidth, xomega , xEd, xh, xphase, xtime
-   complex(KIND=8),allocatable :: xHam(:,:) , xHamt(:,:,:), xTransHam(:,:), xE0(:), xHamtk2(:,:,:), xHamtk3(:,:,:), xHamtk4(:,:,:)
-   complex(KIND=8),allocatable :: xc0(:), xc(:,:), xcnew(:,:), k1(:), k2(:), k3(:) , k4(:)
+   complex(dp) :: ct1, ct2, ct3, ct4, xt01, xt02, xt03, xhbar, im, xwidth, xomega , xEd, xh, xphase, xtime
+   complex(dp),allocatable :: xHam(:,:) , xHamt(:,:,:), xTransHam(:,:), xE0(:), xHamtk2(:,:,:), xHamtk3(:,:,:), xHamtk4(:,:,:)
+   complex(dp),allocatable :: xc0(:), xc(:,:), xcnew(:,:), k1(:), k2(:), k3(:) , k4(:)
 
 contains 
 
@@ -168,14 +170,14 @@ read(150,NML=syst_range)
 
 rmin = minr/rsteps
 rmax = maxr/rsteps
-ndots= maxr/rsteps - minr/rsteps
+nsys= maxr/rsteps - minr/rsteps
 
-allocate(aR(rmax-rmin))
-allocate(linker(rmax-rmin))
-allocate(epsin(rmax-rmin))
-allocate(epsR(rmax-rmin))
-allocate(V0e(rmax-rmin))
-allocate(V0h(rmax-rmin))
+allocate(aR(rmin:rmax))
+allocate(linker(rmin:rmax))
+allocate(epsin(rmin:rmax))
+allocate(epsR(rmin:rmax))
+allocate(V0e(rmin:rmax))
+allocate(V0h(rmin:rmax))
 
 linker(:) = link
 
@@ -198,22 +200,21 @@ allocate(epsR(nsys))
 allocate(V0e(nsys))
 allocate(V0h(nsys))
 
-call random_seed() 
+  call random_seed(size = n)
+  allocate(seed(n))
+  call random_seed(get=seed)
 
 rmin = 1
 rmax = nsys
 
 do n = 1,nsys
-call random_number(rdmQDA)
-call random_number(rdmlinker)
-rdmQDA = 2*(rdmQDA-0.5)
-rdmlinker = 2*(rdmlinker-0.5)
-aR(n)= rdmQDA*dispQD*aA+aA
-linker(n) = rdmlinker*dispQD*link+link
+aR(n)= r8_NORMAL_AB(aA, dispQD*1d-9, seed(1))
+linker(n) = r8_NORMAL_AB(link, displink*1d-9, seed(2))
 epsin(n) = 1.0 + (eps - 1.0) / (1.0 + (0.75d-9/(2*aR(n)))**1.2)
 epsR(n) = 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-(36/35)*aR(n)/rhoe)+exp(-(36/35)*aR(n)/rhoh))/2))
 V0e(n)=-1*(-3.49+2.47*(1d9*2*aR(n))**(-1.32))*elec
 V0h(n)=-1*(-5.23-0.74*(1d9*2*aR(n))**(-0.95))*elec
+!write(6,*) aR(n), linker(n)
 enddo
 
 else if ( ( vers .eq. 'randm' ) .and. ( aA .ne. aB ) ) then
@@ -229,18 +230,16 @@ allocate(V0h(2*nsys))
 
 linker = link
 
-call random_seed()
+  call random_seed(size = n)
+  allocate(seed(n))
+  call random_seed(get=seed)
 
 rmin = 1
 rmax = 2*nsys
 
 do n = 1,nsys
-call random_number(rdmQDA)
-call random_number(rdmQDB)
-rdmQDA    = 2*(rdmQDA-0.5)
-rdmQDB    = 2*(rdmQDB-0.5)
-aR(n)     = (rdmQDA)*dispQD*aA+aA
-aR(n+nsys)= (rdmQDB)*dispQD*aB+aB
+aR(n) = r8_NORMAL_AB(aA,dispQD*1d-9,seed(1))
+aR(n+nsys) = r8_NORMAL_AB(aB,dispQD*1d-9,seed(2))
 epsin(n) = 1.0 + (eps - 1.0) / (1.0 + (0.75d-9/(2*aR(n)))**1.2)
 epsin(n+nsys) = 1.0 + (eps - 1.0) / (1.0 + (0.75d-9/(2*aR(n+nsys)))**1.2)
 epsR(n)= 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-(36/35)*aR(n)/rhoe)+exp(-(36/35)*aR(n)/rhoh))/2))
@@ -250,6 +249,7 @@ V0e(n)=-1*(-3.49+2.47*(1d9*2*aR(n))**(-1.32))*elec
 V0e(n+nsys)=-1*(-3.49+2.47*(1d9*2*aR(n+nsys))**(-1.32))*elec
 V0h(n)=-1*(-5.23-0.74*(1d9*2*aR(n))**(-0.95))*elec
 V0h(n+nsys)=-1*(-5.23-0.74*(1d9*2*aR(n+nsys))**(-0.95))*elec
+write(6,*) aR(n), aR(n+nsys)
 enddo
 
 endif 

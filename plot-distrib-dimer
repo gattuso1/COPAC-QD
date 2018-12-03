@@ -1,0 +1,19 @@
+#set encoding utf8
+#set terminal postscript eps enhanced color solid "Times-Roman" 24
+#set output 'Opening.eps'
+
+#set xlabel 'Opening ({/Symbol \260})'
+#set ylabel 'Frequency (over 500 snapshots)'
+#set xrange [-10:10]
+#set yrange [0:40]
+#set boxwidth 0.5 absolute
+#set style fill solid 0.1 border
+
+bin_width = 0.01;
+bin_number(x) = floor(x/bin_width)
+rounded(x) = bin_width * ( bin_number(x) )
+
+plot 'test.dat' using (rounded($1*10**9)):(1) smooth frequency with boxes, \
+'' using (rounded($2*10**9)):(1) smooth frequency with boxes, \
+'test2.dat' using (rounded($1*10**9)):(1) smooth frequency with boxes, \
+'' using (rounded($2*10**9)):(1) smooth frequency with boxes
