@@ -237,10 +237,13 @@ real(dp) function TransDip_Fit_h1e_he(a,b)
       implicit none
       real(dp) :: d1,d2,d3,d4,a,b
 
+!if ( link .eq. 0.2d-9 ) then
 d1              = 0.00341214
 d2              = 5.2295
 d3              = 2.0988
 d4              = 1.66728
+!else if ( link .eq. 0.55d-9 )
+!endif
 
 TransDip_Fit_h1e_he = d1 + d2 / ((a*1d9)**d3*(b*1d9)**d4)
 
@@ -252,10 +255,13 @@ real(dp) function TransDip_Fit_h2e_he(a,b)
       implicit none
       real(dp) :: d1,d2,d3,d4,a,b
 
+!if ( link .eq. 0.2d-9 ) then
 d1              = 0.159035d0
 d2              = 79.9838d0
 d3              = 0.96669d0
 d4              = 1.9961d0
+!else if ( link .eq. 0.55d-9 )
+!endif
 
 TransDip_Fit_h2e_he =  d1 + d2*((a*1d9-d3))*exp(-2.0d0*(a*1d9))/((b*1d9)**d4)
 
@@ -541,65 +547,65 @@ real(dp) function Norm_cart(m,AB1,AB2,k1,k2,a,b)
 
 end function Norm_cart
 
-!Normalization of WF in cartesian coordinates using Monte Carlo method 
-real(dp) function Norm_cart_Rdm(AB1,AB2,k1,k2,a,b)
-      implicit none
-      integer(kind=8) :: m, i, iin, iout, j
-      real(dp) :: x, y, z, f, fin, fout, f1in, f2in, f1out, f2out, AB1,AB2,k1,k2,a,b , n, maxv
-      real(dp), dimension(3) :: r
-      integer(kind=8), dimension(18) :: list
-      
-      f= 0.0
-      f1in= 0.0
-      f2in= 0.0
-      f1out= 0.0
-      f2out= 0.0
-      i=0
-      x=0
-      iin =0
-      iout =0
-      !write(6,*) huge(m)
-      !m=1000000000
-      list = (/10000, 20000, 50000, 100000, 200000, 500000, 1000000, 2000000, 5000000, 10000000, 20000000, 50000000, 100000000, &
-             200000000, 500000000, 1000000000, 2000000000, 5000000000 /)
-
-      do j = 1,size(list)
-
-      do i=1,list(j)
-      call random_number(x)
-      call random_number(y)
-      call random_number(z)
-      r(1)=2*b*x-b
-      r(2)=2*b*y-b
-      r(3)=2*b*z-b
-
-      if (norm2(r) .le. a) then
-      fin = (AB1*sin(k1*norm2(r))/(sqrt(4*pi)*norm2(r)))**2
-      iin = iin +1
-      f1in = f1in + fin
-      f2in = f2in + fin**2
-      else if (norm2(r) .gt. a) then
-      fout = (AB2*exp(-1*k2*norm2(r))/(sqrt(4*pi)*norm2(r)))**2
-      iout = iout + 1
-      f1out = f1out + fout
-      f2out = f2out + fout**2
-      endif
-
-      enddo
-
-!write(6,*) (f/iin)*(4*pi/3)*a**3 , (f1/iout)*((2*b)**3-(4*pi/3)*a**3)  , (f/iin)*(4*pi/3)*a**3 + (f1/iout)*((2*b)**3-(4*pi/3)*a**3) 
-write(6,*)list(j),(f1in/iin)*(4*pi/3)*a**3,sqrt(((f2in/iin)-(f1in/iin)**2)/iin)*(4*pi/3)*a**3, &
-                  (f1out/iout)*((2*b)**3-(4*pi/3)*a**3),sqrt(((f2out/iout)-(f1out/iout)**2)/iout)*((2*b)**3-(4*pi/3)*a**3),&
-                  (f1in/iin)*(4*pi/3)*a**3 + (f1out/iout)*((2*b)**3-(4*pi/3)*a**3),&
-                  sqrt((sqrt(((f2in/iin)-(f1in/iin)**2)/iin)*(4*pi/3)*a**3)**2+&
-                  (sqrt(((f2out/iout)-(f1out/iout)**2)/iout)*((2*b)**3-(4*pi/3)*a**3))**2)
-
-enddo
-
-
-      Norm_cart_Rdm=4*(f/m)*(b)**3
-
-end function Norm_cart_Rdm
+!!Normalization of WF in cartesian coordinates using Monte Carlo method 
+!real(dp) function Norm_cart_Rdm(AB1,AB2,k1,k2,a,b)
+!      implicit none
+!      integer(kind=8) :: m, i, iin, iout, j
+!      real(dp) :: x, y, z, f, fin, fout, f1in, f2in, f1out, f2out, AB1,AB2,k1,k2,a,b , n, maxv
+!      real(dp), dimension(3) :: r
+!      integer(kind=8), dimension(18) :: list
+!      
+!      f= 0.0
+!      f1in= 0.0
+!      f2in= 0.0
+!      f1out= 0.0
+!      f2out= 0.0
+!      i=0
+!      x=0
+!      iin =0
+!      iout =0
+!      !write(6,*) huge(m)
+!      !m=1000000000
+!      list = (/10000, 20000, 50000, 100000, 200000, 500000, 1000000, 2000000, 5000000, 10000000, 20000000, 50000000, 100000000, &
+!             200000000, 500000000, 1000000000, 2000000000, 5000000000 /)
+!
+!      do j = 1,size(list)
+!
+!      do i=1,list(j)
+!      call random_number(x)
+!      call random_number(y)
+!      call random_number(z)
+!      r(1)=2*b*x-b
+!      r(2)=2*b*y-b
+!      r(3)=2*b*z-b
+!
+!      if (norm2(r) .le. a) then
+!      fin = (AB1*sin(k1*norm2(r))/(sqrt(4*pi)*norm2(r)))**2
+!      iin = iin +1
+!      f1in = f1in + fin
+!      f2in = f2in + fin**2
+!      else if (norm2(r) .gt. a) then
+!      fout = (AB2*exp(-1*k2*norm2(r))/(sqrt(4*pi)*norm2(r)))**2
+!      iout = iout + 1
+!      f1out = f1out + fout
+!      f2out = f2out + fout**2
+!      endif
+!
+!      enddo
+!
+!!write(6,*) (f/iin)*(4*pi/3)*a**3 , (f1/iout)*((2*b)**3-(4*pi/3)*a**3)  , (f/iin)*(4*pi/3)*a**3 + (f1/iout)*((2*b)**3-(4*pi/3)*a**3) 
+!write(6,*)list(j),(f1in/iin)*(4*pi/3)*a**3,sqrt(((f2in/iin)-(f1in/iin)**2)/iin)*(4*pi/3)*a**3, &
+!                  (f1out/iout)*((2*b)**3-(4*pi/3)*a**3),sqrt(((f2out/iout)-(f1out/iout)**2)/iout)*((2*b)**3-(4*pi/3)*a**3),&
+!                  (f1in/iin)*(4*pi/3)*a**3 + (f1out/iout)*((2*b)**3-(4*pi/3)*a**3),&
+!                  sqrt((sqrt(((f2in/iin)-(f1in/iin)**2)/iin)*(4*pi/3)*a**3)**2+&
+!                  (sqrt(((f2out/iout)-(f1out/iout)**2)/iout)*((2*b)**3-(4*pi/3)*a**3))**2)
+!
+!enddo
+!
+!
+!      Norm_cart_Rdm=4*(f/m)*(b)**3
+!
+!end function Norm_cart_Rdm
 
 !Normalization of WF in cartesian coordinates using Monte Carlo method 
 real(dp) function Norm_cart_MC(m,AB1,AB2,k1,k2,a,b)
@@ -701,14 +707,14 @@ real(dp) function TransDip_Ana(A1,A2,B1,B2,kin1,kin2,kout1,kout2,r)
       implicit none
       real(dp) :: A1,A2,B1,B2,kin1,kin2,kout1,kout2,r,rmin,rmax
 
-      rmin=0.0
+      rmin=0.0d0
       rmax=2*r
 
-      TransDip_Ana=-1.0*elec*(((A1*A2*0.5*((r*sin(r*(kin1-kin2))/(kin1-kin2))-(r*sin(r*(kin1+kin2))/(kin1+kin2))+&
+      TransDip_Ana=-1.0d0*elec*(((A1*A2*0.5d0*((r*sin(r*(kin1-kin2))/(kin1-kin2))-(r*sin(r*(kin1+kin2))/(kin1+kin2))+&
                        (cos(r*(kin1-kin2))/(kin1-kin2)**2)-(cos(r*(kin1+kin2))/(kin1+kin2)**2))) - &
-                       A1*A2*0.5*((cos(rmin*(kin1-kin2))/(kin1-kin2)**2)-(cos(rmin*(kin1+kin2))/(kin1+kin2)**2))) + &
-                       (B1*B2*((-1.0*(exp(-1.0*rmax*(kout1+kout2))*(kout1*rmax+kout2*rmax+1)/(kout1+kout2)**2))+&
-                       ((exp(-1.0*r*(kout1+kout2))*(kout1*r+kout2*r+1)/(kout1+kout2)**2)))))
+                       A1*A2*0.5d0*((cos(rmin*(kin1-kin2))/(kin1-kin2)**2)-(cos(rmin*(kin1+kin2))/(kin1+kin2)**2))) + &
+                       (B1*B2*((-1.0d0*(exp(-1.0d0*rmax*(kout1+kout2))*(kout1*rmax+kout2*rmax+1d0)/(kout1+kout2)**2))+&
+                       ((exp(-1.0d0*r*(kout1+kout2))*(kout1*r+kout2*r+1.d0)/(kout1+kout2)**2)))))
 
 end function TransDip_Ana
 
@@ -1536,5 +1542,16 @@ real(dp) function DXXex(A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4
 
 end function DXXex
 
+complex(dp) function RK_k(t,xHam,xTransHam,xc)
+implicit none
+
+complex(dp) :: t,xHam,xTransHam,xc
+
+RK_k = (-1.0d0)*(im/xhbar) * &
+(xHam - pulse1 * xTransHam * xEd * cos(xomega*(t-xt01)+xphase) * exp(-1.0d0*(t-xt01)**2/(2.0d0*(xwidth**2))) - &
+        pulse2 * xTransHam * xEd * cos(xomega*(t-xt02)+xphase) * exp(-1.0d0*(t-xt02)**2/(2.0d0*(xwidth**2))) - &
+        pulse3 * xTransHam * xEd * cos(xomega*(t-xt03)+xphase) * exp(-1.0d0*(t-xt03)**2/(2.0d0*(xwidth**2))))*xc
+
+end function RK_k
 
 end module Integrals

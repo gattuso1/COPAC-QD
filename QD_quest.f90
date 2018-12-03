@@ -12,12 +12,9 @@ use Make_Ham
 
 implicit none
 
-double precision, external:: s13adf, ei, eone, nag_bessel_j0
-
-character*64 :: arg1, arg2, filename, argA
+real(dp), external:: s13adf, ei, eone, nag_bessel_j0
 
 integer :: je,jh,k,nsteps,r,ifail, r1, r2, nthreads
-
 real(dp) :: Ef,le,re,lh,rh,delta, start, finish, mu, A, epsinf, aR1, aR2
 real(dp) :: Rine, Route, Rinh1, Routh1, Rinh2, Routh2, RadProbe, RadProbh1, RadProbh2, r0
 real(dp),allocatable :: Ae(:), Ah1(:), Ah2(:), Be(:), Bh1(:), Bh2(:)
@@ -396,6 +393,8 @@ else if ( vers .eq. 'dimer') then
 open(44,file='Popc.dat')
 open(45,file='Hamt.dat')
 open(46,file='Norm.dat')
+open(48,file='Norm_ei.dat')
+open(49,file='Popc_ei.dat')
 endif
 
 Ham      = 0.0d0
@@ -450,22 +449,35 @@ write(42,*)
 write(43,*) 
 
 !!!!!INITIAL POPULATIONS
-c0(0) = 1/sqrt(2.d0) !.0d0 
+c0(0) = 1.0d0 !1/sqrt(2.0d0) 
 c0(1) = 0.0d0
 c0(2) = 0.0d0
 c0(3) = 0.0d0
-c0(4) = 1/sqrt(2.d0) !.0d0
+c0(4) = 0.0d0
 c0(5) = 0.0d0
-c0(6) = 0.0d0
+c0(6) = 0.0d0!1/sqrt(2.0d0)
 c0(7) = 0.0d0
 c0(8) = 0.0d0 
 
 xHam = dcmplx(Ham,0.0d0)
 xHamt(:,:,0) = xHam(:,:)
+xTransHam = dcmplx(0.d0,0.0d0)
 xTransHam = dcmplx(TransHam,0.0d0)
 xc0 = dcmplx(c0,0.0d0)
-xc = 0.0d0
+xc(:,:) = 0.0d0
 xc(:,0) = xc0(:)
+
+allocate(lambda(0:nstates-1))
+allocate(work(1))
+call dsyev('V','U', nstates, Ham(0:nstates-1,0:nstates-1), nstates, lambda, Work, -1, info)
+lwork=nint(work(1))
+deallocate (work)
+allocate(work(0:lwork))
+call dsyev('V', 'U', nstates, Ham(0:nstates-1,0:nstates-1), nstates, lambda, Work, lwork, info)
+deallocate (work)
+deallocate(lambda)
+
+xHam_ei = dcmplx(Ham,0.0d0)
 
 do i=0,nstates-1
 do j=0,nstates-1
@@ -492,7 +504,7 @@ xHamt(i,j,t)  = xHam(i,j) - pulse1 * xTransHam(i,j) * xEd * cos(xomega*(xtime-xt
                                                             exp(-1.0d0*(xtime-xt03)**2/(2*(xwidth**2)))
 enddo
 
-write(45,'(9es14.6e2)') (real(xHamt(i,k,t)), k=0,nstates-1)
+write(45,'(9es14.6e3)') (real(xHamt(i,k,t)), k=0,nstates-1)
 
 enddo
 write(45,*) 
@@ -504,62 +516,37 @@ do t=0,ntime
 
 xtime = dcmplx(t*timestep,0.0d0)
 
-k1 =dcmplx(0.0d0,0.0d0)
-k2 =dcmplx(0.0d0,0.0d0)
-k3 =dcmplx(0.0d0,0.0d0)
-k4 =dcmplx(0.0d0,0.0d0)
+k1 = dcmplx(0.0d0,0.0d0)
+k2 = dcmplx(0.0d0,0.0d0)
+k3 = dcmplx(0.0d0,0.0d0)
+k4 = dcmplx(0.0d0,0.0d0)
 
 do i=0,nstates-1
 do j=0,nstates-1
-k1(i) = k1(i) + (-1.0d0)*(im/xhbar)*&
-(xHam(i,j) - pulse1 * xTransHam(i,j) * xEd * cos(xomega*(xtime-xt01)+xphase) * exp(-1.0d0*(xtime-xt01)**2/(2.0d0*(xwidth**2))) - &
-             pulse2 * xTransHam(i,j) * xEd * cos(xomega*(xtime-xt02)+xphase) * exp(-1.0d0*(xtime-xt02)**2/(2.0d0*(xwidth**2))) - &
-             pulse3 * xTransHam(i,j) * xEd * cos(xomega*(xtime-xt03)+xphase) * exp(-1.0d0*(xtime-xt03)**2/(2.0d0*(xwidth**2))))*&
-xc(j,t)
+k1(i) = k1(i) + RK_k(xtime,xHam(i,j), xTransHam(i,j), xc(j,t))
 enddo
 enddo
 
 do i=0,nstates-1
 do j=0,nstates-1
-k2(i) = k2(i) + (-1.0d0)*(im/xhbar)*&
-(xHam(i,j) - pulse1 * xTransHam(i,j) * xEd * cos(xomega*((xtime-xt01)+xh/2)+xphase) * & 
-                                             exp(-1.0d0*((xtime+xh/2)-xt01)**2/(2*(xwidth)**2)) - &
-             pulse2 * xTransHam(i,j) * xEd * cos(xomega*((xtime-xt02)+xh/2)+xphase) * &
-                                             exp(-1.0d0*((xtime+xh/2)-xt02)**2/(2*(xwidth)**2)) - &
-             pulse3 * xTransHam(i,j) * xEd * cos(xomega*((xtime-xt03)+xh/2)+xphase) * & 
-                                             exp(-1.0d0*((xtime+xh/2)-xt03)**2/(2*(xwidth)**2)))*&
-(xc(j,t)+(xh/2)*k1(j))
+k2(i) = k2(i) + RK_k(xtime+(xh/2.d0),xHam(i,j), xTransHam(i,j), xc(j,t)+(xh/2.0d0)*k1(j))
 enddo
 enddo
 
 do i=0,nstates-1
 do j=0,nstates-1
-k3(i) = k3(i) + (-1.0d0)*(im/xhbar)*&
-(xHam(i,j) - pulse1 * xTransHam(i,j) * xEd * cos(xomega*((xtime-xt01)+xh/2)+xphase) * &
-                                             exp(-1.0d0*((xtime+xh/2)-xt01)**2/(2*(xwidth)**2)) - &
-             pulse2 * xTransHam(i,j) * xEd * cos(xomega*((xtime-xt02)+xh/2)+xphase) * &
-                                             exp(-1.0d0*((xtime+xh/2)-xt02)**2/(2*(xwidth)**2)) - &
-             pulse3 * xTransHam(i,j) * xEd * cos(xomega*((xtime-xt03)+xh/2)+xphase) * &
-                                             exp(-1.0d0*((xtime+xh/2)-xt03)**2/(2*(xwidth)**2)))*&
-(xc(j,t)+(xh/2)*k2(j))
+k3(i) = k3(i) + RK_k(xtime+(xh/2.d0),xHam(i,j), xTransHam(i,j), xc(j,t)+(xh/2.0d0)*k2(j))
 enddo
 enddo
 
 do i=0,nstates-1
 do j=0,nstates-1
-k4(i) = k4(i) + (-1.0d0)*(im/xhbar)*&
-(xHam(i,j) - pulse1 * xTransHam(i,j) * xEd * cos(xomega*((xtime-xt01)+xh)+xphase) * &
-                                             exp(-1.0d0*((xtime+xh)-xt01)**2/(2*(xwidth)**2)) - &
-             pulse2 * xTransHam(i,j) * xEd * cos(xomega*((xtime-xt02)+xh)+xphase) * &
-                                             exp(-1.0d0*((xtime+xh)-xt02)**2/(2*(xwidth)**2)) - &
-             pulse3 * xTransHam(i,j) * xEd * cos(xomega*((xtime-xt03)+xh)+xphase) * &
-                                             exp(-1.0d0*((xtime+xh)-xt03)**2/(2*(xwidth)**2)))*&
-(xc(j,t)+xh*k3(j))
+k4(i) = k4(i) + RK_k(xtime+xh,xHam(i,j), xTransHam(i,j), xc(j,t)+xh*k3(j))
 enddo
 enddo
 
 do i=0,nstates-1
-xc(i,t+1) = xc(i,t)+(xh/6.0d0)*(k1(i)+2*k2(i)+2*k3(i)+k4(i))
+xc(i,t+1) = xc(i,t)+(xh/6.d0)*(k1(i)+2.d0*k2(i)+2.d0*k3(i)+k4(i))
 enddo
 
 !!!NORM
@@ -569,12 +556,38 @@ real(xc(4,t))**2+aimag(xc(4,t))**2+real(xc(5,t))**2+aimag(xc(5,t))**2+real(xc(6,
 real(xc(7,t))**2+aimag(xc(7,t))**2+real(xc(8,t))**2+aimag(xc(8,t))**2+real(xc(0,t))**2+aimag(xc(0,t))**2
 
 !!!!POPULATIONS
-write(44,*) real(xtime), real(xc(0,t))**2+aimag(xc(0,t))**2, real(xc(1,t))**2+aimag(xc(1,t))**2,&
+write(44,'(10f15.8)') real(xtime), real(xc(0,t))**2+aimag(xc(0,t))**2, real(xc(1,t))**2+aimag(xc(1,t))**2,&
                          real(xc(2,t))**2+aimag(xc(2,t))**2, real(xc(3,t))**2+aimag(xc(3,t))**2,&
                          real(xc(4,t))**2+aimag(xc(4,t))**2, real(xc(5,t))**2+aimag(xc(5,t))**2,&
                          real(xc(6,t))**2+aimag(xc(6,t))**2, real(xc(7,t))**2+aimag(xc(7,t))**2,&
                          real(xc(8,t))**2+aimag(xc(8,t))**2
 
+xc_ei = 0.d0
+
+do i=0,nstates-1
+   do j=0,nstates-1
+      xc_ei(i,t) = xc_ei(i,t) + xHam_ei(i,j) * xc(j,t)  
+   enddo
+enddo
+
+!!!NORM
+write(48,*) real(xtime), &
+real(xc_ei(1,t))**2+aimag(xc_ei(1,t))**2+real(xc_ei(2,t))**2+aimag(xc_ei(2,t))**2+real(xc_ei(3,t))**2+aimag(xc_ei(3,t))**2+&
+real(xc_ei(4,t))**2+aimag(xc_ei(4,t))**2+real(xc_ei(5,t))**2+aimag(xc_ei(5,t))**2+real(xc_ei(6,t))**2+aimag(xc_ei(6,t))**2+&
+real(xc_ei(7,t))**2+aimag(xc_ei(7,t))**2+real(xc_ei(8,t))**2+aimag(xc_ei(8,t))**2+real(xc_ei(0,t))**2+aimag(xc_ei(0,t))**2
+
+
+!!!!POPULATIONS
+write(49,'(10ES18.6E2)') real(xtime), real(xc_ei(0,t))**2+aimag(xc_ei(0,t))**2, real(xc_ei(1,t))**2+aimag(xc_ei(1,t))**2,&
+                         real(xc_ei(2,t))**2+aimag(xc_ei(2,t))**2, real(xc_ei(3,t))**2+aimag(xc_ei(3,t))**2,&
+                         real(xc_ei(4,t))**2+aimag(xc_ei(4,t))**2, real(xc_ei(5,t))**2+aimag(xc_ei(5,t))**2,&
+                         real(xc_ei(6,t))**2+aimag(xc_ei(6,t))**2, real(xc_ei(7,t))**2+aimag(xc_ei(7,t))**2,&
+                         real(xc_ei(8,t))**2+aimag(xc_ei(8,t))**2
+
+enddo
+
+do i = 0,nstates-1
+write(6,"(9f8.4)") (real(xHam_ei(i,j)), j=0,nstates-1)
 enddo
 
 close(44)
@@ -582,39 +595,61 @@ close(45)
 close(46)
 
 
-if ( vers .eq. 'dimer' ) then
-write(6,*)
-write(6,*)
+!if ( vers .eq. 'dimer' ) then
+!write(6,*)
+!write(6,*)
+!
+!write(6,*) "Initial Hamiltonian"
+!
+!do i = 1,nstates-1
+!write(6,"(i2,8f12.6)") i, (Ham(i,j)/elec, j=1,nstates-1)
+!enddo
+!write(6,*)
+!
+!allocate(lambda(1:nstates-1))
+!allocate(work(1))
+!
+!call dsyev('V','U', nstates-1, Ham(1:nstates-1,1:nstates-1), nstates-1, lambda, Work, -1, info)
+!lwork=nint(work(1))
+!deallocate (work)
+!allocate(work(lwork))
+!call dsyev('V', 'U', nstates-1, Ham(1:nstates-1,1:nstates-1), nstates-1, lambda, Work, lwork, info)
+!deallocate (work)
+!write(6,*)
+!
+!write(6,*) "Eigenvalues"
+!write(6,"(8ES12.4E2)") (lambda(i)/elec, i=1,nstates-1)
+!write(6,*)
+!write(6,*) "Eigenvectors"
+!write(6,'(8i8)') 1,2,3,4,5,6,7,8 
+!do i = 1,nstates-1
+!write(6,"(8f8.4)") (Ham(i,j), j=1,nstates-1)
+!enddo
+!deallocate(lambda)
+!
+!xc_ei = 0.d0
 
-write(6,*) "Initial Hamiltonian"
-
-do i = 1,nstates-1
-write(6,"(i2,8f12.6)") i, (Ham(i,j)/elec, j=1,nstates-1)
-enddo
-write(6,*)
-
-allocate(lambda(1:nstates-1))
-allocate(work(1))
-
-call dsyev('V','U', nstates-1, Ham(1:nstates-1,1:nstates-1), nstates-1, lambda, Work, -1, info)
-lwork=nint(work(1))
-deallocate (work)
-allocate(work(lwork))
-call dsyev('V', 'U', nstates-1, Ham(1:nstates-1,1:nstates-1), nstates-1, lambda, Work, lwork, info)
-deallocate (work)
-write(6,*)
-
-write(6,*) "Eigenvalues"
-write(6,"(8ES12.4E2)") (lambda(i)/elec, i=1,nstates-1)
-write(6,*)
-write(6,*) "Eigenvectors"
-write(6,'(8i8)') 1,2,3,4,5,6,7,8 
-do i = 1,nstates-1
-write(6,"(8f8.4)") (Ham(i,j), j=1,nstates-1)
-enddo
-deallocate(lambda)
-
-endif
+!do i=0,nstates
+!   do j=0,nstates-1
+!      xc_ei(i,t) = xc_ei(i,t) + xHam(i,j) * xc(i,t)  
+!   enddo
+!enddo
+!
+!!!!NORM
+!write(48,*) real(xtime), &
+!real(xc_ei(1,t))**2+aimag(xc_ei(1,t))**2+real(xc_ei(2,t))**2+aimag(xc_ei(2,t))**2+real(xc_ei(3,t))**2+aimag(xc_ei(3,t))**2+&
+!real(xc_ei(4,t))**2+aimag(xc_ei(4,t))**2+real(xc_ei(5,t))**2+aimag(xc_ei(5,t))**2+real(xc_ei(6,t))**2+aimag(xc_ei(6,t))**2+&
+!real(xc_ei(7,t))**2+aimag(xc_ei(7,t))**2+real(xc_ei(8,t))**2+aimag(xc_ei(8,t))**2+real(xc_ei(0,t))**2+aimag(xc_ei(0,t))**2
+!
+!
+!!!!!POPULATIONS
+!write(49,'(10f12.6)') real(xtime), real(xc_ei(0,t))**2+aimag(xc_ei(0,t))**2, real(xc_ei(1,t))**2+aimag(xc_ei(1,t))**2,&
+!                         real(xc_ei(2,t))**2+aimag(xc_ei(2,t))**2, real(xc_ei(3,t))**2+aimag(xc_ei(3,t))**2,&
+!                         real(xc_ei(4,t))**2+aimag(xc_ei(4,t))**2, real(xc_ei(5,t))**2+aimag(xc_ei(5,t))**2,&
+!                         real(xc_ei(6,t))**2+aimag(xc_ei(6,t))**2, real(xc_ei(7,t))**2+aimag(xc_ei(7,t))**2,&
+!                         real(xc_ei(8,t))**2+aimag(xc_ei(8,t))**2
+!
+!endif
 
 
 enddo

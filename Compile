@@ -1,28 +1,19 @@
 #!/bin/bash
 
-
-#if [[ -z $1 ]];then
-#echo -e "\nYou should use it like this:\n\n$0 number\n"
-#exit
-#else
-#name=QD-quest
-#fi
-#
-#echo Compiling $name
-
 export OMP_NUM_THREADS=4
 
 #f95 -c LegendrePolynomial.f95
 f95 -c Vectors.f90
 f95 -c Normal.f90
-f95 -c Integrals.f90 -fno-range-check
-f95 -c Constants.f90 -fno-range-check
+f95 -c Integrals.f90 #-fno-range-check
+f95 -c Constants.f90 #-fno-range-check
 f95 -c Variables.f90 
 f95 -c Output.f90 
 f95 -c Make_Ham.f90 
 #f95 -c Integrals_D.f95 -fno-range-check
 f95 -c QD_quest.f90 #-I /home/gattuso/NAG/fslm623dcl/nag_interface_blocks/ /home/gattuso/NAG/fslm623dcl/lib/intel64/libnagsmp.a /home/gattuso/NAG/fll6i26dfl/nag_interface_blocks/ /home/gattuso/NAG/fll6i26dfl/lib/libnag_mkl.a  -g -Wall -Wextra -pedantic -fimplicit-none -fcheck=all -fbacktrace -fno-range-check -O -O1 -O2 -O3
-f95 -O3 -fopenmp Variables.o Normal.o Make_Ham.o Integrals.o Vectors.o Output.o QD_quest.o -o QD_quest -L/usr/lib/x86_64-linux-gnu/lapack -llapack -I /usr/lib/x86_64-linux-gnu/libblas.a -I /home/gattuso/NAG/fll6i26dfl/nag_interface_blocks/ /home/gattuso/NAG/fll6i26dfl/lib/libnag_mkl.a -lblas -double -g -Wall -Wextra -pedantic -fimplicit-none -fcheck=all -fbacktrace -fno-range-check -s
+#f95 -O3 -fopenmp Variables.o Make_Ham.o Integrals.o Vectors.o Output.o QD_quest.o -o QD_quest -L/usr/lib/x86_64-linux-gnu/lapack -llapack -I /usr/lib/x86_64-linux-gnu/libblas.a -I /home/gattuso/NAG/fll6i26dfl/nag_interface_blocks/ /home/gattuso/NAG/fll6i26dfl/lib/libnag_mkl.a -lblas -double -g -Wall -Wextra -pedantic -fimplicit-none -fcheck=all -fbacktrace -fno-range-check -s
+f95  Variables.o Normal.o Make_Ham.o Integrals.o Vectors.o Output.o QD_quest.o -o QD_quest -L/usr/lib/x86_64-linux-gnu/lapack -llapack -I /usr/lib/x86_64-linux-gnu/libblas.a -I /home/gattuso/NAG/fll6i26dfl/nag_interface_blocks/ /home/gattuso/NAG/fll6i26dfl/lib/libnag_mkl.a -db1
 
 
 

@@ -39,9 +39,9 @@ Transition energies                  :     2.8762E+00     4.0241E+00     2.8762E
 Coulomb correction                   :     2.6680E-01     2.4348E-01     2.6680E-01     2.4348E-01
 Wavefunction overlap                 :       0.928120       0.291826       0.928120       0.291826
 Transition dipole moment             :     9.1744E-29     6.2048E-29     9.1744E-29     6.2048E-29
-Oscillator strength                  :     0.0000E+00     0.0000E+00     0.0000E+00     0.0000E+00
-Extinction coefficient               :     0.0000E+00     0.0000E+00     0.0000E+00     0.0000E+00
-Coulomb correction                   :     0.0000E+00     0.0000E+00     0.0000E+00     0.0000E+00
+Oscillator strength                  :************************************************************
+Extinction coefficient               :************************************************************
+Coulomb correction                   :************************************************************
 
 
  Charge transfer states: 
@@ -56,14 +56,15 @@ Transition dipole moment (fit)       :     7.3112E-33     6.7426E-33     7.3112E
  The initial parameters of the dynamic are:
 
 Number of states        :   9
-Number of pulses        :   1
-t0 of pulse             :   5.000000E-13
+Number of pulses        :   2
+t0 of first pulse       :   5.000000E-14
+t0 of second pulse      :   1.500000E-13
 Time step               :   2.000000E-17
 Time length of dynamic  :   5.000000E-13
-Omega                   :   6.500000E+14
+Omega                   :   3.600000E+15
 Phase                   :   3.141593E+00
-Width                   :   1.000000E-14
-Power                   :   5.142000E+08
+Width                   :   5.000000E-16
+Power                   :   5.142000E+09
 
 
 

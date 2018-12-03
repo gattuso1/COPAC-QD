@@ -397,7 +397,7 @@ contains
 
 subroutine make_Ham_ho
 
-Ham(0,0) = 0.0
+Ham(0,0) = 0.0d0
 Ham(1,1) = Eeh1(1) - Cb_eh1(1)
 Ham(2,2) = Eeh2(1) - Cb_eh2(1)                                                                         
 Ham(3,3) = Ham(1,1)
@@ -408,14 +408,14 @@ Ham(6,6) = Eeh2(2) - elec*(a66_1d_ho + a66_2d_ho * exp(-1.0d0*(a66_3d_ho*aR(1) +
                                   + 2*elec*(a66_1e_ho + a66_2e_ho * exp(-1.0d0*(a66_3e_ho*aR(1) + a66_4e_ho*link)))
 Ham(7,7) = Ham(5,5)
 Ham(8,8) = Ham(6,6)
-Ham(0,1) = 0.0 
-Ham(0,2) = 0.0 
-Ham(0,3) = 0.0 
-Ham(0,4) = 0.0 
-Ham(0,5) = 0.0 
-Ham(0,6) = 0.0 
-Ham(0,7) = 0.0 
-Ham(0,8) = 0.0 
+Ham(0,1) = 0.0d0
+Ham(0,2) = 0.0d0
+Ham(0,3) = 0.0d0
+Ham(0,4) = 0.0d0
+Ham(0,5) = 0.0d0
+Ham(0,6) = 0.0d0
+Ham(0,7) = 0.0d0
+Ham(0,8) = 0.0d0
 Ham(1,0) = Ham(0,1)
 Ham(2,0) = Ham(0,2)
 Ham(3,0) = Ham(0,3)

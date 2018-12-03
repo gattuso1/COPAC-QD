@@ -1,5 +1,7 @@
 module Vectors
 
+use Constants
+
 contains
 
 !get vector of module d and random orientation
@@ -8,11 +10,9 @@ function vector(d)
       implicit none
       integer :: i,j
       double precision, external:: s13adf
-      real*8, dimension(3) :: vector
-      real*8 :: d, phi, teta, x, y, z, rand1, rand2, PI
+      real(dp), dimension(3) :: vector
+      real(dp) :: d, phi, teta, x, y, z, rand1, rand2, PI
 
-      PI=  4.D0*DATAN(1.D0)
-      
       call random_number(rand1)
       call random_number(rand2)
       teta = rand1*2*PI
@@ -35,11 +35,9 @@ function vectorin(ddot)
 
       implicit none
       double precision, external:: s13adf
-      real*8, dimension(3) :: vectorin
-      real*8 :: ddot, phi, teta, rand1, rand2, rand3, PI , dval
+      real(dp), dimension(3) :: vectorin
+      real(dp) :: ddot, phi, teta, rand1, rand2, rand3, PI , dval
 
-      PI=  4.D0*DATAN(1.D0)
-      
       call random_number(rand1)
       call random_number(rand2)
       call random_number(rand3)
@@ -64,10 +62,8 @@ function vectorout(ddot, dmax)
 
       implicit none
       double precision, external:: s13adf
-      real*8, dimension(3) :: vectorout
-      real*8 :: ddot,  phi, teta, rand1, rand2, dmax, rand3, PI, dval
-
-      PI=  4.D0*DATAN(1.D0)
+      real(dp), dimension(3) :: vectorout
+      real(dp) :: ddot,  phi, teta, rand1, rand2, dmax, rand3, PI, dval
 
       call random_number(rand1)
       call random_number(rand2)

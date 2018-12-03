@@ -7,8 +7,8 @@ contains
 real(dp) function r8_uniform_01(seed)
   implicit none
 
-  integer ( kind = 8 ) k
-  integer ( kind = 4 ) seed
+  integer(kind=8) k
+  integer(kind=4) seed
 
   k = seed / 127773
 
@@ -24,15 +24,15 @@ end function r8_uniform_01
 
 
 
-real(dp) function r8_normal_ab ( a, b, seed )
+real(dp) function r8_normal_ab(a,b,seed)
   implicit none
 
-  real (dp) a
-  real (dp) b
-  real (dp) r1
-  real (dp) r2
-  integer ( kind = 4 ) seed
-  real (dp) x
+  real(dp) a
+  real(dp) b
+  real(dp) r1
+  real(dp) r2
+  integer(kind = 4) seed
+  real(dp) x
 
   r1 = r8_uniform_01 ( seed )
   r2 = r8_uniform_01 ( seed )

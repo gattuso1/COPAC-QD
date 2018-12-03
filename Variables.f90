@@ -12,7 +12,7 @@ implicit none
    integer,allocatable :: seed(:)
    real(dp) :: aA, aB, me, mh, eps, epsout, V0, omegaLO, rhoe, rhoh, slope, V0eV, minr, maxr, rsteps, side
    real(dp) :: dispQD, displink, rdmlinker, rdmQDA, rdmQDB, link, t01, t02, t03, timestep, totaltime, omega, phase, width, Ed
-   real(dp) :: pulse1, pulse2, pulse3, test, r4_normal_ab
+   real(dp) :: pulse1, pulse2, pulse3, test
    real(dp),allocatable :: aR(:), aRA(:), aRB(:), epsin(:), epsR(:), V0e(:), V0h(:), linker(:)
    real(dp),allocatable :: epsinA(:), epsinB(:), epsRA(:), epsRB(:), V0eA(:), V0eB(:), V0hA(:), V0hB(:)
    real(dp),allocatable :: Eeh1(:), Eeh2(:), Cb_eh1(:), Cb_eh2(:), Norm_Ana_e(:), Norm_Ana_h1(:), Norm_Ana_h2(:)
@@ -22,7 +22,7 @@ implicit none
    real(dp),allocatable :: ExctCoef_h1e(:), ExctCoef_h2e(:), Ham(:,:), E0(:), c0(:), TransHam(:,:), Hamt(:,:,:), c(:,:)
    complex(dp) :: ct1, ct2, ct3, ct4, xt01, xt02, xt03, xhbar, im, xwidth, xomega , xEd, xh, xphase, xtime
    complex(dp),allocatable :: xHam(:,:) , xHamt(:,:,:), xTransHam(:,:), xE0(:), xHamtk2(:,:,:), xHamtk3(:,:,:), xHamtk4(:,:,:)
-   complex(dp),allocatable :: xc0(:), xc(:,:), xcnew(:,:), k1(:), k2(:), k3(:) , k4(:)
+   complex(dp),allocatable :: xc0(:), xc(:,:), xc_ei(:,:), xcnew(:,:), k1(:), k2(:), k3(:) , k4(:), xHam_ei(:,:)
 
 contains 
 
@@ -45,8 +45,8 @@ read(150,NML=elecSt)
 im         = dcmplx(0.0d0,1.0d0)
 me         = me*m0
 mh         = mh*m0
-rhoe       = 1.0d0/sqrt((2*me*omegaLO)/hbar)
-rhoh       = 1.0d0/sqrt((2*mh*omegaLO)/hbar)
+rhoe       = 1.0d0/sqrt((2.d0*me*omegaLO)/hbar)
+rhoh       = 1.0d0/sqrt((2.d0*mh*omegaLO)/hbar)
 V0         = V0eV*elec
 
 if ( dyn .eq. 'y' ) then
@@ -73,11 +73,13 @@ allocate(xHamtk3(0:nstates-1,0:nstates-1,0:ntime))
 allocate(xHamtk4(0:nstates-1,0:nstates-1,0:ntime))
 allocate(c(0:nstates-1,0:ntime))
 allocate(xc(0:nstates-1,0:ntime))
+allocate(xc_ei(0:nstates-1,0:ntime))
 allocate(xcnew(0:nstates-1,ntime+1))
 allocate(TransHam(0:nstates-1,0:nstates-1))
 allocate(xTransHam(0:nstates-1,0:nstates-1))
 allocate(Ham(0:nstates-1,0:nstates-1))
 allocate(xHam(0:nstates-1,0:nstates-1))
+allocate(xHam_ei(0:nstates-1,0:nstates-1))
 allocate(c0(0:nstates-1))
 allocate(k1(0:nstates-1))
 allocate(k2(0:nstates-1))
@@ -155,10 +157,11 @@ rmin = 1
 rmax = 2
 
 do n = 1,2
-epsin(n) = 1.0 + (eps - 1.0) / (1.0 + (0.75d-9/(2*aR(n)))**1.2)
-epsR(n) = 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-(36/35)*aR(n)/rhoe)+exp(-(36/35)*aR(n)/rhoh))/2))
-V0e(n)=-1*(-3.49+2.47*(1d9*2*aR(n))**(-1.32))*elec
-V0h(n)=-1*(-5.23-0.74*(1d9*2*aR(n))**(-0.95))*elec
+epsin(n) = 1.d0 + (eps - 1.d0) / (1.d0 + (0.75d-9/(2*aR(n)))**1.2d0)
+epsR(n) = 1.d0/((1.d0/epsin(n))-((1.d0/epsin(n))-(1.d0/(epsin(n)+3.5d0)))*&
+(1.d0-(exp(-(36.d0/35.d0)*aR(n)/rhoe)+exp(-(36.d0/35.d0)*aR(n)/rhoh))/2.d0))
+V0e(n)=-1.d0*(-3.49d0+2.47d0*(1d9*2.d0*aR(n))**(-1.32d0))*elec
+V0h(n)=-1.d0*(-5.23d0-0.74d0*(1d9*2.d0*aR(n))**(-0.95d0))*elec
 enddo
 
 else if ( vers .eq. 'range' ) then
