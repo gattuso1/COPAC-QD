@@ -559,11 +559,11 @@ write(6,*)
 allocate(lambda(1:nstates-1))
 allocate(work(1))
 
-call dsyev('V','U', nstates-1, Ham, nstates-1, lambda, Work, -1, info)
+call dsyev('V','U', nstates-1, Ham(1:nstates-1,1:nstates-1), nstates-1, lambda, Work, -1, info)
 lwork=nint(work(1))
 deallocate (work)
 allocate(work(lwork))
-call dsyev('V', 'U', nstates-1, Ham, nstates-1, lambda, Work, lwork, info)
+call dsyev('V', 'U', nstates-1, Ham(1:nstates-1,1:nstates-1), nstates-1, lambda, Work, lwork, info)
 deallocate (work)
 write(6,*)
 
@@ -571,8 +571,9 @@ write(6,*) "Eigenvalues"
 write(6,"(8ES12.4E2)") (lambda(i)/elec, i=1,nstates-1)
 write(6,*)
 write(6,*) "Eigenvectors"
+write(6,'(8i8)') 1,2,3,4,5,6,7,8 
 do i = 1,nstates-1
-write(6,"(i2,8f8.4)") i, (Ham(i,j), j=1,nstates-1)
+write(6,"(8f8.4)") (Ham(i,j), j=1,nstates-1)
 enddo
 deallocate(lambda)
 
@@ -597,6 +598,13 @@ call makeOutputRange
 elseif ( vers .eq. 'randm') then
 call makeOutputRandm
 endif
+
+
+write(outputdir,'(a7,a5,a1,i2,a1,i2)') "Output-", vers, "-", nint(aA*1d9*10), "-" , nint(aB*1d9*10) 
+
+call system("mkdir  " // outputdir)
+call system("mv *dat " // outputdir)
+call system("mv *txt " // outputdir)
 
 !call system("mkdir output-`date +%x | sed 's/\//-/g'`-`date +%r | sed 's/:/-/g'`")
 !call system("mv *dat `ls -lrth | tail -n 1 | awk '{print $9}'`")

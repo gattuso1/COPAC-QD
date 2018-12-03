@@ -5,7 +5,7 @@ use Constants
 implicit none
 
    character*5 :: vers
-   character*64 :: popc, hmti, norm, tdmM, hmt0
+   character*64 :: popc, hmti, norm, tdmM, hmt0, outputdir
    character*1 :: o_Norm, o_Over, o_Coul, o_DipS, o_Osci, o_Exti, o_DipD, dyn, hamilt
    integer :: ndots, n, rmin, rmax, nsys, npulses, nstates, ntime, i, j, t, lwork, info
    real(dp) :: aA, aB, me, mh, eps, epsout, V0, omegaLO, rhoe, rhoh, slope, V0eV, minr, maxr, rsteps, side
