@@ -1548,9 +1548,9 @@ implicit none
 complex(dp) :: t,xHam,xTransHam,xc
 
 RK_k = (-1.0d0)*(im/xhbar) * &
-(xHam - pulse1 * xTransHam * xEd * cos(xomega*(t-xt01)+xphase) * exp(-1.0d0*(t-xt01)**2/(2.0d0*(xwidth**2))) - &
-        pulse2 * xTransHam * xEd * cos(xomega*(t-xt02)+xphase) * exp(-1.0d0*(t-xt02)**2/(2.0d0*(xwidth**2))) - &
-        pulse3 * xTransHam * xEd * cos(xomega*(t-xt03)+xphase) * exp(-1.0d0*(t-xt03)**2/(2.0d0*(xwidth**2))))*xc
+(xHam - pulse1 * xTransHam * xEd * zcos(xomega*(t-xt01)+xphase) * zexp(-1.0d0*(t-xt01)**2/(2.0d0*(xwidth**2))) - &
+        pulse2 * xTransHam * xEd * zcos(xomega*(t-xt02)+xphase) * zexp(-1.0d0*(t-xt02)**2/(2.0d0*(xwidth**2))) - &
+        pulse3 * xTransHam * xEd * zcos(xomega*(t-xt03)+xphase) * zexp(-1.0d0*(t-xt03)**2/(2.0d0*(xwidth**2))))*xc
 
 end function RK_k
 

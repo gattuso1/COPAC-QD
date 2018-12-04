@@ -1,4 +1,4 @@
-module Variables
+module Variables_au
 
 use Constants
 use Normal
@@ -55,14 +55,14 @@ rewind 150
 read(150,NML=pulses)
 
 xhbar      = dcmplx(hbar,0.0d0)
-xh         = dcmplx(timestep,0.0d0)
-xt01       = dcmplx(t01,0.0d0)
-xt02       = dcmplx(t02,0.0d0)
-xt03       = dcmplx(t03,0.0d0)
+xh         = dcmplx(timestep/t_au,0.0d0)
+xt01       = dcmplx(t01/t_au,0.0d0)
+xt02       = dcmplx(t02/t_au,0.0d0)
+xt03       = dcmplx(t03/t_au,0.0d0)
 xphase     = dcmplx(phase,0.0d0)
 xomega     = dcmplx(omega,0.0d0)
 xwidth     = dcmplx(width,0.0d0)
-xEd        = dcmplx(Ed,0.0d0)
+xEd        = dcmplx(Ed/E_au,0.0d0)
 ntime      = nint(totaltime/timestep)
 phase      = pi
 
@@ -153,9 +153,9 @@ else if ( aA .ne. aB ) then
 write(6,*) "You are requesting me to tackle a heterodimer QD"
 endif
 
-aR(1) = aA
-aR(2) = aB
-linker(:) = link
+aR(1) = aA/a0
+aR(2) = aB/a0
+linker(:) = link/a0
 
 rmin = 1
 rmax = 2
@@ -263,4 +263,4 @@ endif
 
 end subroutine getVariables
    
-end module Variables
+end module Variables_au

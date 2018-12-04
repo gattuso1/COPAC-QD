@@ -401,7 +401,8 @@ Ham      = 0.0d0
 TransHam = 0.0d0
 
 if ( aA .eq. aB ) then
-call make_Ham_ho
+!call make_Ham_ho
+Ham(0,0) = 0.5e-19
 TransHam(0,1) = TransDip_Ana_h1e(n)
 TransHam(0,2) = TransDip_Ana_h2e(n)
 TransHam(0,3) = TransHam(0,1)
@@ -410,7 +411,7 @@ TransHam(0,5) = TransDip_Fit_h1e_ho(aR(n),link)*1.0d-33
 TransHam(0,6) = TransDip_Fit_h2e_ho(aR(n),link)*1.0d-33
 TransHam(0,7) = TransHam(0,5)
 TransHam(0,8) = TransHam(0,6)
-do i=1,nstates-1
+do i=0,nstates-1
 TransHam(i,0) = TransHam(0,i)
 enddo
 do i=0,nstates-1
@@ -431,7 +432,7 @@ TransHam(0,5) = TransDip_Fit_h1e_he(aR(n),aR(n+nsys))*1.0d-33
 TransHam(0,6) = TransDip_Fit_h2e_he(aR(n),aR(n+nsys))*1.0d-33
 TransHam(0,7) = TransDip_Fit_h1e_he(aR(n),aR(n+nsys))*1.0d-33
 TransHam(0,8) = TransDip_Fit_h2e_he(aR(n),aR(n+nsys))*1.0d-33
-do i=1,nstates-1
+do i=0,nstates-1
 TransHam(i,0) = TransHam(0,i)
 enddo
 
@@ -561,6 +562,14 @@ write(44,'(10f15.8)') real(xtime), real(xc(0,t))**2+aimag(xc(0,t))**2, real(xc(1
                          real(xc(4,t))**2+aimag(xc(4,t))**2, real(xc(5,t))**2+aimag(xc(5,t))**2,&
                          real(xc(6,t))**2+aimag(xc(6,t))**2, real(xc(7,t))**2+aimag(xc(7,t))**2,&
                          real(xc(8,t))**2+aimag(xc(8,t))**2
+
+open(50,file="test.dat")
+!!!!POPULATIONS
+write(50,'(10f15.8)') real(xtime), real(xc(0,t)), aimag(xc(0,t)), real(xc(1,t))+aimag(xc(1,t)),&
+                         real(xc(2,t)),aimag(xc(2,t)), real(xc(3,t)),aimag(xc(3,t)),&
+                         real(xc(4,t)),aimag(xc(4,t)), real(xc(5,t)),aimag(xc(5,t)),&
+                         real(xc(6,t)),aimag(xc(6,t)), real(xc(7,t)),aimag(xc(7,t)),&
+                         real(xc(8,t)),aimag(xc(8,t))
 
 xc_ei = 0.d0
 
