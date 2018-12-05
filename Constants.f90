@@ -1,7 +1,7 @@
 module Constants  
 implicit none 
 
-   integer,  parameter :: dp = SELECTED_REAL_KIND(15,307)
+   integer,  parameter :: dp = SELECTED_REAL_KIND(16,307)
    real(dp), parameter :: pi = 4.0d0*datan(1.0d0)
    real(dp), parameter :: h  = 6.62607004d-34
    real(dp), parameter :: hbar  = h/(2.0d0*pi)

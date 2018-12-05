@@ -1,5 +1,5 @@
 ! Namelist definition
-
+, totaltime
 &version !version of the code, choose between singl, dimer, range, randm
 vers = "dimer"   
 /
@@ -13,6 +13,7 @@ o_Osci  = "n" !Oscillator strength of local excitons
 o_Exti  = "n" !Molar extinction coefficients of local excitons
 o_DipD  = "n" !Transition dipole moments of CT states
 dyn     = "y" !Should I perform dynamics?
+dyn_ei  = "y" !Should I perform dynamics?
 hamilt  = "y" !Should I print the time dependent Hamiltonian (very heavy and time consuming)
 /
 
@@ -29,17 +30,17 @@ side      =  0.5d-9      !Width of side buffer of integration box
 
 &pulses !Parameters of quantum dynamic and pulses
 nstates   = 9           !Total number of excitons + GS
-npulses   = 0           !Number of pulses (up to 3)
-t01       = 5.0d-14     !Pulse 1 centered at (s)
-t02       = 15.0d-14     !Pulse 2 centered at (s)
+npulses   = 2           !Number of pulses (up to 3)
+t01       = 10.0d-14     !Pulse 1 centered at (s)
+t02       = 35.0d-14     !Pulse 2 centered at (s)
 t03       = 30.0d-14     !Pulse 3 centered at (s)
-timestep  = 20d-18      !Time step of quantum dynamic
-totaltime = 500d-15     !Total time simulated (s)
+timestep  = 0.001d-15      !Time step of quantum dynamic
+totaltime = 500.0d-15     !Total time simulated (s)
 !omega     = 0.65d15      !Frequency (s-1)
 omega     = 3.6d15      !Frequency (s-1)
 !phase     = pi Careful here, it is defined in the code
-width     = 5d-16       !Width of the pulse (s) 
-Ed        = 5.142d9     !Field strength (V/m so far)
+width     = 0.10d-15       !Width of the pulse (s) 
+Ed        = 5.142d12     !Field strength (V/m so far)
 /
 
 &syst_single !Parameters of the single dot

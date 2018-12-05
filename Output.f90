@@ -1,7 +1,7 @@
 module Output
 
-use Constants
-use Variables
+use Constants_au
+use Variables_au
 use Integrals
 use Vectors
 

@@ -1,6 +1,6 @@
 module Variables
 
-use Constants
+use Constants_au
 use Normal
 
 implicit none

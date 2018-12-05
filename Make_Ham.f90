@@ -1,7 +1,7 @@
 module Make_Ham
 
-use Constants
-use Variables
+use Constants_au
+use Variables_au
 
 real(dp), parameter :: a12_1d_ho = 0.00876695d0
 real(dp), parameter :: a12_2d_ho = 0.0346284d0
