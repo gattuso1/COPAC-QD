@@ -63,7 +63,7 @@ Time step               :   2.000000E-17
 Time length of dynamic  :   5.000000E-13
 Omega                   :   3.600000E+15
 Phase                   :   3.141593E+00
-Width                   :   5.000000E-16
+Width                   :   2.000000E-15
 Power                   :   5.142000E+09
 
 

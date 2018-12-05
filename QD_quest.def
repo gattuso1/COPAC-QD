@@ -38,7 +38,7 @@ totaltime = 500d-15     !Total time simulated (s)
 !omega     = 0.65d15      !Frequency (s-1)
 omega     = 3.6d15      !Frequency (s-1)
 !phase     = pi Careful here, it is defined in the code
-width     = 5d-16       !Width of the pulse (s) 
+width     = 20d-16       !Width of the pulse (s) 
 Ed        = 5.142d9     !Field strength (V/m so far)
 /
 
