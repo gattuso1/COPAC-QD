@@ -106,10 +106,13 @@ r=0
 je=1
 jh=1
 
+diffe = 0.d0
+diffh = 0.d0
+
 do i=1,nsteps
 E(i)=delta*i
 diffe(i) = abs(sqrt(2.0d0*me*E(i))/hbar * aR(n) * 1.0d0/tan(sqrt(2*me*E(i))/hbar * aR(n)) - 1.0d0 + (me/m0) + (me*aR(n))/(hbar) &
-           * sqrt((2.0d0/m0)*(V0h(n)-E(i))))
+           * sqrt((2.0d0/m0)*(V0e(n)-E(i))))
 if ((diffe(0) .eq. 0.000) .and. (diffh(0) .eq. 0.00)) then 
         diffe(0)=diffe(i)
         diffh(0)=diffe(i)
@@ -132,7 +135,7 @@ enddo
 
 !wave vectors in and out
 kine(n)=sqrt(2.d0*me*minEe(1,n))/hbar
-koute(n)=sqrt(2.d0*m0*(V0h(n)-minEe(1,n)))/hbar
+koute(n)=sqrt(2.d0*m0*(V0e(n)-minEe(1,n)))/hbar
 
 kinh1(n)=sqrt(2.d0*mh*minEh(1,n))/hbar
 kouth1(n)=sqrt(2.d0*m0*(V0h(n)-minEh(1,n)))/hbar
@@ -183,10 +186,9 @@ I3eh2(n)=(Be(n)**2*Bh2(n)**2*aR(n)/(2.d0*koute(n)*aR(n))*(exp(-2*koute(n)*aR(n))
          (Be(n)**2*Bh2(n)**2*aR(n)/(2.d0*kouth2(n)*aR(n))*(exp(-2*kouth2(n)*aR(n))*&
        eone(2.d0*koute(n)*aR(n))-eone(2.d0*kouth2(n)*aR(n)+2*koute(n)*aR(n))))
 
+Cb_eh1(n)=(elec**2/(4.d0*pi*eps*eps0))*(I1eh1(n)+I2eh1(n)+I3eh1(n))
 
-Cb_eh1(n)=(elec**2/(4.d0*pi*epsin(n)*eps0))*(I1eh1(n)+I2eh1(n)+I3eh1(n))
-
-Cb_eh2(n)=(elec**2/(4.d0*pi*epsin(n)*eps0))*(I1eh2(n)+I2eh2(n)+I3eh2(n))
+Cb_eh2(n)=(elec**2/(4.d0*pi*eps*eps0))*(I1eh2(n)+I2eh2(n)+I3eh2(n))
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 Eeh1(n) = (minEe(1,n)+minEh(1,n))+V0-Cb_eh1(n) 
@@ -497,6 +499,10 @@ k2 = dcmplx(0.0d0,0.0d0)
 k3 = dcmplx(0.0d0,0.0d0)
 k4 = dcmplx(0.0d0,0.0d0)
 
+!do i=0,nstates-1
+!write(6,'(9f12.6)') (Ham(i,j)*Energ_au/elec, j=0,8)
+!enddo
+
 do i=0,nstates-1
 do j=0,nstates-1
 k1(i) = k1(i) + RK_k(time,Ham(i,j), TransHam(i,j), xc(j,t))
@@ -546,7 +552,13 @@ if ( MOD(t,100) .eq. 0 ) then
 !!!NORM
 write(46,*) time*t_au, cnorm2 !cnormabs !, cnormconj, cnorm2
 !!!POPULATIONS
-write(44,'(10ES18.6E2)') time*t_au, (dreal(xc(i,t))**2+aimag(xc(i,t))**2, i=0,8) 
+write(44,*) time*t_au, real(xc(0,t))**2+aimag(xc(0,t))**2, real(xc(1,t))**2+aimag(xc(1,t))**2,&
+                         real(xc(2,t))**2+aimag(xc(2,t))**2, real(xc(3,t))**2+aimag(xc(3,t))**2,&
+                         real(xc(4,t))**2+aimag(xc(4,t))**2, real(xc(5,t))**2+aimag(xc(5,t))**2,&
+                         real(xc(6,t))**2+aimag(xc(6,t))**2, real(xc(7,t))**2+aimag(xc(7,t))**2,&
+                         real(xc(8,t))**2+aimag(xc(8,t))**2
+!
+!write(44,'(10ES18.6E2)') time*t_au, (dreal(xc(i,t))**2+aimag(xc(i,t))**2, i=0,8) 
 endif
 
 if ( dyn_ei .eq. 'y' ) then
@@ -556,18 +568,20 @@ if ( dyn_ei .eq. 'y' ) then
 !enddo
 
 xc_ei = dcmplx(0.d0,0.d0)
+cnorm2_ei = 0.d0
 
 do i=0,nstates-1
    do j=0,nstates-1
       xc_ei(i,t) = xc_ei(i,t) + dcmplx(Ham_ei(j,i),0.d0) * xc(j,t)  
    enddo
+cnorm2_ei = cnorm2_ei + dreal(xc_ei(i,t))**2 + aimag(xc_ei(i,t))**2
 enddo
 
 !!!!NORM
-cnorm2_ei = 0.d0
-do i=0,nstates-1
-cnorm2_ei = cnorm2_ei + dreal(xc_ei(i,t))**2 + aimag(xc_ei(i,t))**2
-enddo
+!cnorm2_ei = 0.d0
+!do i=0,nstates-1
+!cnorm2_ei = cnorm2_ei + dreal(xc_ei(i,t))**2 + aimag(xc_ei(i,t))**2
+!enddo
 
 open(52,file="Re-c_ei.dat")
 open(53,file="Im-c_ei.dat")

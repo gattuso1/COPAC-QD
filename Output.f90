@@ -123,8 +123,8 @@ write(60,*)
 write(60,*)
 write(60,*) "Charge transfer states: "
 write(60,'(47x," 5 ",12x, " 6 ",12x, " 7 ",12x, " 8 ")')
-write(60,'("Transition energies                  :",4ES15.4E2)') real(xHam(5,5))*Energ_au, real(xHam(6,6))*Energ_au, &
-                                                        real(xHam(7,7))*Energ_au, real(xHam(8,8))*Energ_au
+write(60,'("Transition energies                  :",4ES15.4E2)') real(Ham(5,5))*Energ_au/elec, real(Ham(6,6))*Energ_au/elec, &
+                                                        real(Ham(7,7))*Energ_au/elec, real(Ham(8,8))*Energ_au/elec
 !write(60,'("Coulomb correction                   :",4ES15.4E2)') (minEe(1,2) + minEh(1,1) + V0 - Ham(5,5)), &
 !                                                                 (minEe(1,2) + minEh(2,1) + V0 - Ham(6,6)), &
 !                                                                 (minEe(1,1) + minEh(1,2) + V0 - Ham(7,7)), &
@@ -162,7 +162,7 @@ write(60,*) "The 0th order Hamiltonian is:"
 write(60,*) 
 write(60,'(11x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2)') "0",  "1", "2", "3", "4", "5", "6", "7", "8"
 do i=0,nstates-1
-write(60,'(i2,2x,9es14.6e2)') i, (real(xHam(i,j))/elec, j=0,nstates-1)  
+write(60,'(i2,2x,f14.6)') i, (Ham(i,j)*Energ_au/elec, j=0,nstates-1)  
 enddo
 
 write(60,*) 
@@ -170,7 +170,7 @@ write(60,*) "And the transition dipole matrix is:"
 write(60,*) 
 write(60,'(11x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2)') "0",  "1", "2", "3", "4", "5", "6", "7", "8"
 do i=0,nstates-1
-write(60,'(i2,2x,9es14.6e2)') i, (real(TransHam(i,j)/Cm_to_D), j=0,nstates-1)
+write(60,'(i2,2x,f14.6)') i, (real(TransHam(i,j)*Dip_au/Cm_to_D), j=0,nstates-1)
 enddo
 
 

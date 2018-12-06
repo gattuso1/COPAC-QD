@@ -1556,10 +1556,9 @@ implicit none
 real(dp) :: t,Ham,TransHam
 complex(kind=8) :: xc
 
-RK_k = &
-dcmplx(0.d0,-(Ham - pulse1 * TransHam * Ed * cos(omega*(t-t01)+phase) * exp(-1.0d0*(t-t01)**2.d0/(2.0d0*(width**2))) - &
+RK_k = -im * (Ham - pulse1 * TransHam * Ed * cos(omega*(t-t01)+phase) * exp(-1.0d0*(t-t01)**2.d0/(2.0d0*(width**2))) - &
                     pulse2 * TransHam * Ed * cos(omega*(t-t02)+phase) * exp(-1.0d0*(t-t02)**2.d0/(2.0d0*(width**2))) - &
-                    pulse3 * TransHam * Ed * cos(omega*(t-t03)+phase) * exp(-1.0d0*(t-t03)**2.d0/(2.0d0*(width**2)))))*xc
+                    pulse3 * TransHam * Ed * cos(omega*(t-t03)+phase) * exp(-1.0d0*(t-t03)**2.d0/(2.0d0*(width**2))))*xc
 
 end function RK_k
 
