@@ -567,6 +567,7 @@ if ( dyn_ei .eq. 'y' ) then
 !write(6,'(10f12.6)') (Ham_ei(i,j), j=0,nstates-1)
 !enddo
 
+!cat test.dat | awk '{print $3*$8 + $13*$18}' > test-cohe.dat
 xc_ei = dcmplx(0.d0,0.d0)
 cnorm2_ei = 0.d0
 
