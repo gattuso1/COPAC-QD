@@ -1,18 +1,18 @@
 module Variables_au
 
 use Constants_au
-!use Normal
+use Normal
 
 implicit none
 
    character*5 :: vers
-   character*64 :: popc, hmti, norm, tdmM, hmt0, outputdir
+   character*64 :: popc, hmti, norm, tdmM, hmt0, outputdir, norm_ei, popc_ei
    character*1 :: o_Norm, o_Over, o_Coul, o_DipS, o_Osci, o_Exti, o_DipD, dyn, hamilt, dyn_ei
    integer :: ndots, n, rmin, rmax, nsys, npulses, nstates, ntime, i, j, t, lwork, info
    integer,allocatable :: seed(:)
    real(dp) :: aA, aB, me, mh, eps, epsout, V0, omegaLO, rhoe, rhoh, slope, V0eV, minr, maxr, rsteps, side
    real(dp) :: dispQD, displink, rdmlinker, rdmQDA, rdmQDB, link, t01, t02, t03, timestep, totaltime, omega, phase, width, Ed
-   real(dp) :: pulse1, pulse2, pulse3, test, time, cnorm, cnormabs, cnormconj, cnorm2, cnorm2_ei
+   real(dp) :: pulse1, pulse2, pulse3, test, time, cnorm, cnormabs, cnormconj, cnorm2, cnorm2_ei, Kas, Kbs, Kcs, Dso, Dxf
    real(dp),allocatable :: aR(:), aRA(:), aRB(:), epsin(:), epsR(:), V0e(:), V0h(:), linker(:)
    real(dp),allocatable :: epsinA(:), epsinB(:), epsRA(:), epsRB(:), V0eA(:), V0eB(:), V0hA(:), V0hB(:)
    real(dp),allocatable :: Eeh1(:), Eeh2(:), Cb_eh1(:), Cb_eh2(:), Norm_Ana_e(:), Norm_Ana_h1(:), Norm_Ana_h2(:)
@@ -31,10 +31,11 @@ contains
 subroutine getVariables
 
 NAMELIST /version/ vers
-NAMELIST /outputs/ o_Norm,o_Over,o_Coul,o_DipS,o_Osci,o_Exti,o_DipD,dyn,hamilt
+NAMELIST /outputs/ o_Norm,o_Over,o_Coul,o_DipS,o_Osci,o_Exti,o_DipD,dyn,hamilt,dyn_ei
 NAMELIST /elecSt/ me,mh,eps,epsout,V0eV,omegaLO,slope,side
+NAMELIST /fineSt/ Kas,Kbs,Kcs,Dso,Dxf
 NAMELIST /pulses/ nstates,npulses,t01,t02,t03,timestep,totaltime,omega,phase,width,Ed
-NAMELIST /syst_single/ aA
+NAMELIST /syst_single/ nsys,aA,dispQD
 NAMELIST /syst_dimer/ aA,aB,link
 NAMELIST /syst_range/ rsteps,minr,maxr,link
 NAMELIST /syst_random/ nsys,aA,aB,link,displink,dispQD
@@ -57,15 +58,15 @@ if ( dyn .eq. 'y' ) then
 rewind 150
 read(150,NML=pulses)
 
-timestep   = timestep/t_au
-totaltime  = totaltime/t_au
-t01        = t01/t_au
-t02        = t02/t_au
-t03        = t03/t_au
-width      = width/t_au
-omega      = omega*t_au
-Ed         = 0.024 !Ed/E_au
-xh         = dcmplx(timestep,0.0d0)
+timestep   =  timestep/t_au  !timestep*1.d-15/t_au
+totaltime  =  totaltime/t_au !totaltime*1.d-15/t_au
+t01        =  t01/t_au       !t01*1.d-15/t_au
+t02        =  t02/t_au       !t02*1.d-15/t_au
+t03        =  t03/t_au       !t03*1.d-15/t_au
+width      =  width/t_au     !width*1.d-15/t_au
+omega      =  omega*t_au      !omega*1.d15*t_au
+Ed         =  Ed/E_au        !0.024 !Ed/E_au
+xh         =  dcmplx(timestep,0.0d0)
 !xt01       = dcmplx(t01/t_au,0.0d0)
 !xt02       = dcmplx(t02/t_au,0.0d0)
 !xt03       = dcmplx(t03/t_au,0.0d0)
@@ -128,6 +129,7 @@ endif
 if ( vers .eq. 'randm' ) then
 rewind 150
 read(150,NML=syst_random)
+read(150,NML=syst_single)
 endif
 
 
@@ -135,24 +137,31 @@ if ( vers .eq. 'singl' ) then
 
 write(6,*) "You are requesting me to tackle a single QD"
 
-allocate(aR(1))
-allocate(linker(1))
-allocate(epsin(1))
-allocate(epsR(1))
-allocate(V0e(1))
-allocate(V0h(1))
-
 rewind 150
-read(150,NML=syst_single)
+read(150,NML=fineSt)
 
-rmin= 1
-rmax = 1
+allocate(aR(nsys))
+allocate(epsin(nsys))
+allocate(linker(nsys))
+allocate(epsR(nsys))
+allocate(V0e(nsys))
+allocate(V0h(nsys))
 
-aR(1) = aA
-epsin(1) = 1.0 + (eps - 1.0) / (1.0 + (0.75d-9/(2*aR(1)))**1.2)
-epsR(1) = 1.0/((1.0/epsin(1))-((1.0/epsin(1))-(1.0/(epsin(1)+3.5)))*(1-(exp(-(36/35)*aR(1)/rhoe)+exp(-(36/35)*aR(1)/rhoh))/2))
-V0e(1)=-1*(-3.49+2.47*(1d9*2*aR(1))**(-1.32))*elec
-V0h(1)=-1*(-5.23-0.74*(1d9*2*aR(1))**(-0.95))*elec
+  call random_seed(size = n)
+  allocate(seed(n))
+  call random_seed(get=seed)
+
+linker = link
+rmin = 1
+rmax = nsys
+
+do n = 1,nsys
+aR(n)= r8_NORMAL_AB(aA, dispQD*1d-9, seed(1))
+epsin(n) = 1.0 + (eps - 1.0) / (1.0 + (0.75d-9/(2*aR(n)))**1.2)
+epsR(n) = 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-(36/35)*aR(n)/rhoe)+exp(-(36/35)*aR(n)/rhoh))/2))
+V0e(n)=-1*(-3.49+2.47*(1d9*2*aR(n))**(-1.32))*elec
+V0h(n)=-1*(-5.23-0.74*(1d9*2*aR(n))**(-0.95))*elec
+enddo
 
 else if ( vers .eq. 'dimer' ) then
 
@@ -215,68 +224,67 @@ V0e(n)=-1*(-3.49+2.47*(1d9*2*aR(n))**(-1.32))*elec
 V0h(n)=-1*(-5.23-0.74*(1d9*2*aR(n))**(-0.95))*elec
 enddo
 
-!else if ( ( vers .eq. 'randm' ) .and. ( aA .eq. aB ) ) then
-!
-!write(6,*) "You are requesting me to tackle a random set of homodimer QD"
-!
-!allocate(aR(nsys))
-!allocate(linker(nsys))
-!allocate(epsin(nsys))
-!allocate(epsR(nsys))
-!allocate(V0e(nsys))
-!allocate(V0h(nsys))
-!
-!  call random_seed(size = n)
-!  allocate(seed(n))
-!  call random_seed(get=seed)
-!
-!rmin = 1
-!rmax = nsys
-!
-!do n = 1,nsys
-!aR(n)= r8_NORMAL_AB(aA, dispQD*1d-9, seed(1))
-!linker(n) = r8_NORMAL_AB(link, displink*1d-9, seed(2))
-!epsin(n) = 1.0 + (eps - 1.0) / (1.0 + (0.75d-9/(2*aR(n)))**1.2)
-!epsR(n) = 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-(36/35)*aR(n)/rhoe)+exp(-(36/35)*aR(n)/rhoh))/2))
-!V0e(n)=-1*(-3.49+2.47*(1d9*2*aR(n))**(-1.32))*elec
-!V0h(n)=-1*(-5.23-0.74*(1d9*2*aR(n))**(-0.95))*elec
-!!write(6,*) aR(n), linker(n)
-!enddo
-!
-!else if ( ( vers .eq. 'randm' ) .and. ( aA .ne. aB ) ) then
-!
-!write(6,*) "You are requesting me to tackle a random set of heterodimer QD"
-!
-!allocate(aR(2*nsys))
-!allocate(linker(2*nsys))
-!allocate(epsin(2*nsys))
-!allocate(epsR(2*nsys))
-!allocate(V0e(2*nsys))
-!allocate(V0h(2*nsys))
-!
-!linker = link
-!
-!  call random_seed(size = n)
-!  allocate(seed(n))
-!  call random_seed(get=seed)
-!
-!rmin = 1
-!rmax = 2*nsys
-!
-!do n = 1,nsys
-!aR(n) = r8_NORMAL_AB(aA,dispQD*1d-9,seed(1))
-!aR(n+nsys) = r8_NORMAL_AB(aB,dispQD*1d-9,seed(2))
-!epsin(n) = 1.0 + (eps - 1.0) / (1.0 + (0.75d-9/(2*aR(n)))**1.2)
-!epsin(n+nsys) = 1.0 + (eps - 1.0) / (1.0 + (0.75d-9/(2*aR(n+nsys)))**1.2)
-!epsR(n)= 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-(36/35)*aR(n)/rhoe)+exp(-(36/35)*aR(n)/rhoh))/2))
-!epsR(n+nsys)= 1.0/((1.0/epsin(n+nsys))-((1.0/epsin(n+nsys))-(1.0/(epsin(n+nsys)+3.5)))*&
-!                  (1-(exp(-(36/35)*aR(n+nsys)/rhoe)+exp(-(36/35)*aR(n+nsys)/rhoh))/2))
-!V0e(n)=-1*(-3.49+2.47*(1d9*2*aR(n))**(-1.32))*elec
-!V0e(n+nsys)=-1*(-3.49+2.47*(1d9*2*aR(n+nsys))**(-1.32))*elec
-!V0h(n)=-1*(-5.23-0.74*(1d9*2*aR(n))**(-0.95))*elec
-!V0h(n+nsys)=-1*(-5.23-0.74*(1d9*2*aR(n+nsys))**(-0.95))*elec
-!write(6,*) aR(n), aR(n+nsys)
-!enddo
+else if ( ( vers .eq. 'randm' ) .and. ( aA .eq. aB ) ) then
+
+write(6,*) "You are requesting me to tackle a random set of homodimer QD"
+
+allocate(aR(nsys))
+allocate(linker(nsys))
+allocate(epsin(nsys))
+allocate(epsR(nsys))
+allocate(V0e(nsys))
+allocate(V0h(nsys))
+
+  call random_seed(size = n)
+  allocate(seed(n))
+  call random_seed(get=seed)
+
+rmin = 1
+rmax = nsys
+
+do n = 1,nsys
+aR(n)= r8_NORMAL_AB(aA, dispQD*1d-9, seed(1))
+linker(n) = r8_NORMAL_AB(link, displink*1d-9, seed(2))
+epsin(n) = 1.0 + (eps - 1.0) / (1.0 + (0.75d-9/(2*aR(n)))**1.2)
+epsR(n) = 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-(36/35)*aR(n)/rhoe)+exp(-(36/35)*aR(n)/rhoh))/2))
+V0e(n)=-1*(-3.49+2.47*(1d9*2*aR(n))**(-1.32))*elec
+V0h(n)=-1*(-5.23-0.74*(1d9*2*aR(n))**(-0.95))*elec
+!write(6,*) aR(n), linker(n)
+enddo
+
+else if ( ( vers .eq. 'randm' ) .and. ( aA .ne. aB ) ) then
+
+write(6,*) "You are requesting me to tackle a random set of heterodimer QD"
+
+allocate(aR(2*nsys))
+allocate(linker(2*nsys))
+allocate(epsin(2*nsys))
+allocate(epsR(2*nsys))
+allocate(V0e(2*nsys))
+allocate(V0h(2*nsys))
+
+linker = link
+
+  call random_seed(size = n)
+  allocate(seed(n))
+  call random_seed(get=seed)
+
+rmin = 1
+rmax = 2*nsys
+
+do n = 1,nsys
+aR(n) = r8_NORMAL_AB(aA,dispQD*1d-9,seed(1))
+aR(n+nsys) = r8_NORMAL_AB(aB,dispQD*1d-9,seed(2))
+epsin(n) = 1.0 + (eps - 1.0) / (1.0 + (0.75d-9/(2*aR(n)))**1.2)
+epsin(n+nsys) = 1.0 + (eps - 1.0) / (1.0 + (0.75d-9/(2*aR(n+nsys)))**1.2)
+epsR(n)= 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-(36/35)*aR(n)/rhoe)+exp(-(36/35)*aR(n)/rhoh))/2))
+epsR(n+nsys)= 1.0/((1.0/epsin(n+nsys))-((1.0/epsin(n+nsys))-(1.0/(epsin(n+nsys)+3.5)))*&
+                  (1-(exp(-(36/35)*aR(n+nsys)/rhoe)+exp(-(36/35)*aR(n+nsys)/rhoh))/2))
+V0e(n)=-1*(-3.49+2.47*(1d9*2*aR(n))**(-1.32))*elec
+V0e(n+nsys)=-1*(-3.49+2.47*(1d9*2*aR(n+nsys))**(-1.32))*elec
+V0h(n)=-1*(-5.23-0.74*(1d9*2*aR(n))**(-0.95))*elec
+V0h(n+nsys)=-1*(-5.23-0.74*(1d9*2*aR(n+nsys))**(-0.95))*elec
+enddo
 
 endif 
 

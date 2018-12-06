@@ -671,4 +671,78 @@ Ham(8,7) = Ham(7,8)
 
 end subroutine make_Ham_he
 
+subroutine make_Ham_fineSt
+
+Ham(1,1)   = Eeh1(1) - Cb_eh1(1) - Dso/3 - 3*Kas
+Ham(2,2)   = Eeh1(1) - Cb_eh1(1) - Dso/3 - 3*Kcs
+Ham(3,3)   = Eeh1(1) - Cb_eh1(1) - Kas
+Ham(4,4)   = Eeh1(1) - Cb_eh1(1) - 3*Kas
+Ham(5,5)   = Eeh1(1) - Cb_eh1(1) - 3*Kbs + Dxf
+Ham(6,6)   = Eeh1(1) - Cb_eh1(1) - 3*Kbs + Dxf
+Ham(7,7)   = Eeh1(1) - Cb_eh1(1) - Kcs
+Ham(8,8)   = Eeh1(1) - Cb_eh1(1) - 3*Kcs
+Ham(9,9)   = Eeh1(1) - Cb_eh1(1) + Dso/3 - 3*Kas
+Ham(10,10) = Eeh1(1) - Cb_eh1(1) - Kbs + Dxf
+Ham(11,11) = Eeh1(1) - Cb_eh1(1) - 3*Kbs + Dxf
+Ham(12,12) = Eeh1(1) - Cb_eh1(1) + Dso/3 - 3*Kcs
+
+Ham(3,4) = -1.0*Dso/3
+Ham(4,3) = Ham(3,4)
+Ham(3,5) = Ham(3,4)
+Ham(5,3) = Ham(3,4)
+Ham(6,7) = Ham(3,4)
+Ham(7,6) = Ham(3,4)
+Ham(6,8) = Ham(3,4)
+Ham(8,6) = Ham(3,4)
+Ham(9,10) = Ham(3,4)
+Ham(10,9) = Ham(3,4)
+Ham(9,11) = Ham(3,4)
+Ham(11,9) = Ham(3,4)
+Ham(10,12) = Ham(3,4)
+Ham(12,10) = Ham(3,4)
+
+Ham(4,5) = Dso/3
+Ham(5,4) = Ham(4,5)
+Ham(7,8) = Ham(4,5)
+Ham(8,7) = Ham(4,5)
+Ham(11,12) = Ham(4,5)
+Ham(12,11) = Ham(4,5)
+
+Ham(13,13)   = Eeh2(1) - Cb_eh2(1) - Dso/3 - 3*Kas
+Ham(14,14)   = Eeh2(1) - Cb_eh2(1) - Dso/3 - 3*Kcs
+Ham(15,15)   = Eeh2(1) - Cb_eh2(1) - Kas
+Ham(16,16)   = Eeh2(1) - Cb_eh2(1) - 3*Kas
+Ham(17,17)   = Eeh2(1) - Cb_eh2(1) - 3*Kbs + Dxf
+Ham(18,18)   = Eeh2(1) - Cb_eh2(1) - 3*Kbs + Dxf
+Ham(19,19)   = Eeh2(1) - Cb_eh2(1) - Kcs
+Ham(20,20)   = Eeh2(1) - Cb_eh2(1) - 3*Kcs
+Ham(21,21)   = Eeh2(1) - Cb_eh2(1) + Dso/3 - 3*Kas
+Ham(22,22)   = Eeh2(1) - Cb_eh2(1) - Kbs + Dxf
+Ham(23,23)   = Eeh2(1) - Cb_eh2(1) - 3*Kbs + Dxf
+Ham(24,24)   = Eeh2(1) - Cb_eh2(1) + Dso/3 - 3*Kcs
+
+Ham(15,16) = -1.0*Dso/3
+Ham(16,15) = Ham(15,16)
+Ham(15,17) = Ham(15,16)
+Ham(17,15) = Ham(15,16)
+Ham(18,19) = Ham(15,16)
+Ham(19,18) = Ham(15,16)
+Ham(18,20) = Ham(15,16)
+Ham(20,18) = Ham(15,16)
+Ham(21,22) = Ham(15,16)
+Ham(22,21) = Ham(15,16)
+Ham(21,23) = Ham(15,16)
+Ham(23,21) = Ham(15,16)
+Ham(22,24) = Ham(15,16)
+Ham(24,22) = Ham(15,16)
+
+Ham(16,17) = Dso/3
+Ham(17,16) = Ham(16,17)
+Ham(19,20) = Ham(16,17)
+Ham(20,19) = Ham(16,17)
+Ham(23,24) = Ham(16,17)
+Ham(24,23) = Ham(16,17)
+
+end subroutine make_Ham_fineSt
+
 end module Make_Ham

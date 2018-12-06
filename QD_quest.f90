@@ -365,7 +365,7 @@ write(22,*) time*t_au ,pulse1 * Ed * cos(omega*(time-t01)+phase) * exp(-1.0d0*(t
 
 enddo
 
-!if ( (vers .eq. 'dimer' ) .and. ( aA .ne. aB ) ) then
+!!!Rescale the counter for dimers
 if ( (vers .eq. 'dimer' ) ) then
 nsys = 1
 rmax = 1
@@ -377,15 +377,20 @@ endif
 
 do n=rmin,rmax
 
-write(6,*) "Computing dimer number:    ", n
+write(6,*) "Computing system number:    ", n
 
+!!!Opens output files
 if ( vers .eq. 'randm' ) then
 write(popc,'(a5,i5.5,a4)') 'Popc-', n, '.dat'
 write(hmti,'(a5,i5.5,a4)') 'Hamt-', n, '.dat'
 write(norm,'(a5,i5.5,a4)') 'Norm-', n, '.dat'
+write(norm_ei,'(a8,i5.5,a4)') 'Norm_ei-', n, '.dat'
+write(popc_ei,'(a8,i5.5,a4)') 'Popc_ei-', n, '.dat'
 open(44,file=popc)
 open(45,file=hmti)
 open(46,file=norm)
+open(48,file=norm_ei)
+open(49,file=popc_ei)
 else if ( vers .eq. 'dimer') then
 open(44,file='Popc.dat')
 open(45,file='Hamt.dat')
@@ -417,26 +422,19 @@ enddo
 do i=0,nstates-1
 do j=0,nstates-1
 if ( ( Ham(i,j) .ne. Ham(j,i) ) .or. ( TransHam(i,j) .ne. TransHam(j,i) ) ) then
-write(6,*) i, j, "HAMILTONIAN NON DIAGONAL"
+write(6,*) i, j, "HAMILTONIAN NON HERMITIAN"
 endif
 enddo
 enddo
-
-write(6,*) real(Ham(2,2)), Ham(2,2)
-
-do i=0,nstates-1
-write(6,*) i, (Ham(i,j), j=0,nstates-1)
+!do i=0,nstates-1
+!write(6,*) i, (Ham(i,j), j=0,nstates-1)
 !write(6,'(i2,2x,9es14.6e2)') i, (real(Ham(i,j)), j=0,nstates-1)
-enddo
-
-write(6,*) 
-
-do i=0,nstates-1
-write(6,*) i, (TransHam(i,j), j=0,nstates-1)
+!enddo
+!write(6,*) 
+!do i=0,nstates-1
+!write(6,*) i, (TransHam(i,j), j=0,nstates-1)
 !write(6,'(i2,2x,9es14.6e2)') i, (real(TransHam(i,j)), j=0,nstates-1)
-enddo
-
-
+!enddo
 elseif ( aA .ne. aB ) then
 call make_Ham_he
 TransHam(0,1) = TransDip_Ana_h1e(n)
@@ -450,7 +448,11 @@ TransHam(0,8) = TransDip_Fit_h2e_he(aR(n),aR(n+nsys))
 do i=0,nstates-1
 TransHam(i,0) = TransHam(0,i)
 enddo
-
+elseif ( vers .eq. "singl" ) then
+call make_Ham_fineSt
+do i = 0,nstates-1
+write(6,'(25ES6.2E2)') (Ham(i,j), j=0,nstates-1)
+enddo
 endif
 
 write(42,*) n , aR(n), aR(n+nsys), linker(n)
@@ -505,6 +507,25 @@ xc(:,0) = xc0(:)
 !enddo
 !
 !endif
+
+if ( dyn_ei .eq. 'y' ) then
+Ham_ei = Ham
+do i=0,nstates-1
+write(6,'(10f12.6)') (Ham_ei(i,j), j=0,nstates-1)
+enddo
+allocate(lambda(0:nstates-1))
+allocate(work(1))
+call dsyev('V','U', nstates, Ham_ei(0:nstates-1,0:nstates-1), nstates, lambda, Work, -1, info)
+lwork=nint(work(1))
+deallocate (work)
+allocate(work(0:lwork))
+call dsyev('V', 'U', nstates, Ham_ei(0:nstates-1,0:nstates-1), nstates, lambda, Work, lwork, info)
+deallocate (work)
+deallocate(lambda)
+do i=0,nstates-1
+write(6,'(10f12.6)') (Ham_ei(i,j), j=0,nstates-1)
+enddo
+endif
 
 do t=0,ntime
 
@@ -567,17 +588,10 @@ write(46,*) time*t_au, cnorm2 !cnormabs !, cnormconj, cnorm2
 write(44,'(10ES18.6E2)') time*t_au, (dreal(xc(i,t))**2+aimag(xc(i,t))**2, i=0,9) 
 
 if ( dyn_ei .eq. 'y' ) then
-Ham_ei = Ham 
 
-allocate(lambda(0:nstates-1))
-allocate(work(1))
-call dsyev('V','U', nstates, Ham_ei(0:nstates-1,0:nstates-1), nstates, lambda, Work, -1, info)
-lwork=nint(work(1))
-deallocate (work)
-allocate(work(0:lwork))
-call dsyev('V', 'U', nstates, Ham_ei(0:nstates-1,0:nstates-1), nstates, lambda, Work, lwork, info)
-deallocate (work)
-deallocate(lambda)
+!do i=0,nstates-1
+!write(6,'(10f12.6)') (Ham_ei(i,j), j=0,nstates-1)
+!enddo
 
 xc_ei = dcmplx(0.d0,0.d0)
 
@@ -592,16 +606,16 @@ cnorm2_ei = 0.d0
 do i=0,nstates-1
 cnorm2_ei = cnorm2_ei + dreal(xc_ei(i,t))**2 + aimag(xc_ei(i,t))**2
 enddo
-write(48,*) time, cnorm2_ei
+write(48,*) time*t_au, cnorm2_ei
 
 !!!!POPULATIONS
-write(49,'(10ES18.6E2)') time*t_au, (dreal(xc(i,t))**2+aimag(xc(i,t))**2, i=0,9)
+write(49,'(ES11.5E2,9ES15.6E2)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,8)
+endif
+
+enddo
 
 do i=1,nstates-1
 xc_ei_av(i,t) = dcmplx(dreal(xc_ei_av(i,t)) + dreal(xc_ei(0,t)), aimag(xc_ei_av(i,t)) + aimag(xc_ei(0,t)))
-enddo
-endif
-
 enddo
 
 !open(61,file="Popc_ei_av.dat")
@@ -616,40 +630,10 @@ enddo
 close(44)
 close(45)
 close(46)
+close(48)
+close(49)
 
 
-!if ( vers .eq. 'dimer' ) then
-!write(6,*)
-!write(6,*)
-!
-!write(6,*) "Initial Hamiltonian"
-!
-!do i = 1,nstates-1
-!write(6,"(i2,8f12.6)") i, (Ham(i,j)/elec, j=1,nstates-1)
-!enddo
-!write(6,*)
-!
-!allocate(lambda(1:nstates-1))
-!allocate(work(1))
-!
-!call dsyev('V','U', nstates-1, Ham(1:nstates-1,1:nstates-1), nstates-1, lambda, Work, -1, info)
-!lwork=nint(work(1))
-!deallocate (work)
-!allocate(work(lwork))
-!call dsyev('V', 'U', nstates-1, Ham(1:nstates-1,1:nstates-1), nstates-1, lambda, Work, lwork, info)
-!deallocate (work)
-!write(6,*)
-!
-!write(6,*) "Eigenvalues"
-!write(6,"(8ES12.4E2)") (lambda(i)/elec, i=1,nstates-1)
-!write(6,*)
-!write(6,*) "Eigenvectors"
-!write(6,'(8i8)') 1,2,3,4,5,6,7,8 
-!do i = 1,nstates-1
-!write(6,"(8f8.4)") (Ham(i,j), j=1,nstates-1)
-!enddo
-!deallocate(lambda)
-!
 !xc_ei = 0.d0
 
 !do i=0,nstates
