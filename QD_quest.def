@@ -1,18 +1,18 @@
 ! Namelist definition
 &version !version of the code, choose between singl, dimer, range, randm
-vers = "singl"   
+vers = "dimer"   
 /
 
 &outputs !Select output and computation modules, yes ("y") or ("no") 
-o_Norm  = "y" !Norm of single particle states
-o_Over  = "y" !Overlap of single particle states in excitons
+o_Norm  = "n" !Norm of single particle states
+o_Over  = "n" !Overlap of single particle states in excitons
 o_Coul  = "n" !Coulomb corrections for local states
 o_DipS  = "y" !Transition dipole moments of local excitons
 o_Osci  = "n" !Oscillator strength of local excitons
 o_Exti  = "n" !Molar extinction coefficients of local excitons
 o_DipD  = "n" !Transition dipole moments of CT states
 dyn     = "y" !Should I perform dynamics?
-dyn_ei  = "y" !Should I perform dynamics?
+dyn_ei  = "n" !Should I perform dynamics?
 hamilt  = "y" !Should I print the time dependent Hamiltonian (very heavy and time consuming)
 /
 
@@ -38,16 +38,17 @@ Dxf = 0.025
 &pulses !Parameters of quantum dynamic and pulses
 nstates   = 9           !Total number of excitons + GS
 npulses   = 2           !Number of pulses (up to 3)
-t01       = 100.d-15     !Pulse 1 centered at (fs)
-t02       = 350.d-15     !Pulse 2 centered at (fs)
-t03       = 300.d-15     !Pulse 3 centered at (fs)
-timestep  = 0.005d-15      !Time step of quantum dynamic
-totaltime = 500.0d-15     !Total time simulated (fs)
-!omega     = 0.65      !Frequency (fs-1)
-omega     = 3.6d15      !Frequency (fs-1)
+t01       = 100.d-15     !Pulse 1 centered at (s)
+t02       = 300.d-15     !Pulse 2 centered at (s)
+t03       = 300.d-15     !Pulse 3 centered at (s)
+timestep  = 0.005      !Time step of quantum dynamic
+totaltime = 2000.0d-15     !Total time simulated (s)
+!omega     = 0.45d15      !Frequency (s-1)
+omega     = 0.65d15      !Frequency (s-1)
 !phase     = pi Careful here, it is defined in the code
-width     = 2.0d-15       !Width of the pulse (fs) 
+width     = 6.0d-15       !Width of the pulse (s) 
 Ed        = 5.142d9     !Field strength (V/m so far)
+!Ed        = 2.d8     !Field strength (V/m so far)
 /
 
 &syst_single !Parameters of the single dot
@@ -55,7 +56,6 @@ nsys      = 10         !Number of dimers
 aA        = 1.0d-9      !Radius of QDA
 dispQD    = 0.05d0
 /
-
 
 &syst_dimer !Parameters of the dimer
 aA     = 1.0d-9      !Radius of QDA
@@ -71,10 +71,10 @@ link   = 1.0d-9      !Linker length
 /
 
 &syst_random !Parameters of a random distribution of dimers either homo (aA=aB) or hetero (aA!=aB,linker fixed)
-nsys      = 10         !Number of dimers
+nsys      = 4         !Number of dimers
 aA        = 1.0d-9      !Radius of QDA
-aB        = 3.0d-9      !Radius of QDB
-link      = 0.2d-9      !Linker length  (if hetero must be 0.2 nm so far)
+aB        = 1.2d-9      !Radius of QDB
+link      = 0.2d-9      !Linker length  (if hetero must be 0.2 or 0.55 nm so far)
 displink  = 0.05d0        !Dispersion on the linker length
 dispQD    = 0.05d0        !Dispersion of QD radius
 /

@@ -1,5 +1,6 @@
 module Variables_au
 
+use omp_lib
 use Constants_au
 use Normal
 
@@ -58,7 +59,7 @@ if ( dyn .eq. 'y' ) then
 rewind 150
 read(150,NML=pulses)
 
-timestep   =  timestep/t_au  !timestep*1.d-15/t_au
+timestep   =  timestep*1.d-15/t_au  !timestep*1.d-15/t_au
 totaltime  =  totaltime/t_au !totaltime*1.d-15/t_au
 t01        =  t01/t_au       !t01*1.d-15/t_au
 t02        =  t02/t_au       !t02*1.d-15/t_au
@@ -76,6 +77,8 @@ xh         =  dcmplx(timestep,0.0d0)
 !xEd        = dcmplx(Ed/E_au,0.0d0)
 ntime      = nint(totaltime/timestep)
 phase      = pi
+
+!write(6,*) ntime
 
 allocate(Hamt(0:nstates-1,0:nstates-1,0:ntime))
 allocate(xHamt(0:nstates-1,0:nstates-1,0:ntime))
@@ -126,11 +129,14 @@ endif
 
 endif
 
-if ( vers .eq. 'randm' ) then
 rewind 150
+if ( vers .eq. 'randm' ) then
 read(150,NML=syst_random)
+else if ( vers .eq. 'singl' ) then
 read(150,NML=syst_single)
 endif
+
+
 
 
 if ( vers .eq. 'singl' ) then
@@ -285,7 +291,6 @@ V0e(n+nsys)=-1*(-3.49+2.47*(1d9*2*aR(n+nsys))**(-1.32))*elec
 V0h(n)=-1*(-5.23-0.74*(1d9*2*aR(n))**(-0.95))*elec
 V0h(n+nsys)=-1*(-5.23-0.74*(1d9*2*aR(n+nsys))**(-0.95))*elec
 enddo
-
 endif 
 
 end subroutine getVariables

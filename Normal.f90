@@ -1,5 +1,6 @@
 module Normal
 
+use omp_lib
 use Constants_au
 
 contains

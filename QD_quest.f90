@@ -2,7 +2,7 @@ include 'specfun.f90'
 
 program ModelQD_one
 
-!use omp_lib
+use omp_lib
 use Constants_au
 use Variables_au
 use Integrals
@@ -14,7 +14,7 @@ implicit none
 
 real(dp), external:: s13adf, ei, eone, nag_bessel_j0
 
-integer :: je,jh,k,nsteps,r,ifail, r1, r2, nthreads
+integer :: je,jh,k,nsteps,r,ifail, r1, r2, nthreads, tid
 real(dp) :: Ef,le,re,lh,rh,delta, start, finish, mu, A, epsinf, aR1, aR2
 real(dp) :: Rine, Route, Rinh1, Routh1, Rinh2, Routh2, RadProbe, RadProbh1, RadProbh2, r0
 real(dp),allocatable :: Ae(:), Ah1(:), Ah2(:), Be(:), Bh1(:), Bh2(:)
@@ -30,7 +30,9 @@ ifail=  1
 
 !  nthreads = 4
 !
-!   CALL OMP_SET_NUM_THREADS(nthreads)
+CALL OMP_SET_NUM_THREADS(4)
+!$OMP PARALLEL PRIVATE(NTHREADS, TID)
+TID = omp_get_thread_num()
 !
 !   write(*,*) omp_get_num_procs()
 !   write(*,*) omp_get_max_threads()
@@ -92,7 +94,7 @@ k=1
 !Computation of energies
 n=0
 
-!$OMP PARALLEL NUM_THREADS(4)
+!$OMP PARALLEL 
 !print *, "Hello"
 !$OMP END PARALLEL
 
@@ -349,10 +351,10 @@ enddo
 if ( dyn .eq. 'y' ) then 
 
 open(22,file='Pulse.dat')
-open(42,file='TransMat.dat')
-open(43,file='Ham0.dat')
-write(42,'("#     Number                  QDA                       QDB                    linker")')
-write(43,'("#     Number                  QDA                       QDB                    linker")')
+open(32,file='TransMat.dat')
+open(33,file='Ham0.dat')
+write(32,'("#     Number                  QDA                       QDB                    linker")')
+write(33,'("#     Number                  QDA                       QDB                    linker")')
 write(22,'("#  time                      pulse1                    pulse2                    pulse3")')
 
 do t=0,ntime
@@ -404,50 +406,8 @@ TransHam = 0.0d0
 
 if ( aA .eq. aB ) then
 call make_Ham_ho
-!Ham = 0.1d-19
-Ham = Ham/Energ_au
-TransHam(0,1) = TransDip_Ana_h1e(n)
-TransHam(0,2) = TransDip_Ana_h2e(n)
-TransHam(0,3) = TransHam(0,1)
-TransHam(0,4) = TransHam(0,2)
-TransHam(0,5) = TransDip_Fit_h1e_ho(aR(n),link)
-TransHam(0,6) = TransDip_Fit_h2e_ho(aR(n),link)
-TransHam(0,7) = TransHam(0,5)
-TransHam(0,8) = TransHam(0,6)
-!TransHam = 0.2d-33
-TransHam = TransHam/Dip_au
-do i=0,nstates-1
-TransHam(i,0) = TransHam(0,i)
-enddo
-do i=0,nstates-1
-do j=0,nstates-1
-if ( ( Ham(i,j) .ne. Ham(j,i) ) .or. ( TransHam(i,j) .ne. TransHam(j,i) ) ) then
-write(6,*) i, j, "HAMILTONIAN NON HERMITIAN"
-endif
-enddo
-enddo
-!do i=0,nstates-1
-!write(6,*) i, (Ham(i,j), j=0,nstates-1)
-!write(6,'(i2,2x,9es14.6e2)') i, (real(Ham(i,j)), j=0,nstates-1)
-!enddo
-!write(6,*) 
-!do i=0,nstates-1
-!write(6,*) i, (TransHam(i,j), j=0,nstates-1)
-!write(6,'(i2,2x,9es14.6e2)') i, (real(TransHam(i,j)), j=0,nstates-1)
-!enddo
 elseif ( aA .ne. aB ) then
 call make_Ham_he
-TransHam(0,1) = TransDip_Ana_h1e(n)
-TransHam(0,2) = TransDip_Ana_h2e(n)
-TransHam(0,3) = TransDip_Ana_h1e(n+nsys)
-TransHam(0,4) = TransDip_Ana_h2e(n+nsys)
-TransHam(0,5) = TransDip_Fit_h1e_he(aR(n),aR(n+nsys))
-TransHam(0,6) = TransDip_Fit_h2e_he(aR(n),aR(n+nsys))
-TransHam(0,7) = TransDip_Fit_h1e_he(aR(n),aR(n+nsys))
-TransHam(0,8) = TransDip_Fit_h2e_he(aR(n),aR(n+nsys))
-do i=0,nstates-1
-TransHam(i,0) = TransHam(0,i)
-enddo
 elseif ( vers .eq. "singl" ) then
 call make_Ham_fineSt
 do i = 0,nstates-1
@@ -455,16 +415,17 @@ write(6,'(25ES6.2E2)') (Ham(i,j), j=0,nstates-1)
 enddo
 endif
 
-write(42,*) n , aR(n), aR(n+nsys), linker(n)
-write(43,*) n , aR(n), aR(n+nsys), linker(n)
+write(6,*) n, aR(n), aR(n+nsys), linker(n)
+write(32,*) n , aR(n), aR(n+nsys), linker(n)
+write(33,*) n , aR(n), aR(n+nsys), linker(n)
 do i=0,nstates-1
-write(43,'(9es14.6e2)') (real(Ham(i,j)), j=0,nstates-1)
+write(33,'(9es14.6e2)') (Ham(i,j)*Energ_au/elec, j=0,nstates-1)
 enddo
 do i=0,nstates-1
-write(42,'(9es14.6e2)') (real(TransHam(i,j)), j=0,nstates-1)
+write(32,'(9es14.6e2)') (TransHam(i,j)*Dip_au, j=0,nstates-1)
 enddo
-write(42,*) 
-write(43,*) 
+write(32,*) 
+write(33,*) 
 
 !!!!!INITIAL POPULATIONS
 c0(0) = 1.0d0
@@ -581,11 +542,12 @@ do i=0,nstates-1
 cnorm2 = cnorm2 + dreal(xc(i,t))**2 + aimag(xc(i,t))**2
 enddo
 
+if ( MOD(t,100) .eq. 0 ) then
 !!!NORM
 write(46,*) time*t_au, cnorm2 !cnormabs !, cnormconj, cnorm2
-
 !!!POPULATIONS
-write(44,'(10ES18.6E2)') time*t_au, (dreal(xc(i,t))**2+aimag(xc(i,t))**2, i=0,9) 
+write(44,'(10ES18.6E2)') time*t_au, (dreal(xc(i,t))**2+aimag(xc(i,t))**2, i=0,8) 
+endif
 
 if ( dyn_ei .eq. 'y' ) then
 
@@ -597,7 +559,7 @@ xc_ei = dcmplx(0.d0,0.d0)
 
 do i=0,nstates-1
    do j=0,nstates-1
-      xc_ei(i,t) = xc_ei(i,t) + dcmplx(Ham_ei(i,j),0.d0) * xc(j,t)  
+      xc_ei(i,t) = xc_ei(i,t) + dcmplx(Ham_ei(j,i),0.d0) * xc(j,t)  
    enddo
 enddo
 
@@ -606,17 +568,24 @@ cnorm2_ei = 0.d0
 do i=0,nstates-1
 cnorm2_ei = cnorm2_ei + dreal(xc_ei(i,t))**2 + aimag(xc_ei(i,t))**2
 enddo
-write(48,*) time*t_au, cnorm2_ei
 
-!!!!POPULATIONS
+open(52,file="Re-c_ei.dat")
+open(53,file="Im-c_ei.dat")
+
+if ( MOD(t,100) .eq. 0 ) then
+write(48,*) time*t_au, cnorm2_ei
 write(49,'(ES11.5E2,9ES15.6E2)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,8)
+write(52,'(ES11.5E2,9ES15.6E2)') time*t_au, (dreal(xc_ei(i,t)), i=0,8)
+write(53,'(ES11.5E2,9ES15.6E2)') time*t_au, (aimag(xc_ei(i,t)), i=0,8)
+endif
+
 endif
 
 enddo
 
-do i=1,nstates-1
-xc_ei_av(i,t) = dcmplx(dreal(xc_ei_av(i,t)) + dreal(xc_ei(0,t)), aimag(xc_ei_av(i,t)) + aimag(xc_ei(0,t)))
-enddo
+!do i=1,nstates-1
+!xc_ei_av(i,t) = dcmplx(dreal(xc_ei_av(i,t)) + dreal(xc_ei(0,t)), aimag(xc_ei_av(i,t)) + aimag(xc_ei(0,t)))
+!enddo
 
 !open(61,file="Popc_ei_av.dat")
 !
@@ -667,18 +636,18 @@ enddo
 
 endif
 
-!if ( vers .eq. 'singl') then
-!call makeOutputSingle
-!elseif ( vers .eq. 'dimer') then
-!call makeOutputDimer
-!elseif ( vers .eq. 'range') then
-!call makeOutputRange
-!elseif ( vers .eq. 'randm') then
-!call makeOutputRandm
-!endif
-!
-!write(outputdir,'(a7,a5,a1,i2,a1,i2)') "Output-", vers, "-", nint(aA*1d9*10), "-" , nint(aB*1d9*10) 
+if ( vers .eq. 'singl') then
+call makeOutputSingle
+elseif ( vers .eq. 'dimer') then
+call makeOutputDimer
+elseif ( vers .eq. 'range') then
+call makeOutputRange
+elseif ( vers .eq. 'randm') then
+call makeOutputRandm
+endif
 
+!write(outputdir,'(a7,a5,a1,i2,a1,i2)') "Output-", vers, "-", nint(aA*1d9*10), "-" , nint(aB*1d9*10) 
+!
 !call system("mkdir  " // outputdir)
 !call system("mv *dat " // outputdir)
 !call system("mv *txt " // outputdir)

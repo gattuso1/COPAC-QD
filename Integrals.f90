@@ -237,13 +237,17 @@ real(dp) function TransDip_Fit_h1e_he(a,b)
       implicit none
       real(dp) :: d1,d2,d3,d4,a,b
 
-!if ( link .eq. 0.2d-9 ) then
+if ( link .eq. 0.2d-9 ) then
 d1              = 0.00341214
 d2              = 5.2295
 d3              = 2.0988
 d4              = 1.66728
-!else if ( link .eq. 0.55d-9 )
-!endif
+else if ( link .eq. 0.55d-9 ) then
+d1              = 1.08959e-05  
+d2              = 0.00281484   
+d3              = 1.82872      
+d4              = 2.70292
+endif
 
 TransDip_Fit_h1e_he = ( d1 + d2 / ((a*1d9)**d3*(b*1d9)**d4) )*1.0d-33
 
@@ -255,15 +259,19 @@ real(dp) function TransDip_Fit_h2e_he(a,b)
       implicit none
       real(dp) :: d1,d2,d3,d4,a,b
 
-!if ( link .eq. 0.2d-9 ) then
+if ( link .eq. 0.2d-9 ) then
 d1              = 0.159035d0
 d2              = 79.9838d0
 d3              = 0.96669d0
 d4              = 1.9961d0
-!else if ( link .eq. 0.55d-9 )
-!endif
-
-TransDip_Fit_h2e_he = ( d1 + d2*((a*1d9-d3))*exp(-2.0d0*(a*1d9))/((b*1d9)**d4) )*1.0d-33
+TransDip_Fit_h2e_he = ( d1 + d2*((a*1.d9-d3))*exp(-2.0d0*(a*1.d9))/((b*1.d9)**d4) )*1.0d-33
+else if ( link .eq. 0.55d-9 ) then
+d1              = 0.000193625d0  
+d2              = 0.00896372d0   
+d3              = -11.1744d0     
+d4              = 0.927031d0
+TransDip_Fit_h2e_he = d1+d2*(1-exp(-(a*1.d9)**d3))/((b*1.d9)**d4)
+endif
 
 end function TransDip_Fit_h2e_he
 

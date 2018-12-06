@@ -1,4 +1,7 @@
 module Constants_au
+
+use omp_lib
+
 implicit none 
 
    integer,  parameter :: dp = SELECTED_REAL_KIND(15,307)

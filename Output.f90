@@ -48,6 +48,15 @@ write(60,'("Extinction coefficient               :",2f18.6)') ExctCoef_h1e(1), E
 write(60,'("Coulomb correction                   :",2f18.6)') Cb_Num_eh1(rmax+1), Cb_Num_eh2(1)
 write(60,*) 
 
+
+
+open(11,file='Etransitions.dat')
+write(11,'(a12,18x,a3,22x,a4,22x,a4)') "#     Number", "QDA", "Eh1e", "Eh2e"
+
+do n = rmin, rmax
+write(11,*) n, aR(n), Eeh1(n), Eeh2(n)
+enddo
+
 endif
 
 end subroutine makeOutputSingle
@@ -114,7 +123,8 @@ write(60,*)
 write(60,*)
 write(60,*) "Charge transfer states: "
 write(60,'(47x," 5 ",12x, " 6 ",12x, " 7 ",12x, " 8 ")')
-write(60,'("Transition energies                  :",4ES15.4E2)') real(xHam(5,5)), real(xHam(6,6)), real(xHam(7,7)), real(xHam(8,8))
+write(60,'("Transition energies                  :",4ES15.4E2)') real(xHam(5,5))*Energ_au, real(xHam(6,6))*Energ_au, &
+                                                        real(xHam(7,7))*Energ_au, real(xHam(8,8))*Energ_au
 !write(60,'("Coulomb correction                   :",4ES15.4E2)') (minEe(1,2) + minEh(1,1) + V0 - Ham(5,5)), &
 !                                                                 (minEe(1,2) + minEh(2,1) + V0 - Ham(6,6)), &
 !                                                                 (minEe(1,1) + minEh(1,2) + V0 - Ham(7,7)), &
@@ -130,21 +140,21 @@ write(60,*)
 write(60,'("Number of states        :",2x,i2)')   nstates  
 write(60,'("Number of pulses        :",2x,i2)')   npulses  
 if ( npulses .eq. 1 ) then
-write(60,'("t0 of pulse             :",ES15.6E2)')   t01      
+write(60,'("t0 of pulse             :",ES15.6E2)')   t01*t_au      
 elseif ( npulses .ge. 2 ) then
-write(60,'("t0 of first pulse       :",ES15.6E2)')   t01      
-write(60,'("t0 of second pulse      :",ES15.6E2)')   t02      
+write(60,'("t0 of first pulse       :",ES15.6E2)')   t01*t_au      
+write(60,'("t0 of second pulse      :",ES15.6E2)')   t02*t_au      
 elseif ( npulses .eq. 3 ) then
-write(60,'("t0 of first pulse       :",ES15.6E2)')   t01      
-write(60,'("t0 of second pulse      :",ES15.6E2)')   t02      
-write(60,'("t0 of third pulse       :",ES15.6E2)')   t03      
+write(60,'("t0 of first pulse       :",ES15.6E2)')   t01*t_au      
+write(60,'("t0 of second pulse      :",ES15.6E2)')   t02*t_au      
+write(60,'("t0 of third pulse       :",ES15.6E2)')   t03*t_au      
 endif
-write(60,'("Time step               :",ES15.6E2)')   timestep 
-write(60,'("Time length of dynamic  :",ES15.6E2)')   totaltime
-write(60,'("Omega                   :",ES15.6E2)')   omega    
+write(60,'("Time step               :",ES15.6E2)')   timestep*t_au 
+write(60,'("Time length of dynamic  :",ES15.6E2)')   totaltime*t_au
+write(60,'("Omega                   :",ES15.6E2)')   omega/t_au    
 write(60,'("Phase                   :",ES15.6E2)')   phase   
-write(60,'("Width                   :",ES15.6E2)')   width    
-write(60,'("Power                   :",ES15.6E2)')   Ed       
+write(60,'("Width                   :",ES15.6E2)')   width*t_au    
+write(60,'("Power                   :",ES15.6E2)')   Ed*E_au       
 write(60,*)
 write(60,*)
 write(60,*) 
@@ -256,21 +266,21 @@ write(60,*)
 write(60,'("Number of states        :",2x,i2)')   nstates
 write(60,'("Number of pulses        :",2x,i2)')   npulses
 if ( npulses .eq. 1 ) then
-write(60,'("t0 of pulse             :",ES15.6E2)')   t01
+write(60,'("t0 of pulse             :",ES15.6E2)')   t01*t_au
 elseif ( npulses .ge. 2 ) then
-write(60,'("t0 of first pulse       :",ES15.6E2)')   t01
-write(60,'("t0 of second pulse      :",ES15.6E2)')   t02
+write(60,'("t0 of first pulse       :",ES15.6E2)')   t01*t_au
+write(60,'("t0 of second pulse      :",ES15.6E2)')   t02*t_au
 elseif ( npulses .eq. 3 ) then
-write(60,'("t0 of first pulse       :",ES15.6E2)')   t01
-write(60,'("t0 of second pulse      :",ES15.6E2)')   t02
-write(60,'("t0 of third pulse       :",ES15.6E2)')   t03
+write(60,'("t0 of first pulse       :",ES15.6E2)')   t01*t_au
+write(60,'("t0 of second pulse      :",ES15.6E2)')   t02*t_au
+write(60,'("t0 of third pulse       :",ES15.6E2)')   t03*t_au
 endif
-write(60,'("Time step               :",ES15.6E2)')   timestep
-write(60,'("Time length of dynamic  :",ES15.6E2)')   totaltime
-write(60,'("Omega                   :",ES15.6E2)')   omega
+write(60,'("Time step               :",ES15.6E2)')   timestep*t_au
+write(60,'("Time length of dynamic  :",ES15.6E2)')   totaltime*t_au
+write(60,'("Omega                   :",ES15.6E2)')   omega/t_au
 write(60,'("Phase                   :",ES15.6E2)')   phase
-write(60,'("Width                   :",ES15.6E2)')   width
-write(60,'("Power                   :",ES15.6E2)')   Ed
+write(60,'("Width                   :",ES15.6E2)')   width*t_au
+write(60,'("Power                   :",ES15.6E2)')   Ed*E_au
 write(60,*)
 
 
