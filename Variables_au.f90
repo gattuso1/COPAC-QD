@@ -7,8 +7,8 @@ use Normal
 implicit none
 
    character*5 :: vers
-   character*64 :: popc, hmti, norm, tdmM, hmt0, outputdir, norm_ei, popc_ei, Re-c_ei, Im-c_ei
-   character*1 :: o_Norm, o_Over, o_Coul, o_DipS, o_Osci, o_Exti, o_DipD, dyn, hamilt, dyn_ei, finest
+   character*64 :: popc, hmti, norm, tdmM, hmt0, outputdir, norm_ei, popc_ei, Re_c_ei, Im_c_ei
+   character*1 :: o_Norm, o_Over, o_Coul, o_DipS, o_Osci, o_Exti, o_DipD, dyn, hamilt, get_ei, finest
    integer :: ndots, n, rmin, rmax, nsys, npulses, nstates, ntime, i, j, t, lwork, info
    integer,allocatable :: seed(:)
    real(dp) :: aA, aB, me, mh, eps, epsout, V0, omegaLO, rhoe, rhoh, slope, V0eV, minr, maxr, rsteps, side
@@ -33,7 +33,7 @@ contains
 subroutine getVariables
 
 NAMELIST /version/ vers
-NAMELIST /outputs/ o_Norm,o_Over,o_Coul,o_DipS,o_Osci,o_Exti,o_DipD,dyn,hamilt,dyn_ei,fineSt
+NAMELIST /outputs/ o_Norm,o_Over,o_Coul,o_DipS,o_Osci,o_Exti,o_DipD,dyn,hamilt,get_ei,fineSt
 NAMELIST /elecSt/ me,mh,eps,epsout,V0eV,omegaLO,slope,side
 NAMELIST /fineStruc/ Kas,Kbs,Kcs,Dso,Dxf
 NAMELIST /pulses/ nstates,npulses,t01,t02,t03,timestep,totaltime,omega,phase,width,Ed
@@ -46,6 +46,7 @@ open(150,file='QD_quest.def',form='formatted')
 read(150,NML=version)
 read(150,NML=outputs)
 read(150,NML=elecSt)
+read(150,NML=pulses)
 
 im         = dcmplx(0.0d0,1.0d0)
 me         = me*m0
@@ -56,9 +57,6 @@ V0         = V0eV*elec
 
 
 if ( dyn .eq. 'y' ) then
-
-rewind 150
-read(150,NML=pulses)
 
 timestep   =  timestep*1.d-15/t_au  !timestep*1.d-15/t_au
 totaltime  =  totaltime/t_au !totaltime*1.d-15/t_au
@@ -79,8 +77,6 @@ xh         =  dcmplx(timestep,0.0d0)
 ntime      = nint(totaltime/timestep)
 phase      = pi
 
-!write(6,*) ntime
-
 allocate(Hamt(0:nstates-1,0:nstates-1,0:ntime))
 allocate(xHamt(0:nstates-1,0:nstates-1,0:ntime))
 allocate(xHamtk2(0:nstates-1,0:nstates-1,0:ntime))
@@ -92,10 +88,7 @@ allocate(xctemp(0:nstates-1))
 allocate(xc_ei(0:nstates-1,0:ntime))
 allocate(xc_ei_av(0:nstates-1,0:ntime))
 allocate(xcnew(0:nstates-1,ntime+1))
-allocate(TransHam(0:nstates-1,0:nstates-1))
 allocate(xTransHam(0:nstates-1,0:nstates-1))
-allocate(Ham(0:nstates-1,0:nstates-1))
-allocate(Ham_ei(0:nstates-1,0:nstates-1))
 allocate(xHam(0:nstates-1,0:nstates-1))
 allocate(xHam_ei(0:nstates-1,0:nstates-1))
 allocate(Transvec(0:nstates-1))
@@ -213,6 +206,8 @@ read(150,NML=syst_range)
 rmin = minr/rsteps
 rmax = maxr/rsteps
 nsys= maxr/rsteps - minr/rsteps
+
+write(6,*) rmin, rmax, nsys
 
 allocate(aR(rmin:rmax))
 allocate(linker(rmin:rmax))

@@ -44,6 +44,6 @@ real(kind=8) function r8_normal_ab(a,b,seed)
 !write(6,*) seed
 
   return
-end
+end function r8_normal_ab
 
 end module Normal

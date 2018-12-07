@@ -1,19 +1,19 @@
 ! Namelist definition
 &version !version of the code, choose between singl, dimer, range, randm
-vers = "dimer"   
+vers = "randm"   
 /
 
 &outputs !Select output and computation modules, yes ("y") or ("no") 
 o_Norm  = "n" !Norm of single particle states
 o_Over  = "n" !Overlap of single particle states in excitons
 o_Coul  = "n" !Coulomb corrections for local states
-o_DipS  = "y" !Transition dipole moments of local excitons
+o_DipS  = "y" !Transition dipole moments of local excitons (must be "y")
 o_Osci  = "n" !Oscillator strength of local excitons
 o_Exti  = "n" !Molar extinction coefficients of local excitons
 o_DipD  = "n" !Transition dipole moments of CT states
+get_ei  = "y" !Provide eigenstates and obtain coef of eigenstates after dynamic if dyn = y
 dyn     = "y" !Should I perform dynamics?
-dyn_ei  = "n" !Should I perform dynamics?
-hamilt  = "y" !Should I print the time dependent Hamiltonian (very heavy and time consuming)
+hamilt  = "n" !Should I print the time dependent Hamiltonian (very heavy and time consuming)
 fineSt  = "n" !Request fine structure 
 /
 
@@ -43,7 +43,7 @@ t01       = 30.d-15     !Pulse 1 centered at (s)
 t02       = 55.d-15     !Pulse 2 centered at (s)
 t03       = 90.d-15     !Pulse 3 centered at (s)
 !timestep  = 0.002      !Time step of quantum dynamic
-timestep  = 0.020      !Time step of quantum dynamic
+timestep  = 0.20      !Time step of quantum dynamic
 totaltime = 500.0d-15     !Total time simulated (s)
 omega     = 0.5d15      !Frequency (s-1)
 !omega     = 0.90d15      !Frequency (s-1)
@@ -56,7 +56,7 @@ Ed        = 5.142d9     !Field strength (V/m so far)
 &syst_single !Parameters of the single dot
 nsys      = 10         !Number of dimers
 aA        = 1.0d-9      !Radius of QDA
-dispQD    = 0.05d0
+dispQD    = 0.05d0     !Dispersion of QD radius
 /
 
 &syst_dimer !Parameters of the dimer
@@ -69,13 +69,13 @@ link   = 0.2d-9      !Linker length
 rsteps = 0.01d-9     !Step of QD radius
 minr   = 1.0d-9      !Minimum size QD radius
 maxr   = 3.0d-9      !Maximum size QD radius
-link   = 1.0d-9      !Linker length
+link   = 0.2d-9      !Linker length
 /
 
 &syst_random !Parameters of a random distribution of dimers either homo (aA=aB) or hetero (aA!=aB,linker fixed)
-nsys      = 4         !Number of dimers
+nsys      = 10         !Number of dimers
 aA        = 1.0d-9      !Radius of QDA
-aB        = 1.2d-9      !Radius of QDB
+aB        = 1.3d-9      !Radius of QDB
 link      = 0.2d-9      !Linker length  (if hetero must be 0.2 or 0.55 nm so far)
 displink  = 0.05d0        !Dispersion on the linker length
 dispQD    = 0.05d0        !Dispersion of QD radius
