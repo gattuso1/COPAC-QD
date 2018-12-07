@@ -86,12 +86,12 @@ write(60,'("Norm.dat              contains the time dependent norm of dimer n")'
 write(60,*) 
 write(60,*) "The initial parameters are:"
 write(60,*)
-write(60,'("Electron effective mass              :",f8.4," m0")') me
-write(60,'("Hole effective mass                  :",f8.4," m0")') mh
+write(60,'("Electron effective mass              :",f8.4," m0")') me/m0
+write(60,'("Hole effective mass                  :",f8.4," m0")') mh/m0
 write(60,'("Bulk dielectric constant             :",f8.4)')      eps
 write(60,'("Ligands dielectric constant          :",f8.4)')      epsout
 write(60,'("Bulk band gap                        :",f8.4)')      V0eV
-write(60,'("Linker length                        :",ES23.4E2)')      link
+write(60,'("Linker length (nm)                   :",f8.4)')      link*1.d9
 write(60,*)
 write(60,*)
 write(60,*)
@@ -109,12 +109,12 @@ write(60,'("                                                  /         \       
 write(60,'("                                                 /           \                  /          \")')
 write(60,*) "Local States"
 write(60,'(47x,"h1e",12x, "h2e",12x, "h1e",12x, "h2e")')
-write(60,'("Transition energies                  :",4ES15.4E2)') Eeh1(1)/elec, Eeh2(1)/elec, Eeh1(2)/elec, Eeh2(2)/elec
-write(60,'("Coulomb correction                   :",4ES15.4E2)') Cb_eh1(1)/elec, Cb_eh2(1)/elec, &
+write(60,'("Transition energies (eV)             :",4ES15.4E2)') Eeh1(1)/elec, Eeh2(1)/elec, Eeh1(2)/elec, Eeh2(2)/elec
+write(60,'("Coulomb correction (eV)              :",4ES15.4E2)') Cb_eh1(1)/elec, Cb_eh2(1)/elec, &
                                                                          Cb_eh1(2)/elec, Cb_eh2(2)/elec
 write(60,'("Wavefunction overlap                 :",4f15.6)') OverlapAna_h1e(1), OverlapAna_h2e(1), &
                                                                OverlapAna_h1e(2), OverlapAna_h2e(2)
-write(60,'("Transition dipole moment             :",4ES15.4E2)') TransHam(0,1), TransHam(0,2), TransHam(0,3), TransHam(0,4) 
+write(60,'("Transition dipole moment             :",4ES15.4E2)') (TransHam(0,i)*Dip_au/Cm_to_D, i=1,4)  
 write(60,'("Oscillator strength                  :",4ES15.4E2)') Oscillator_Ana_h1e(1), Oscillator_Ana_h2e(1), &
                                                                 Oscillator_Ana_h1e(2), Oscillator_Ana_h2e(2)
 write(60,'("Extinction coefficient               :",4ES15.4E2)') ExctCoef_h1e(1), ExctCoef_h2e(1), ExctCoef_h1e(2), ExctCoef_h2e(2)
@@ -123,13 +123,13 @@ write(60,*)
 write(60,*)
 write(60,*) "Charge transfer states: "
 write(60,'(47x," 5 ",12x, " 6 ",12x, " 7 ",12x, " 8 ")')
-write(60,'("Transition energies                  :",4ES15.4E2)') real(Ham(5,5))*Energ_au/elec, real(Ham(6,6))*Energ_au/elec, &
-                                                        real(Ham(7,7))*Energ_au/elec, real(Ham(8,8))*Energ_au/elec
+write(60,'("Transition energies                  :",4ES15.4E2)') Ham(5,5)*Energ_au/elec, Ham(6,6)*Energ_au/elec, &
+                                                        Ham(7,7)*Energ_au/elec, Ham(8,8)*Energ_au/elec
 !write(60,'("Coulomb correction                   :",4ES15.4E2)') (minEe(1,2) + minEh(1,1) + V0 - Ham(5,5)), &
 !                                                                 (minEe(1,2) + minEh(2,1) + V0 - Ham(6,6)), &
 !                                                                 (minEe(1,1) + minEh(1,2) + V0 - Ham(7,7)), &
 !                                                                 (minEe(1,1) + minEh(2,1) + V0 - Ham(8,8))
-write(60,'("Transition dipole moment (fit)       :",4ES15.4E2)') TransHam(0,5), TransHam(0,6), TransHam(0,7), TransHam(0,8)
+write(60,'("Transition dipole moment (fit)       :",4ES15.4E2)') (TransHam(0,i)*Dip_au/Cm_to_D, i=5,8)
 write(60,*)
 write(60,*)
 write(60,*)
@@ -162,15 +162,14 @@ write(60,*) "The 0th order Hamiltonian is:"
 write(60,*) 
 write(60,'(11x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2)') "0",  "1", "2", "3", "4", "5", "6", "7", "8"
 do i=0,nstates-1
-write(60,'(i2,2x,f14.6)') i, (Ham(i,j)*Energ_au/elec, j=0,nstates-1)  
+write(60,'(9f14.6)') (Ham(i,j)*Energ_au/elec, j=0,nstates-1)  
 enddo
-
 write(60,*) 
 write(60,*) "And the transition dipole matrix is:"
 write(60,*) 
 write(60,'(11x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2)') "0",  "1", "2", "3", "4", "5", "6", "7", "8"
 do i=0,nstates-1
-write(60,'(i2,2x,f14.6)') i, (real(TransHam(i,j)*Dip_au/Cm_to_D), j=0,nstates-1)
+write(60,'(9f14.6)') (TransHam(i,j)*Dip_au/Cm_to_D, j=0,nstates-1)
 enddo
 
 

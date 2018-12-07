@@ -390,17 +390,23 @@ write(hmti,'(a5,i5.5,a4)') 'Hamt-', n, '.dat'
 write(norm,'(a5,i5.5,a4)') 'Norm-', n, '.dat'
 write(norm_ei,'(a8,i5.5,a4)') 'Norm_ei-', n, '.dat'
 write(popc_ei,'(a8,i5.5,a4)') 'Popc_ei-', n, '.dat'
+write(Re-c_ei,'(a8,i5.5,a4)') 'Re-c_ei-', n, '.dat'
+write(Im-c_ei,'(a8,i5.5,a4)') 'Im-c_ei-', n, '.dat'
 open(44,file=popc)
 open(45,file=hmti)
 open(46,file=norm)
 open(48,file=norm_ei)
 open(49,file=popc_ei)
+open(52,file=Re-c_ei)
+open(53,file=Im-c_ei)
 else if ( vers .eq. 'dimer') then
 open(44,file='Popc.dat')
 open(45,file='Hamt.dat')
 open(46,file='Norm.dat')
 open(48,file='Norm_ei.dat')
 open(49,file='Popc_ei.dat')
+open(52,file="Re-c_ei.dat")
+open(53,file="Im-c_ei.dat")
 endif
 
 Ham      = 0.0d0
@@ -412,12 +418,11 @@ elseif ( aA .ne. aB ) then
 call make_Ham_he
 elseif ( vers .eq. "singl" ) then
 call make_Ham_fineSt
-do i = 0,nstates-1
-write(6,'(25ES6.2E2)') (Ham(i,j), j=0,nstates-1)
-enddo
+!do i = 0,nstates-1
+!write(6,'(25ES6.2E2)') (Ham(i,j), j=0,nstates-1)
+!enddo
 endif
 
-write(6,*) n, aR(n), aR(n+nsys), linker(n)
 write(32,*) n , aR(n), aR(n+nsys), linker(n)
 write(33,*) n , aR(n), aR(n+nsys), linker(n)
 do i=0,nstates-1
@@ -431,14 +436,9 @@ write(33,*)
 
 !!!!!INITIAL POPULATIONS
 c0(0) = 1.0d0
-c0(1) = 0.0d0
-c0(2) = 0.0d0
-c0(3) = 0.0d0
-c0(4) = 0.0d0
-c0(5) = 0.0d0
-c0(6) = 0.0d0
-c0(7) = 0.0d0
-c0(8) = 0.0d0 
+do i=1,nstates-1
+c0(i) = 0.0d0
+enddo
 
 xHamt(:,:,0) = xHam(:,:)
 xc0 = dcmplx(c0,0.0d0)
@@ -472,10 +472,10 @@ xc(:,0) = xc0(:)
 !endif
 
 if ( dyn_ei .eq. 'y' ) then
+open(58,file='Ham_ei.dat')
+write(58,'("#     Number                  QDA                       QDB                    linker")')
+write(58,*) n , aR(n), aR(n+nsys), linker(n)
 Ham_ei = Ham
-do i=0,nstates-1
-write(6,'(10f12.6)') (Ham_ei(i,j), j=0,nstates-1)
-enddo
 allocate(lambda(0:nstates-1))
 allocate(work(1))
 call dsyev('V','U', nstates, Ham_ei(0:nstates-1,0:nstates-1), nstates, lambda, Work, -1, info)
@@ -486,8 +486,32 @@ call dsyev('V', 'U', nstates, Ham_ei(0:nstates-1,0:nstates-1), nstates, lambda, 
 deallocate (work)
 deallocate(lambda)
 do i=0,nstates-1
-write(6,'(10f12.6)') (Ham_ei(i,j), j=0,nstates-1)
+write(58,'(10f12.6)') (Ham_ei(i,j), j=0,nstates-1)
 enddo
+write(58,*) 
+endif
+
+if ( fineSt .eq. 'y' ) then
+write(6,*) "fineSt"
+Transvec = 0.d0
+TransMat_ei = 0.d0
+do i=1,nint(nstates/2.d0)
+Transvec(i) = TransDip_Ana_h1e(1)
+enddo
+do i=nint(nstates/2.d0+1.d0),nstates-1
+Transvec(i) = TransDip_Ana_h2e(1)
+enddo
+
+write(6,'(13f8.2)') (Transvec(i)/Dip_au, i=0,nint(nstates/2.d0))
+write(6,'(12f8.2)') (Transvec(i)/Dip_au, i=nint(nstates/2.d0+1.d0),nstates-1)
+
+!do i=0,nstates-1
+!do j=0,nstates-1
+!TransHam_ei(i) = TransHam_ei(i) + Ham_ei(j,i) * Transvec(i)
+!enddo
+!enddo
+!endif
+
 endif
 
 do t=0,ntime
@@ -539,33 +563,18 @@ do i=0,nstates-1
 xc(i,t+1) = xc(i,t)+(dcmplx(timestep,0.d0)/6.d0)*(k1(i)+2.d0*k2(i)+2.d0*k3(i)+k4(i))
 enddo
 
-!cnormabs = 0.d0
-!cnormconj = 0.d0
+if ( MOD(t,100) .eq. 0 ) then
 cnorm2 = 0.d0
 do i=0,nstates-1
-!cnormabs = cnormabs + abs(xc(i,t))**2
-!cnormconj = cnormconj + dreal(xc(i,t) * dconjg(xc(i,t)))
 cnorm2 = cnorm2 + dreal(xc(i,t))**2 + aimag(xc(i,t))**2
 enddo
-
-if ( MOD(t,100) .eq. 0 ) then
 !!!NORM
 write(46,*) time*t_au, cnorm2 !cnormabs !, cnormconj, cnorm2
 !!!POPULATIONS
-write(44,*) time*t_au, real(xc(0,t))**2+aimag(xc(0,t))**2, real(xc(1,t))**2+aimag(xc(1,t))**2,&
-                         real(xc(2,t))**2+aimag(xc(2,t))**2, real(xc(3,t))**2+aimag(xc(3,t))**2,&
-                         real(xc(4,t))**2+aimag(xc(4,t))**2, real(xc(5,t))**2+aimag(xc(5,t))**2,&
-                         real(xc(6,t))**2+aimag(xc(6,t))**2, real(xc(7,t))**2+aimag(xc(7,t))**2,&
-                         real(xc(8,t))**2+aimag(xc(8,t))**2
-!
-!write(44,'(10ES18.6E2)') time*t_au, (dreal(xc(i,t))**2+aimag(xc(i,t))**2, i=0,8) 
+write(44,'(10ES18.6E2)') time*t_au, (dreal(xc(i,t))**2+aimag(xc(i,t))**2, i=0,8) 
 endif
 
 if ( dyn_ei .eq. 'y' ) then
-
-!do i=0,nstates-1
-!write(6,'(10f12.6)') (Ham_ei(i,j), j=0,nstates-1)
-!enddo
 
 !cat test.dat | awk '{print $3*$8 + $13*$18}' > test-cohe.dat
 xc_ei = dcmplx(0.d0,0.d0)
@@ -575,19 +584,12 @@ do i=0,nstates-1
    do j=0,nstates-1
       xc_ei(i,t) = xc_ei(i,t) + dcmplx(Ham_ei(j,i),0.d0) * xc(j,t)  
    enddo
-cnorm2_ei = cnorm2_ei + dreal(xc_ei(i,t))**2 + aimag(xc_ei(i,t))**2
 enddo
 
-!!!!NORM
-!cnorm2_ei = 0.d0
-!do i=0,nstates-1
-!cnorm2_ei = cnorm2_ei + dreal(xc_ei(i,t))**2 + aimag(xc_ei(i,t))**2
-!enddo
-
-open(52,file="Re-c_ei.dat")
-open(53,file="Im-c_ei.dat")
-
 if ( MOD(t,100) .eq. 0 ) then
+do i=0,nstates-1
+cnorm2_ei = cnorm2_ei + dreal(xc_ei(i,t))**2 + aimag(xc_ei(i,t))**2
+enddo
 write(48,*) time*t_au, cnorm2_ei
 write(49,'(ES11.5E2,9ES15.6E2)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,8)
 write(52,'(ES11.5E2,9ES15.6E2)') time*t_au, (dreal(xc_ei(i,t)), i=0,8)

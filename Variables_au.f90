@@ -7,8 +7,8 @@ use Normal
 implicit none
 
    character*5 :: vers
-   character*64 :: popc, hmti, norm, tdmM, hmt0, outputdir, norm_ei, popc_ei
-   character*1 :: o_Norm, o_Over, o_Coul, o_DipS, o_Osci, o_Exti, o_DipD, dyn, hamilt, dyn_ei
+   character*64 :: popc, hmti, norm, tdmM, hmt0, outputdir, norm_ei, popc_ei, Re-c_ei, Im-c_ei
+   character*1 :: o_Norm, o_Over, o_Coul, o_DipS, o_Osci, o_Exti, o_DipD, dyn, hamilt, dyn_ei, finest
    integer :: ndots, n, rmin, rmax, nsys, npulses, nstates, ntime, i, j, t, lwork, info
    integer,allocatable :: seed(:)
    real(dp) :: aA, aB, me, mh, eps, epsout, V0, omegaLO, rhoe, rhoh, slope, V0eV, minr, maxr, rsteps, side
@@ -19,8 +19,9 @@ implicit none
    real(dp),allocatable :: Eeh1(:), Eeh2(:), Cb_eh1(:), Cb_eh2(:), Norm_Ana_e(:), Norm_Ana_h1(:), Norm_Ana_h2(:)
    real(dp),allocatable :: OverlapAna_h1e(:), OverlapAna_h2e(:), Cb_Num_eh1(:), Cb_Num_eh1_eh2(:), Cb_Num_eh2(:)
    real(dp),allocatable :: minEe(:,:),minEh(:,:), TransDip_Num_h1e(:), TransDip_Num_h2e(:), work(:), lambda(:)
-   real(dp),allocatable :: TransDip_Ana_h1e(:), TransDip_Ana_h2e(:), Oscillator_Ana_h1e(:), Oscillator_Ana_h2e(:)
+   real(dp),allocatable :: TransDip_Ana_h1e(:), TransDip_Ana_h2e(:), Oscillator_Ana_h1e(:), Oscillator_Ana_h2e(:), Transvec(:)
    real(dp),allocatable :: ExctCoef_h1e(:), ExctCoef_h2e(:), Ham(:,:), E0(:), c0(:), TransHam(:,:), Hamt(:,:,:), c(:,:), Ham_ei(:,:)
+   real(dp),allocatable :: TransMat_ei(:,:)
    complex(kind=8) :: ct1, ct2, ct3, ct4, xt01, xt02, xt03, xhbar, im, xwidth, xomega , xEd, xh, xphase, xtime, xhbar_au
    complex(kind=8),allocatable :: xHam(:,:) , xHamt(:,:,:), xTransHam(:,:), xE0(:), xHamtk2(:,:,:), xHamtk3(:,:,:), xHamtk4(:,:,:)
    complex(kind=8),allocatable :: xc0(:), xc(:,:), xc_ei(:,:), xcnew(:,:), k1(:), k2(:), k3(:) , k4(:), xHam_ei(:,:)
@@ -32,9 +33,9 @@ contains
 subroutine getVariables
 
 NAMELIST /version/ vers
-NAMELIST /outputs/ o_Norm,o_Over,o_Coul,o_DipS,o_Osci,o_Exti,o_DipD,dyn,hamilt,dyn_ei
+NAMELIST /outputs/ o_Norm,o_Over,o_Coul,o_DipS,o_Osci,o_Exti,o_DipD,dyn,hamilt,dyn_ei,fineSt
 NAMELIST /elecSt/ me,mh,eps,epsout,V0eV,omegaLO,slope,side
-NAMELIST /fineSt/ Kas,Kbs,Kcs,Dso,Dxf
+NAMELIST /fineStruc/ Kas,Kbs,Kcs,Dso,Dxf
 NAMELIST /pulses/ nstates,npulses,t01,t02,t03,timestep,totaltime,omega,phase,width,Ed
 NAMELIST /syst_single/ nsys,aA,dispQD
 NAMELIST /syst_dimer/ aA,aB,link
@@ -97,6 +98,8 @@ allocate(Ham(0:nstates-1,0:nstates-1))
 allocate(Ham_ei(0:nstates-1,0:nstates-1))
 allocate(xHam(0:nstates-1,0:nstates-1))
 allocate(xHam_ei(0:nstates-1,0:nstates-1))
+allocate(Transvec(0:nstates-1))
+allocate(TransMat_ei(0:nstates-1,0:nstates-1))
 allocate(c0(0:nstates-1))
 allocate(k1(0:nstates-1))
 allocate(k2(0:nstates-1))
@@ -137,14 +140,12 @@ read(150,NML=syst_single)
 endif
 
 
-
-
 if ( vers .eq. 'singl' ) then
 
 write(6,*) "You are requesting me to tackle a single QD"
 
 rewind 150
-read(150,NML=fineSt)
+read(150,NML=fineStruc)
 
 allocate(aR(nsys))
 allocate(epsin(nsys))
