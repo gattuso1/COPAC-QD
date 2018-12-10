@@ -359,6 +359,7 @@ open(33,file='Ham0.dat')
 open(58,file='Ham_ei.dat')
 open(47,file='Etransitions-he_0.dat')
 open(52,file='Etransitions-he_ei.dat')
+open(57,file='TransDip_ei.dat')
 write(32,'("#     Number                  QDA                       QDB                    linker")')
 write(33,'("#     Number                  QDA                       QDB                    linker")')
 write(22,'("#  time                      pulse1                    pulse2                    pulse3")')
@@ -379,7 +380,7 @@ do n=rmin,rmax
 write(6,*) "Computing system number:    ", n
 
 !!!Opens output files
-if ( ( dyn .eq. 'y' ) .and. ( vers .eq. 'randm' ) ) then
+if ( ( dyn .eq. 'y' ) .and. ( ( vers .eq. 'randm' ) .or. ( vers .eq. 'singl' ) ) ) then
 write(popc,'(a5,i5.5,a4)') 'Popc-', n, '.dat'
 !write(hmti,'(a5,i5.5,a4)') 'Hamt-', n, '.dat'
 write(norm,'(a5,i5.5,a4)') 'Norm-', n, '.dat'
@@ -407,14 +408,16 @@ endif
 Ham      = 0.0d0
 TransHam = 0.0d0
 
-if ( aA .eq. aB ) then
+if ( ( aA .eq. aB ) .and. ( vers .ne. "singl" ) ) then
 call make_Ham_ho
-elseif ( aA .ne. aB ) then
+elseif ( ( aA .ne. aB ) .and. ( vers .ne. "singl" ) ) then
 call make_Ham_he
-!elseif ( vers .eq. "singl" ) then
-!call make_Ham_fineSt
+elseif ( vers .eq. "singl" ) then
+call make_Ham_fineSt
+call make_TransHam_0_fineSt
+!write(6,*) Ham(3,5), Ham(9,10)
 !do i = 0,nstates-1
-!write(6,'(25ES6.2E2)') (Ham(i,j), j=0,nstates-1)
+!write(6,'(25f12.8)') (Ham(i,j)*Energ_au/elec, j=0,nstates-1)
 !enddo
 endif
 
@@ -422,14 +425,21 @@ endif
 write(32,*) n , aR(n), aR(n+nsys), linker(n)
 write(33,*) n , aR(n), aR(n+nsys), linker(n)
 do i=0,nstates-1
+if ( (vers .eq. 'randm' ) .or. ( vers .eq. 'range' ) ) then
 write(33,'(9es14.6e2)') (Ham(i,j)*Energ_au/elec, j=0,nstates-1)
+elseif ( vers .eq. 'singl' ) then
+write(33,'(25es14.6e2)') (Ham(i,j)*Energ_au/elec, j=0,nstates-1)
+endif
 enddo
 do i=0,nstates-1
+if ( (vers .eq. 'randm' ) .or. ( vers .eq. 'range' ) ) then
 write(32,'(9es14.6e2)') (TransHam(i,j)*Dip_au, j=0,nstates-1)
+elseif ( vers .eq. 'singl' ) then
+write(32,'(25es14.6e2)') (TransHam(i,j)*Dip_au, j=0,nstates-1)
+endif
 enddo
 write(32,*) 
 write(33,*) 
-
 !if ( hamilt .eq. "y" ) then
 !do t=0,ntime
 ! 
@@ -459,6 +469,8 @@ if ( ( (vers .eq. 'randm' ) .and. ( aA .eq. aB ) ) .or. ( vers .eq. 'range' ) ) 
 write(47,'(11f14.10)') aR(n)*1.d9, linker(n)*1.d9, (Ham(i,i)*Energ_au/elec, i=0,nstates-1)
 elseif ( (vers .eq. 'randm' ) .and. ( aA .ne. aB ) ) then
 write(47,'(11f14.10)') aR(n)*1.d9, aR(n+nsys)*1.d9, (Ham(i,i)*Energ_au/elec, i=0,nstates-1)
+elseif ( vers .eq. 'singl' ) then
+write(47,'(26f14.10)') aR(n)*1.d9, (Ham(i,i)*Energ_au/elec, i=0,nstates-1)
 endif
 
 if ( get_ei .eq. 'y' ) then
@@ -473,13 +485,21 @@ allocate(work(0:lwork))
 call dsyev('V', 'U', nstates, Ham_ei(0:nstates-1,0:nstates-1), nstates, lambda, Work, lwork, info)
 deallocate (work)
 do i=0,nstates-1
+if ( (vers .eq. 'randm' ) .or. ( vers .eq. 'range' ) ) then
 write(58,'(10f12.6)') (Ham_ei(i,j), j=0,nstates-1)
+elseif ( vers .eq. 'singl' ) then
+write(58,'(25f7.3)') (Ham_ei(i,j), j=0,nstates-1)
+endif
 enddo
 write(58,*) 
 if ( ( (vers .eq. 'randm' ) .and. ( aA .eq. aB ) ) .or. ( vers .eq. 'range' ) ) then
 write(52,'(11f14.10)') aR(n)*1.d9, linker(n)*1.d9, (lambda(i)*Energ_au/elec, i=0,nstates-1)
 elseif ( (vers .eq. 'randm' ) .and. ( aA .ne. aB ) ) then
 write(52,'(11f14.10)') aR(n)*1.d9, aR(n+nsys)*1.d9, (lambda(i)*Energ_au/elec, i=0,nstates-1)
+elseif (vers .eq. 'singl' ) then
+call make_TransHam_ei_fineSt 
+write(52,'(26f14.10)') aR(n)*1.d9, (lambda(i)*Energ_au/elec, i=0,nstates-1)
+write(57,'(26f12.6)') aR(n)*1.d9, (TransHam(i,i)*Energ_au/elec, i=0,nstates-1)
 endif
 deallocate(lambda)
 endif
@@ -587,7 +607,7 @@ write(46,*) time*t_au, cnorm2 !cnormabs !, cnormconj, cnorm2
 write(44,'(10ES18.6E2)') time*t_au, (dreal(xc(i,t))**2+aimag(xc(i,t))**2, i=0,8) 
 endif
 
-if ( get_ei .eq. 'y' ) then
+if ( dyn_ei .eq. 'y' ) then
 
 xc_ei = dcmplx(0.d0,0.d0)
 cnorm2_ei = 0.d0
@@ -599,13 +619,17 @@ do i=0,nstates-1
 enddo
 
 if ( MOD(t,100) .eq. 0 ) then
+!if ( vers = 'singl') then
+
+!else
 do i=0,nstates-1
 cnorm2_ei = cnorm2_ei + dreal(xc_ei(i,t))**2 + aimag(xc_ei(i,t))**2
 enddo
 write(48,*) time*t_au, cnorm2_ei
-write(49,'(ES11.5E2,9ES15.6E2)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,8)
-write(52,'(ES11.5E2,9ES15.6E2)') time*t_au, (dreal(xc_ei(i,t)), i=0,8)
-write(53,'(ES11.5E2,9ES15.6E2)') time*t_au, (aimag(xc_ei(i,t)), i=0,8)
+write(49,'(ES11.5E2,9ES15.6E2)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,nstates-1)
+write(52,'(ES11.5E2,9ES15.6E2)') time*t_au, (dreal(xc_ei(i,t)), i=0,nstates-1)
+write(53,'(ES11.5E2,9ES15.6E2)') time*t_au, (aimag(xc_ei(i,t)), i=0,nstates-1)
+!endif !endif if vers writing
 endif !endif write Re, Im, xc
 
 endif !endif get c in eigenstates

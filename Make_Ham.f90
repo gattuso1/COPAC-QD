@@ -1208,6 +1208,8 @@ end subroutine make_Ham_he
 
 subroutine make_Ham_fineSt
 
+Ham = 0.d0
+
 Ham(1,1)   = Eeh1(n)  - Dso/3 - 3*Kas
 Ham(2,2)   = Eeh1(n)  - Dso/3 - 3*Kcs
 Ham(3,3)   = Eeh1(n)  - Kas
@@ -1278,27 +1280,45 @@ Ham(20,19) = Ham(16,17)
 Ham(23,24) = Ham(16,17)
 Ham(24,23) = Ham(16,17)
 
-TransHam(0,3)  = 10.07* 3.33564d-30   
-TransHam(0,4)  = 10.07* 3.33564d-30 
-TransHam(0,6)  = 17.48* 3.33564d-30 
-TransHam(0,7)  = 17.48* 3.33564d-30 
-TransHam(0,8)  = 19.50* 3.33564d-30 
-TransHam(0,10) = 14.63* 3.33564d-30 
-TransHam(0,11) = 14.63* 3.33564d-30 
-TransHam(0,12) = 15.53* 3.33564d-30 
-TransHam(0,15) = 6.76 * 3.33564d-30 
-TransHam(0,16) = 6.76 * 3.33564d-30 
-TransHam(0,18) = 11.73* 3.33564d-30 
-TransHam(0,19) = 11.73* 3.33564d-30 
-TransHam(0,20) = 13.08* 3.33564d-30 
-TransHam(0,22) = 9.82 * 3.33564d-30 
-TransHam(0,23) = 9.82 * 3.33564d-30 
-TransHam(0,24) = 10.42* 3.33564d-30 
-
-do i=0,nstates-1
-TransHam(i,0) = TransHam(0,i)
-enddo
+Ham = Ham/Energ_au
 
 end subroutine make_Ham_fineSt
+
+subroutine make_TransHam_0_fineSt
+
+TransHam0 = 0.d0
+
+TransHam0(0,3)  = abs(TransDip_Ana_h1e(n))
+TransHam0(0,7)  = abs(TransDip_Ana_h1e(n)) 
+TransHam0(0,10) = abs(TransDip_Ana_h1e(n))
+TransHam0(0,15) = abs(TransDip_Ana_h2e(n))
+TransHam0(0,19) = abs(TransDip_Ana_h2e(n))
+TransHam0(0,22) = abs(TransDip_Ana_h2e(n))
+
+TransHam0 = TransHam0/Dip_au
+
+do i=0,nstates-1
+TransHam0(i,0) = TransHam0(0,i)
+enddo
+
+end subroutine make_TransHam_0_fineSt
+
+subroutine make_TransHam_ei_fineSt
+
+TransHam = 0.d0
+
+do i=0,nstates-1
+do j=0,nstates-1
+TransHam(i,i) = TransHam(i,i) +  TransHam0(0,j) * Ham_ei(j,i)
+enddo
+enddo
+
+write(6,*) (abs(TransHam(i,i)*Dip_au/Cm_to_D), i=0,nstates-1)
+
+!do i=0,nstates-1
+!TransHam(i,0) = TransHam(0,i)
+!enddo
+
+end subroutine make_TransHam_ei_fineSt
 
 end module Make_Ham
