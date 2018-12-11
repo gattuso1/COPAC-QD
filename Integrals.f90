@@ -270,7 +270,7 @@ d1              = 0.000193625d0
 d2              = 0.00896372d0   
 d3              = -11.1744d0     
 d4              = 0.927031d0
-TransDip_Fit_h2e_he = d1+d2*(1-exp(-(a*1.d9)**d3))/((b*1.d9)**d4)
+TransDip_Fit_h2e_he = (d1+d2*(1-exp(-(a*1.d9)**d3))/((b*1.d9)**d4) )*1.d-33
 endif
 
 end function TransDip_Fit_h2e_he

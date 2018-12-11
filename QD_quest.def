@@ -43,8 +43,8 @@ npulses   = 2           !Number of pulses (up to 3)
 t01       = 50.d-15     !Pulse 1 centered at (s)
 t02       = 150.d-15     !Pulse 2 centered at (s)
 t03       = 90.d-15     !Pulse 3 centered at (s)
-timestep  = 0.020      !Time step of quantum dynamic
-totaltime = 200.0d-15     !Total time simulated (s)
+timestep  = 0.01      !Time step of quantum dynamic
+totaltime = 500.0d-15     !Total time simulated (s)
 omega     = 0.5d15      !Frequency (s-1)
 !omega     = 0.90d15      !Frequency (s-1)
 !phase     = pi Careful here, it is defined in the code
@@ -55,13 +55,13 @@ Ed        = 5.142d9     !Field strength (V/m so far)
 
 &syst_single !Parameters of the single dot
 nsys      = 4          !Number of dimers
-aA        = 1.0d-9      !Radius of QDA
+aA        = 1.65d-9      !Radius of QDA
 dispQD    = 0.05d0     !Dispersion of QD radius
 /
 
 &syst_dimer !Parameters of the dimer
-aA     = 1.0d-9      !Radius of QDA
-aB     = 1.0d-9      !Radius of QDB
+aA     = 1.2d-9      !Radius of QDA
+aB     = 1.6d-9      !Radius of QDB
 link   = 0.2d-9      !Linker length
 /
 
@@ -73,7 +73,7 @@ link   = 0.2d-9      !Linker length
 /
 
 &syst_random !Parameters of a random distribution of dimers either homo (aA=aB) or hetero (aA!=aB,linker fixed)
-nsys      = 100         !Number of dimers
+nsys      = 10         !Number of dimers
 aA        = 1.3d-9      !Radius of QDA
 aB        = 1.3d-9      !Radius of QDB
 link      = 0.2d-9      !Linker length  (if hetero must be 0.2 or 0.55 nm so far)

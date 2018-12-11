@@ -276,6 +276,12 @@ Cb_Num_eh2(n) = DXXdir(Ae(n),Be(n),kine(n),koute(n),Ah2(n),Bh2(n),kinh2(n),kouth
                                        Ae(n),Be(n),kine(n),koute(n),Ah2(n),Bh2(n),kinh2(n),kouth2(n),aR(n)) + &
                                 DXXex(Ae(n),Be(n),kine(n),koute(n),Ah2(n),Bh2(n),kinh2(n),kouth2(n),&
                                       Ae(n),Be(n),kine(n),koute(n),Ah2(n),Bh2(n),kinh2(n),kouth2(n),aR(n))
+
+write(6,*) DXXex(Ae(n),Be(n),kine(n),koute(n),Ah1(n),Bh1(n),kinh1(n),kouth1(n),&
+                                      Ae(n),Be(n),kine(n),koute(n),Ah1(n),Bh1(n),kinh1(n),kouth1(n),aR(n))
+write(6,*) DXXex(Ae(n),Be(n),kine(n),koute(n),Ah2(n),Bh2(n),kinh2(n),kouth2(n),&
+                                      Ae(n),Be(n),kine(n),koute(n),Ah2(n),Bh2(n),kinh2(n),kouth2(n),aR(n))
+          
 endif
 
 !Oscilator strength
@@ -425,15 +431,16 @@ endif
 write(32,*) n , aR(n), aR(n+nsys), linker(n)
 write(33,*) n , aR(n), aR(n+nsys), linker(n)
 do i=0,nstates-1
-if ( (vers .eq. 'randm' ) .or. ( vers .eq. 'range' ) ) then
-write(33,'(9es14.6e2)') (Ham(i,j)*Energ_au/elec, j=0,nstates-1)
+if ( (vers .eq. 'randm' ) .or. ( vers .eq. 'range' ) .or. (vers .eq. 'dimer' ) ) then
+!write(33,'(9es14.6e2)') (Ham(i,j)*Energ_au/elec, j=0,nstates-1)
+write(33,'(9es14.6e2)') (Ham(i,j), j=0,nstates-1)
 elseif ( vers .eq. 'singl' ) then
 write(33,'(25es14.6e2)') (Ham(i,j)*Energ_au/elec, j=0,nstates-1)
 endif
 enddo
 do i=0,nstates-1
-if ( (vers .eq. 'randm' ) .or. ( vers .eq. 'range' ) ) then
-write(32,'(9es14.6e2)') (TransHam(i,j)*Dip_au, j=0,nstates-1)
+if ( (vers .eq. 'randm' ) .or. ( vers .eq. 'range' ) .or. (vers .eq. 'dimer' ) ) then
+write(32,'(9es14.6e2)') (TransHam(i,j), j=0,nstates-1)
 elseif ( vers .eq. 'singl' ) then
 write(32,'(25es14.6e2)') (TransHam(i,j)*Dip_au, j=0,nstates-1)
 endif
@@ -465,10 +472,11 @@ write(33,*)
 !
 !endif
 
-if ( ( (vers .eq. 'randm' ) .and. ( aA .eq. aB ) ) .or. ( vers .eq. 'range' ) ) then
-write(47,'(11f14.10)') aR(n)*1.d9, linker(n)*1.d9, (Ham(i,i)*Energ_au/elec, i=0,nstates-1)
-elseif ( (vers .eq. 'randm' ) .and. ( aA .ne. aB ) ) then
-write(47,'(11f14.10)') aR(n)*1.d9, aR(n+nsys)*1.d9, (Ham(i,i)*Energ_au/elec, i=0,nstates-1)
+if ( ( ( (vers .eq. 'randm' ) .or. (vers .eq. 'dimer' ) ) .and. ( aA .eq. aB ) )  .or. ( vers .eq. 'range' ) )  then
+!write(47,'(11f14.10)') aR(n)*1.d9, linker(n)*1.d9, (Ham(i,i)*Energ_au/elec, i=0,nstates-1)
+write(47,'(11f14.10)') aR(n)*1.d9, linker(n)*1.d9, (Ham(i,i), i=0,nstates-1)
+elseif ( ( (vers .eq. 'randm' ) .or. (vers .eq. 'dimer' ) ) .and. ( aA .ne. aB ) ) then
+write(47,'(11f14.10)') aR(n)*1.d9, aR(n+nsys)*1.d9, (Ham(i,i), i=0,nstates-1)
 elseif ( vers .eq. 'singl' ) then
 write(47,'(26f14.10)') aR(n)*1.d9, (Ham(i,i)*Energ_au/elec, i=0,nstates-1)
 endif
@@ -485,21 +493,21 @@ allocate(work(0:lwork))
 call dsyev('V', 'U', nstates, Ham_ei(0:nstates-1,0:nstates-1), nstates, lambda, Work, lwork, info)
 deallocate (work)
 do i=0,nstates-1
-if ( (vers .eq. 'randm' ) .or. ( vers .eq. 'range' ) ) then
+if ( (vers .eq. 'randm' ) .or. ( vers .eq. 'range' ) .or. (vers .eq. 'dimer' ) ) then
 write(58,'(10f12.6)') (Ham_ei(i,j), j=0,nstates-1)
 elseif ( vers .eq. 'singl' ) then
 write(58,'(25f7.3)') (Ham_ei(i,j), j=0,nstates-1)
 endif
 enddo
 write(58,*) 
-if ( ( (vers .eq. 'randm' ) .and. ( aA .eq. aB ) ) .or. ( vers .eq. 'range' ) ) then
-write(52,'(11f14.10)') aR(n)*1.d9, linker(n)*1.d9, (lambda(i)*Energ_au/elec, i=0,nstates-1)
-elseif ( (vers .eq. 'randm' ) .and. ( aA .ne. aB ) ) then
-write(52,'(11f14.10)') aR(n)*1.d9, aR(n+nsys)*1.d9, (lambda(i)*Energ_au/elec, i=0,nstates-1)
+if ( ( ( (vers .eq. 'randm' ) .or. (vers .eq. 'dimer' ) ) .and. ( aA .eq. aB ) ) .or. ( vers .eq. 'range' ) ) then
+write(52,'(11f14.10)') aR(n)*1.d9, linker(n)*1.d9, (lambda(i), i=0,nstates-1)
+elseif ( ( (vers .eq. 'randm' ) .or. (vers .eq. 'dimer' ) ) .and. ( aA .ne. aB ) ) then
+write(52,'(11f14.10)') aR(n)*1.d9, aR(n+nsys)*1.d9, (lambda(i), i=0,nstates-1)
 elseif (vers .eq. 'singl' ) then
 call make_TransHam_ei_fineSt 
 write(52,'(26f14.10)') aR(n)*1.d9, (lambda(i)*Energ_au/elec, i=0,nstates-1)
-write(57,'(26f12.6)') aR(n)*1.d9, (TransHam(i,i)*Energ_au/elec, i=0,nstates-1)
+write(57,'(26f12.6)') aR(n)*1.d9, (TransHam(0,i), i=0,nstates-1)
 endif
 deallocate(lambda)
 endif
@@ -596,7 +604,7 @@ do i=0,nstates-1
 xc(i,t+1) = xc(i,t)+(dcmplx(timestep,0.d0)/6.d0)*(k1(i)+2.d0*k2(i)+2.d0*k3(i)+k4(i))
 enddo
 
-if ( MOD(t,100) .eq. 0 ) then
+if ( MOD(t,10) .eq. 0 ) then
 cnorm2 = 0.d0
 do i=0,nstates-1
 cnorm2 = cnorm2 + dreal(xc(i,t))**2 + aimag(xc(i,t))**2
@@ -618,7 +626,7 @@ do i=0,nstates-1
    enddo
 enddo
 
-if ( MOD(t,100) .eq. 0 ) then
+if ( MOD(t,10) .eq. 0 ) then
 !if ( vers = 'singl') then
 
 !else

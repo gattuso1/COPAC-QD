@@ -1,46 +1,34 @@
- Random heterodimers
+ Single QD
 
-
- The process has generated the following files:
-
-Ham0.dat                contains Hamiltonian of 0th order
-Pulse.dat               contains the pulse(s)
-TransHam.dat            contains the transition dipole moment matrix elements
-Popc.dat                contains the population evolution of each state |c**2(t)| of dimer n
-Popc_ei.dat             contains the population evolution of each eigenstate
-Norm.dat                contains the time dependent norm of dimer n
-Norm_ei.dat             contains the time dependent norm of of eigenstates
-Etransitions-he_0.dat   contains the energies of each states
-Etransitions-he_ei.dat  contains the energies of each eigenstate
-Im_c_ei.dat             contains the imaginary part of each eigenstate during the dynamic
-Re_c_ei.dat             contains the real part of each eigenstate during the dynamic
-Etransitions-he_ei.dat  contains the energies of each eigenstate
+ The wavefunction of states e, h1 and h2 on QDA has been stored in:
+ The wavefunction of states e, h1 and h2 on QDB has been stored in:
 
  The initial parameters are:
 
-Number of dimers                     :   10
-Average radius of QDA                :    1.0000E-09
-Average radius of QDB                :    1.3000E-09
-Average length of linker             :    2.0000E-10
-Size dispersion of QDA radius        :    0.0500
-Length dispersion of linker          :    0.0500
-Electron effective mass              :    0.1300 m0
-Hole effective mass                  :    0.8200 m0
-Bulk dielectric constant             :    9.5600
-Ligands dielectric constant          :    2.3000
-Bulk band gap                        :    1.7500
+Electron effective mass              :  0.0000 m0
+Hole effective mass                  :  0.0000 m0
+Bulk dielectric constant             :  9.5600
+Ligands dielectric constant          :  2.3000
+Bulk band gap                        :  1.7500
 
 
- The initial parameters of the dynamic are:
 
-Number of states        :   9
-Number of pulses        :   2
-t0 of first pulse       :   3.000000E-14
-t0 of second pulse      :   5.500000E-14
-Time step               :   2.000000E-16
-Time length of dynamic  :   5.000000E-13
-Omega                   :   5.000000E+14
-Phase                   :   3.141593E+00
-Width                   :   4.000000E-15
-Power                   :   5.142000E+09
+                                                        QDA                      QDB
+Radius                               :               1.6622E-09
+Confining potential electron         :               4.7811E-19
+Confining potential holes            :               8.7581E-19
+Dielectric constant                  :               8.3319E+00
+Transition energy h1e                :               2.1886E+00
+Transition energy h2e                :               2.6400E+00
+Coulomb correction h1e               :               1.3081E-01
+Coulomb correction h12               :               1.2025E-01
+Norm e                               :               0.0000E+00
+Norm h1                              :               0.0000E+00
+Norm h2                              :               0.0000E+00
+
+Wavefunction overlap                 :          0.000000          0.000000
+Transition dipole moment             :         43.488556         29.144399
+Oscillator strength                  :          0.000000          0.000000
+Extinction coefficient               :          0.000000          0.000000
+Coulomb correction                   :          0.000000          0.000000
 
