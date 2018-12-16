@@ -571,7 +571,7 @@ k4 = dcmplx(0.0d0,0.0d0)
 do i=0,nstates-1
 do j=0,nstates-1
 k1(i) = k1(i) + RK_k(time,Ham(i,j), TransHam(i,j), xc(j,t))
-!k1(i) = k1(i) + -1.0d0*im * (Ham(i,j) - TransHam(i,j) * Ed * cos(omega*(time-t01)+phase) * &
+!k1(i) = k1(i) + (-1.0d0)*im * (Ham(i,j) - TransHam(i,j) * Ed * cos(omega*(time-t01)+phase) * &
 !                  exp(-1.0d0*(time-t01)**2.d0/(2.0d0*(width**2))))*xc(j,t)
 enddo
 enddo
@@ -579,7 +579,7 @@ enddo
 do i=0,nstates-1
 do j=0,nstates-1
 k2(i) = k2(i) + RK_k(time+(timestep/2.d0),Ham(i,j), TransHam(i,j), xc(j,t) + k1(j)*(dcmplx(timestep,0.d0))/2.0d0)
-!k2(i) = k2(i) + -1.0d0*im * (Ham(i,j) - TransHam(i,j) * Ed * cos(omega*((time+timestep/2.d0)-t01)+phase) * &
+!k2(i) = k2(i) + (-1.0d0)*im * (Ham(i,j) - TransHam(i,j) * Ed * cos(omega*((time+timestep/2.d0)-t01)+phase) * &
 !                  exp(-1.0d0*((time+timestep/2.d0)-t01)**2.d0/(2.0d0*(width**2))))*(xc(j,t) + k1(j)*xh/2.d0)
 enddo
 enddo
@@ -587,7 +587,7 @@ enddo
 do i=0,nstates-1
 do j=0,nstates-1
 k3(i) = k3(i) + RK_k(time+(timestep/2.d0),Ham(i,j), TransHam(i,j),  xc(j,t) + k2(j)*(dcmplx(timestep,0.d0))/2.0d0)
-!k3(i) = k3(i) + -1.0d0*im * (Ham(i,j) - TransHam(i,j) * Ed * cos(omega*((time+timestep/2.d0)-t01)+phase) * &
+!k3(i) = k3(i) + (-1.0d0)*im * (Ham(i,j) - TransHam(i,j) * Ed * cos(omega*((time+timestep/2.d0)-t01)+phase) * &
 !                  exp(-1.0d0*((time+timestep/2.d0)-t01)**2.d0/(2.0d0*(width**2))))*(xc(j,t) + k2(j)*xh/2.d0)
 enddo
 enddo
@@ -595,7 +595,7 @@ enddo
 do i=0,nstates-1
 do j=0,nstates-1
 k4(i) = k4(i) + RK_k(time+timestep,Ham(i,j), TransHam(i,j),  xc(j,t) + k3(j)*dcmplx(timestep,0.d0))
-!k4(i) = k4(i) + -1.0d0*im * (Ham(i,j) - TransHam(i,j) * Ed * cos(omega*((time+timestep)-t01)+phase) * &
+!k4(i) = k4(i) + (-1.0d0)*im * (Ham(i,j) - TransHam(i,j) * Ed * cos(omega*((time+timestep)-t01)+phase) * &
 !                  exp(-1.0d0*((time+timestep)-t01)**2.d0/(2.0d0*(width**2))))*(xc(j,t) + k3(j)*xh)
 enddo
 enddo
@@ -605,6 +605,7 @@ xc(i,t+1) = xc(i,t)+(dcmplx(timestep,0.d0)/6.d0)*(k1(i)+2.d0*k2(i)+2.d0*k3(i)+k4
 enddo
 
 if ( MOD(t,10) .eq. 0 ) then
+if ( ( vers .eq. 'dimer' ) .or. ( vers .eq. 'range' ) .or. ( vers .eq. 'randm' ) ) then
 cnorm2 = 0.d0
 do i=0,nstates-1
 cnorm2 = cnorm2 + dreal(xc(i,t))**2 + aimag(xc(i,t))**2
@@ -613,6 +614,16 @@ enddo
 write(46,*) time*t_au, cnorm2 !cnormabs !, cnormconj, cnorm2
 !!!POPULATIONS
 write(44,'(10ES18.6E2)') time*t_au, (dreal(xc(i,t))**2+aimag(xc(i,t))**2, i=0,8) 
+else if ( vers .eq. 'singl' ) then
+cnorm2 = 0.d0
+do i=0,nstates-1
+cnorm2 = cnorm2 + dreal(xc(i,t))**2 + aimag(xc(i,t))**2
+enddo
+!!!NORM
+write(46,*) time*t_au, cnorm2 !cnormabs !, cnormconj, cnorm2
+!!!POPULATIONS
+write(44,'(26ES18.6E2)') time*t_au, (dreal(xc(i,t))**2+aimag(xc(i,t))**2, i=0,24)
+endif
 endif
 
 if ( dyn_ei .eq. 'y' ) then
@@ -627,16 +638,27 @@ do i=0,nstates-1
 enddo
 
 if ( MOD(t,10) .eq. 0 ) then
-!if ( vers = 'singl') then
 
-!else
+if ( ( vers .eq. 'dimer' ) .or. ( vers .eq. 'range' ) .or. ( vers .eq. 'randm' ) ) then
+
 do i=0,nstates-1
 cnorm2_ei = cnorm2_ei + dreal(xc_ei(i,t))**2 + aimag(xc_ei(i,t))**2
 enddo
 write(48,*) time*t_au, cnorm2_ei
-write(49,'(ES11.5E2,9ES15.6E2)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,nstates-1)
-write(52,'(ES11.5E2,9ES15.6E2)') time*t_au, (dreal(xc_ei(i,t)), i=0,nstates-1)
-write(53,'(ES11.5E2,9ES15.6E2)') time*t_au, (aimag(xc_ei(i,t)), i=0,nstates-1)
+write(49,'(ES11.5E2,25ES15.6E2)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,nstates-1)
+write(52,'(ES11.5E2,25ES15.6E2)') time*t_au, (dreal(xc_ei(i,t)), i=0,nstates-1)
+write(53,'(ES11.5E2,25ES15.6E2)') time*t_au, (aimag(xc_ei(i,t)), i=0,nstates-1)
+
+else if ( vers .eq. 'singl' ) then 
+do i=0,nstates-1
+cnorm2_ei = cnorm2_ei + dreal(xc_ei(i,t))**2 + aimag(xc_ei(i,t))**2
+enddo
+write(48,*) time*t_au, cnorm2_ei
+write(49,'(ES11.5E2,25ES15.6E2)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,nstates-1)
+write(52,'(ES11.5E2,25ES15.6E2)') time*t_au, (dreal(xc_ei(i,t)), i=0,nstates-1)
+write(53,'(ES11.5E2,25ES15.6E2)') time*t_au, (aimag(xc_ei(i,t)), i=0,nstates-1)
+
+endif !endif select vers
 !endif !endif if vers writing
 endif !endif write Re, Im, xc
 

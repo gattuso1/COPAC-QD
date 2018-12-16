@@ -14,20 +14,20 @@ Bulk band gap                        :  1.7500
 
 
                                                         QDA                      QDB
-Radius                               :               1.6622E-09
-Confining potential electron         :               4.7811E-19
-Confining potential holes            :               8.7581E-19
-Dielectric constant                  :               8.3319E+00
-Transition energy h1e                :               2.1886E+00
-Transition energy h2e                :               2.6400E+00
-Coulomb correction h1e               :               1.3081E-01
-Coulomb correction h12               :               1.2025E-01
-Norm e                               :               0.0000E+00
-Norm h1                              :               0.0000E+00
-Norm h2                              :               0.0000E+00
+Radius                               :               1.6500E-09
+Confining potential electron         :               4.7732E-19
+Confining potential holes            :               8.7608E-19
+Dielectric constant                  :               8.3226E+00
+Transition energy h1e                :               2.1937E+00
+Transition energy h2e                :               2.6513E+00
+Coulomb correction h1e               :               1.3165E-01
+Coulomb correction h12               :               1.2101E-01
+Norm e                               :*************************
+Norm h1                              :*************************
+Norm h2                              :*************************
 
 Wavefunction overlap                 :          0.000000          0.000000
-Transition dipole moment             :         43.488556         29.144399
+Transition dipole moment             :         43.181501         28.980953
 Oscillator strength                  :          0.000000          0.000000
 Extinction coefficient               :          0.000000          0.000000
 Coulomb correction                   :          0.000000          0.000000

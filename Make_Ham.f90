@@ -1371,20 +1371,20 @@ subroutine make_Ham_fineSt
 
 Ham = 0.d0
 
-Ham(1,1)   = Eeh1(n)  - Dso/3 - 3*Kas
-Ham(2,2)   = Eeh1(n)  - Dso/3 - 3*Kcs
+Ham(1,1)   = Eeh1(n)  - Dso1/3.d0 - 3.d0*Kas
+Ham(2,2)   = Eeh1(n)  - Dso1/3.d0 - 3.d0*Kcs
 Ham(3,3)   = Eeh1(n)  - Kas
-Ham(4,4)   = Eeh1(n)  - 3*Kas
-Ham(5,5)   = Eeh1(n)  - 3*Kbs + Dxf
-Ham(6,6)   = Eeh1(n)  - 3*Kbs + Dxf
+Ham(4,4)   = Eeh1(n)  - 3.d0*Kas
+Ham(5,5)   = Eeh1(n)  - 3.d0*Kbs + Dxf
+Ham(6,6)   = Eeh1(n)  - 3.d0*Kbs + Dxf
 Ham(7,7)   = Eeh1(n)  - Kcs
-Ham(8,8)   = Eeh1(n)  - 3*Kcs
-Ham(9,9)   = Eeh1(n)  + Dso/3 - 3*Kas
+Ham(8,8)   = Eeh1(n)  - 3.d0*Kcs
+Ham(9,9)   = Eeh1(n)  + Dso1/3.d0 - 3.d0*Kas
 Ham(10,10) = Eeh1(n)  - Kbs + Dxf
-Ham(11,11) = Eeh1(n)  - 3*Kbs + Dxf
-Ham(12,12) = Eeh1(n)  + Dso/3 - 3*Kcs
+Ham(11,11) = Eeh1(n)  - 3.d0*Kbs + Dxf
+Ham(12,12) = Eeh1(n)  + Dso1/3.d0 - 3.d0*Kcs
 
-Ham(3,4) = -1.0*Dso/3
+Ham(3,4) = -1.d0*Dso1/3.d0
 Ham(4,3) = Ham(3,4)
 Ham(3,5) = Ham(3,4)
 Ham(5,3) = Ham(3,4)
@@ -1399,27 +1399,27 @@ Ham(11,9) = Ham(3,4)
 Ham(10,12) = Ham(3,4)
 Ham(12,10) = Ham(3,4)
 
-Ham(4,5) = Dso/3
+Ham(4,5) = Dso1/3.d0
 Ham(5,4) = Ham(4,5)
 Ham(7,8) = Ham(4,5)
 Ham(8,7) = Ham(4,5)
 Ham(11,12) = Ham(4,5)
 Ham(12,11) = Ham(4,5)
 
-Ham(13,13)   = Eeh2(n)  - Dso/3 - 3*Kas
-Ham(14,14)   = Eeh2(n)  - Dso/3 - 3*Kcs
+Ham(13,13)   = Eeh2(n)  - Dso2/3.d0 - 3.d0*Kas
+Ham(14,14)   = Eeh2(n)  - Dso2/3.d0 - 3.d0*Kcs
 Ham(15,15)   = Eeh2(n)  - Kas
-Ham(16,16)   = Eeh2(n)  - 3*Kas
+Ham(16,16)   = Eeh2(n)  - 3.d0*Kas
 Ham(17,17)   = Eeh2(n)  - 3*Kbs + Dxf
 Ham(18,18)   = Eeh2(n)  - 3*Kbs + Dxf
 Ham(19,19)   = Eeh2(n)  - Kcs
-Ham(20,20)   = Eeh2(n)  - 3*Kcs
-Ham(21,21)   = Eeh2(n)  + Dso/3 - 3*Kas
+Ham(20,20)   = Eeh2(n)  - 3.d0*Kcs
+Ham(21,21)   = Eeh2(n)  + Dso2/3.d0 - 3.d0*Kas
 Ham(22,22)   = Eeh2(n)  - Kbs + Dxf
-Ham(23,23)   = Eeh2(n)  - 3*Kbs + Dxf
-Ham(24,24)   = Eeh2(n)  + Dso/3 - 3*Kcs
+Ham(23,23)   = Eeh2(n)  - 3.d0*Kbs + Dxf
+Ham(24,24)   = Eeh2(n)  + Dso2/3.d0 - 3.d0*Kcs
 
-Ham(15,16) = -1.0*Dso/3
+Ham(15,16) = -1.d0*Dso2/3.d0
 Ham(16,15) = Ham(15,16)
 Ham(15,17) = Ham(15,16)
 Ham(17,15) = Ham(15,16)
@@ -1434,7 +1434,7 @@ Ham(23,21) = Ham(15,16)
 Ham(22,24) = Ham(15,16)
 Ham(24,22) = Ham(15,16)
 
-Ham(16,17) = Dso/3
+Ham(16,17) = Dso2/3
 Ham(17,16) = Ham(16,17)
 Ham(19,20) = Ham(16,17)
 Ham(20,19) = Ham(16,17)

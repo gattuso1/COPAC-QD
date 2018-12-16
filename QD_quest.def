@@ -33,7 +33,8 @@ side      =  0.5d-9      !Width of side buffer of integration box
 Kas = 0.012d0 
 Kbs = 0.012d0
 Kcs = 0.012d0
-Dso = 0.180d0
+Dso1 = 0.180d0
+Dso2 = 0.180d0
 Dxf = 0.025d0
 /
 
@@ -43,20 +44,20 @@ npulses   = 2           !Number of pulses (up to 3)
 t01       = 50.d-15     !Pulse 1 centered at (s)
 t02       = 150.d-15     !Pulse 2 centered at (s)
 t03       = 90.d-15     !Pulse 3 centered at (s)
-timestep  = 0.01      !Time step of quantum dynamic
+timestep  = 0.020      !Time step of quantum dynamic
 totaltime = 500.0d-15     !Total time simulated (s)
 omega     = 0.5d15      !Frequency (s-1)
 !omega     = 0.90d15      !Frequency (s-1)
 !phase     = pi Careful here, it is defined in the code
 width     = 6.0d-15       !Width of the pulse (s) 
-Ed        = 5.142d9     !Field strength (V/m so far)
+Ed        = 10.d8     !Field strength (V/m so far)
 !Ed        = 2.d8     !Field strength (V/m so far)
 /
 
 &syst_single !Parameters of the single dot
-nsys      = 4          !Number of dimers
+nsys      = 1          !Number of dimers
 aA        = 1.65d-9      !Radius of QDA
-dispQD    = 0.05d0     !Dispersion of QD radius
+dispQD    = 0.00d0     !Dispersion of QD radius
 /
 
 &syst_dimer !Parameters of the dimer

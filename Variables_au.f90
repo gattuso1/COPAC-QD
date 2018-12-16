@@ -13,7 +13,7 @@ implicit none
    integer,allocatable :: seed(:)
    real(dp) :: aA, aB, me, mh, eps, epsout, V0, omegaLO, rhoe, rhoh, slope, V0eV, minr, maxr, rsteps, side
    real(dp) :: dispQD, displink, rdmlinker, rdmQDA, rdmQDB, link, t01, t02, t03, timestep, totaltime, omega, phase, width, Ed
-   real(dp) :: pulse1, pulse2, pulse3, test, time, cnorm, cnormabs, cnormconj, cnorm2, cnorm2_ei, Kas, Kbs, Kcs, Dso, Dxf
+   real(dp) :: pulse1, pulse2, pulse3, test, time, cnorm, cnormabs, cnormconj, cnorm2, cnorm2_ei, Kas, Kbs, Kcs, Dso1, Dso2, Dxf
    real(dp),allocatable :: aR(:), aRA(:), aRB(:), epsin(:), epsR(:), V0e(:), V0h(:), linker(:)
    real(dp),allocatable :: epsinA(:), epsinB(:), epsRA(:), epsRB(:), V0eA(:), V0eB(:), V0hA(:), V0hB(:)
    real(dp),allocatable :: Eeh1(:), Eeh2(:), Cb_eh1(:), Cb_eh2(:), Norm_Ana_e(:), Norm_Ana_h1(:), Norm_Ana_h2(:)
@@ -35,7 +35,7 @@ subroutine getVariables
 NAMELIST /version/ vers
 NAMELIST /outputs/ o_Norm,o_Over,o_Coul,o_DipS,o_Osci,o_Exti,o_DipD,dyn,dyn_ei,hamilt,get_ei,fineSt
 NAMELIST /elecSt/ me,mh,eps,epsout,V0eV,omegaLO,slope,side
-NAMELIST /fineStruc/ Kas,Kbs,Kcs,Dso,Dxf
+NAMELIST /fineStruc/ Kas,Kbs,Kcs,Dso1,Dso2,Dxf
 NAMELIST /pulses/ nstates,npulses,t01,t02,t03,timestep,totaltime,omega,phase,width,Ed
 NAMELIST /syst_single/ nsys,aA,dispQD
 NAMELIST /syst_dimer/ aA,aB,link
@@ -143,7 +143,8 @@ read(150,NML=fineStruc)
 Kas = Kas*elec
 Kbs = Kbs*elec
 Kcs = Kcs*elec
-Dso = Dso*elec
+Dso1 = Dso1*elec
+Dso2 = Dso2*elec
 Dxf = Dxf*elec
 
 allocate(TransHam0(0:nstates-1,0:nstates-1))
