@@ -1,19 +1,22 @@
 ! Namelist definition
-
+write(6,*) timestep, t01, omega, width
 &version !version of the code, choose between singl, dimer, range, randm
-vers = "dimer"   
+vers = "singl"   
 /
 
 &outputs !Select output and computation modules, yes ("y") or ("no") 
-o_Norm  = "y" !Norm of single particle states
-o_Over  = "y" !Overlap of single particle states in excitons
+o_Norm  = "n" !Norm of single particle states
+o_Over  = "n" !Overlap of single particle states in excitons
 o_Coul  = "n" !Coulomb corrections for local states
-o_DipS  = "y" !Transition dipole moments of local excitons
+o_DipS  = "y" !Transition dipole moments of local excitons (must be "y")
 o_Osci  = "n" !Oscillator strength of local excitons
 o_Exti  = "n" !Molar extinction coefficients of local excitons
 o_DipD  = "n" !Transition dipole moments of CT states
+get_ei  = "y" !Provide eigenstates and obtain coef of eigenstates after dynamic if dyn = y
 dyn     = "y" !Should I perform dynamics?
-hamilt  = "y" !Should I print the time dependent Hamiltonian (very heavy and time consuming)
+dyn_ei  = "y" !Should I perform dynamics?
+hamilt  = "n" !Should I print the time dependent Hamiltonian (very heavy and time consuming)
+fineSt  = "y" !Request fine structure 
 /
 
 &elecSt !Parameters of CdSe QD and the model
@@ -25,31 +28,42 @@ V0eV      =  1.75d0        !Bulk gap in eV
 omegaLO   =  5.99585d12  !Phonon resonnance (for intradot dielectric correction)
 slope     =  50d9        !Slope of dielectric step function
 side      =  0.5d-9      !Width of side buffer of integration box
+/ 
+
+&fineStruc !Parameters of the fine structure
+Kas = 0.012d0 
+Kbs = 0.012d0
+Kcs = 0.012d0
+Dso1 = 0.180d0
+Dso2 = 0.180d0
+Dxf = 0.025d0
 /
 
 &pulses !Parameters of quantum dynamic and pulses
-nstates   = 9           !Total number of excitons + GS
+nstates   = 25           !Total number of excitons + GS
 npulses   = 2           !Number of pulses (up to 3)
-t01       = 5.0d-14     !Pulse 1 centered at (s)
-t02       = 15.0d-14     !Pulse 2 centered at (s)
-t03       = 30.0d-14     !Pulse 3 centered at (s)
-timestep  = 20d-18      !Time step of quantum dynamic
-totaltime = 500d-15     !Total time simulated (s)
-!omega     = 0.65d15      !Frequency (s-1)
-omega     = 3.6d15      !Frequency (s-1)
+t01       = 100.d0     !Pulse 1 centered at (s)
+t02       = 200.d0     !Pulse 2 centered at (s)
+t03       = 90.d0     !Pulse 3 centered at (s)
+timestep  = 0.020d0      !Time step of quantum dynamic
+totaltime = 500.d0     !Total time simulated (s)
+omega     = 0.5d15      !Frequency (s-1)
+!omega     = 0.90d15      !Frequency (s-1)
 !phase     = pi Careful here, it is defined in the code
-width     = 20d-16       !Width of the pulse (s) 
-Ed        = 5.142d9     !Field strength (V/m so far)
+width     = 6.0d0       !Width of the pulse (s) 
+Ed        = 5.d9     !Field strength (V/m so far)
+!Ed        = 2.d8     !Field strength (V/m so far)
 /
 
 &syst_single !Parameters of the single dot
-aA     = 1.0d-9      !Radius of QDA
+nsys      = 1          !Number of dimers
+aA        = 1.65d-9      !Radius of QDA
+dispQD    = 0.00d0     !Dispersion of QD radius
 /
 
-
 &syst_dimer !Parameters of the dimer
-aA     = 1.0d-9      !Radius of QDA
-aB     = 1.0d-9      !Radius of QDB
+aA     = 1.2d-9      !Radius of QDA
+aB     = 1.6d-9      !Radius of QDB
 link   = 0.2d-9      !Linker length
 /
 
@@ -57,14 +71,14 @@ link   = 0.2d-9      !Linker length
 rsteps = 0.01d-9     !Step of QD radius
 minr   = 1.0d-9      !Minimum size QD radius
 maxr   = 3.0d-9      !Maximum size QD radius
-link   = 1.0d-9      !Linker length
+link   = 0.2d-9      !Linker length
 /
 
 &syst_random !Parameters of a random distribution of dimers either homo (aA=aB) or hetero (aA!=aB,linker fixed)
 nsys      = 10         !Number of dimers
-aA        = 1.0d-9      !Radius of QDA
-aB        = 3.0d-9      !Radius of QDB
-link      = 0.2d-9      !Linker length  (if hetero must be 0.2 nm so far)
+aA        = 1.3d-9      !Radius of QDA
+aB        = 1.3d-9      !Radius of QDB
+link      = 0.2d-9      !Linker length  (if hetero must be 0.2 or 0.55 nm so far)
 displink  = 0.05d0        !Dispersion on the linker length
 dispQD    = 0.05d0        !Dispersion of QD radius
 /

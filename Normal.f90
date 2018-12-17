@@ -1,10 +1,11 @@
 module Normal
 
-use Constants
+use omp_lib
+use Constants_au
 
 contains
 
-real(dp) function r8_uniform_01(seed)
+real(kind=8) function r8_uniform_01(seed)
   implicit none
 
   integer(kind=8) k
@@ -24,15 +25,15 @@ end function r8_uniform_01
 
 
 
-real(dp) function r8_normal_ab(a,b,seed)
+real(kind=8) function r8_normal_ab(a,b,seed)
   implicit none
 
-  real(dp) a
-  real(dp) b
-  real(dp) r1
-  real(dp) r2
+  real(kind=8) a
+  real(kind=8) b
+  real(kind=8) r1
+  real(kind=8) r2
   integer(kind = 4) seed
-  real(dp) x
+  real(kind=8) x
 
   r1 = r8_uniform_01 ( seed )
   r2 = r8_uniform_01 ( seed )
@@ -43,6 +44,6 @@ real(dp) function r8_normal_ab(a,b,seed)
 !write(6,*) seed
 
   return
-end
+end function r8_normal_ab
 
 end module Normal

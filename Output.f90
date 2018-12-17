@@ -1,7 +1,7 @@
 module Output
 
-use Constants
-use Variables
+use Constants_au
+use Variables_au
 use Integrals
 use Vectors
 
@@ -48,6 +48,15 @@ write(60,'("Extinction coefficient               :",2f18.6)') ExctCoef_h1e(1), E
 write(60,'("Coulomb correction                   :",2f18.6)') Cb_Num_eh1(rmax+1), Cb_Num_eh2(1)
 write(60,*) 
 
+
+
+open(11,file='Etransitions.dat')
+write(11,'(a12,18x,a3,22x,a4,22x,a4)') "#     Number", "QDA", "Eh1e", "Eh2e"
+
+do n = rmin, rmax
+write(11,*) n, aR(n), Eeh1(n), Eeh2(n)
+enddo
+
 endif
 
 end subroutine makeOutputSingle
@@ -68,21 +77,28 @@ write(60,*)
 write(60,*) 
 write(60,*) "The process has generated the following files:"
 write(60,*) 
-write(60,'("Ham0.dat              contains Hamiltonian of 0th order")')
-write(60,'("Pulse.dat             contains the pulse(s)")')
-write(60,'("TransHam.dat          contains the transition dipole moment matrix elements")')
-write(60,'("Hamt.dat              contains the time dependent Hamiltonian of dimer n")')
-write(60,'("Popc.dat              contains the population evolution of each state |c**2(t)| of dimer n")')
-write(60,'("Norm.dat              contains the time dependent norm of dimer n")')
+write(60,'("Ham0.dat                contains Hamiltonian of 0th order")')
+write(60,'("Pulse.dat               contains the pulse(s)")')
+write(60,'("TransHam.dat            contains the transition dipole moment matrix elements")')
+write(60,'("Hamt.dat                contains the time dependent Hamiltonian of dimer n")')
+write(60,'("Popc.dat                contains the population evolution of each state |c**2(t)| of dimer n")')
+write(60,'("Popc_ei.dat             contains the population evolution of each eigenstate")')
+write(60,'("Norm.dat                contains the time dependent norm of dimer n")')
+write(60,'("Norm_ei.dat             contains the time dependent norm of of eigenstates")')
+write(60,'("Etransitions-he_0.dat   contains the energies of each states")')
+write(60,'("Etransitions-he_ei.dat  contains the energies of each eigenstate")')
+write(60,'("Im_c_ei.dat             contains the imaginary part of each eigenstate during the dynamic")')
+write(60,'("Re_c_ei.dat             contains the real part of each eigenstate during the dynamic")')
+write(60,'("Etransitions-he_ei.dat  contains the energies of each eigenstate")')
 write(60,*) 
 write(60,*) "The initial parameters are:"
 write(60,*)
-write(60,'("Electron effective mass              :",f8.4," m0")') me
-write(60,'("Hole effective mass                  :",f8.4," m0")') mh
+write(60,'("Electron effective mass              :",f8.4," m0")') me/m0
+write(60,'("Hole effective mass                  :",f8.4," m0")') mh/m0
 write(60,'("Bulk dielectric constant             :",f8.4)')      eps
 write(60,'("Ligands dielectric constant          :",f8.4)')      epsout
 write(60,'("Bulk band gap                        :",f8.4)')      V0eV
-write(60,'("Linker length                        :",ES23.4E2)')      link
+write(60,'("Linker length (nm)                   :",f8.4)')      link*1.d9
 write(60,*)
 write(60,*)
 write(60,*)
@@ -100,12 +116,12 @@ write(60,'("                                                  /         \       
 write(60,'("                                                 /           \                  /          \")')
 write(60,*) "Local States"
 write(60,'(47x,"h1e",12x, "h2e",12x, "h1e",12x, "h2e")')
-write(60,'("Transition energies                  :",4ES15.4E2)') Eeh1(1)/elec, Eeh2(1)/elec, Eeh1(2)/elec, Eeh2(2)/elec
-write(60,'("Coulomb correction                   :",4ES15.4E2)') Cb_eh1(1)/elec, Cb_eh2(1)/elec, &
+write(60,'("Transition energies (eV)             :",4ES15.4E2)') Eeh1(1)/elec, Eeh2(1)/elec, Eeh1(2)/elec, Eeh2(2)/elec
+write(60,'("Coulomb correction (eV)              :",4ES15.4E2)') Cb_eh1(1)/elec, Cb_eh2(1)/elec, &
                                                                          Cb_eh1(2)/elec, Cb_eh2(2)/elec
 write(60,'("Wavefunction overlap                 :",4f15.6)') OverlapAna_h1e(1), OverlapAna_h2e(1), &
                                                                OverlapAna_h1e(2), OverlapAna_h2e(2)
-write(60,'("Transition dipole moment             :",4ES15.4E2)') TransHam(0,1), TransHam(0,2), TransHam(0,3), TransHam(0,4) 
+write(60,'("Transition dipole moment             :",4ES15.4E2)') (TransHam(0,i)*Dip_au/Cm_to_D, i=1,4)  
 write(60,'("Oscillator strength                  :",4ES15.4E2)') Oscillator_Ana_h1e(1), Oscillator_Ana_h2e(1), &
                                                                 Oscillator_Ana_h1e(2), Oscillator_Ana_h2e(2)
 write(60,'("Extinction coefficient               :",4ES15.4E2)') ExctCoef_h1e(1), ExctCoef_h2e(1), ExctCoef_h1e(2), ExctCoef_h2e(2)
@@ -114,12 +130,13 @@ write(60,*)
 write(60,*)
 write(60,*) "Charge transfer states: "
 write(60,'(47x," 5 ",12x, " 6 ",12x, " 7 ",12x, " 8 ")')
-write(60,'("Transition energies                  :",4ES15.4E2)') real(xHam(5,5)), real(xHam(6,6)), real(xHam(7,7)), real(xHam(8,8))
+write(60,'("Transition energies                  :",4ES15.4E2)') Ham(5,5)*Energ_au/elec, Ham(6,6)*Energ_au/elec, &
+                                                        Ham(7,7)*Energ_au/elec, Ham(8,8)*Energ_au/elec
 !write(60,'("Coulomb correction                   :",4ES15.4E2)') (minEe(1,2) + minEh(1,1) + V0 - Ham(5,5)), &
 !                                                                 (minEe(1,2) + minEh(2,1) + V0 - Ham(6,6)), &
 !                                                                 (minEe(1,1) + minEh(1,2) + V0 - Ham(7,7)), &
 !                                                                 (minEe(1,1) + minEh(2,1) + V0 - Ham(8,8))
-write(60,'("Transition dipole moment (fit)       :",4ES15.4E2)') TransHam(0,5), TransHam(0,6), TransHam(0,7), TransHam(0,8)
+write(60,'("Transition dipole moment (fit)       :",4ES15.4E2)') (TransHam(0,i)*Dip_au/Cm_to_D, i=5,8)
 write(60,*)
 write(60,*)
 write(60,*)
@@ -130,21 +147,21 @@ write(60,*)
 write(60,'("Number of states        :",2x,i2)')   nstates  
 write(60,'("Number of pulses        :",2x,i2)')   npulses  
 if ( npulses .eq. 1 ) then
-write(60,'("t0 of pulse             :",ES15.6E2)')   t01      
+write(60,'("t0 of pulse             :",ES15.6E2)')   t01*t_au      
 elseif ( npulses .ge. 2 ) then
-write(60,'("t0 of first pulse       :",ES15.6E2)')   t01      
-write(60,'("t0 of second pulse      :",ES15.6E2)')   t02      
+write(60,'("t0 of first pulse       :",ES15.6E2)')   t01*t_au      
+write(60,'("t0 of second pulse      :",ES15.6E2)')   t02*t_au      
 elseif ( npulses .eq. 3 ) then
-write(60,'("t0 of first pulse       :",ES15.6E2)')   t01      
-write(60,'("t0 of second pulse      :",ES15.6E2)')   t02      
-write(60,'("t0 of third pulse       :",ES15.6E2)')   t03      
+write(60,'("t0 of first pulse       :",ES15.6E2)')   t01*t_au      
+write(60,'("t0 of second pulse      :",ES15.6E2)')   t02*t_au      
+write(60,'("t0 of third pulse       :",ES15.6E2)')   t03*t_au      
 endif
-write(60,'("Time step               :",ES15.6E2)')   timestep 
-write(60,'("Time length of dynamic  :",ES15.6E2)')   totaltime
-write(60,'("Omega                   :",ES15.6E2)')   omega    
+write(60,'("Time step               :",ES15.6E2)')   timestep*t_au 
+write(60,'("Time length of dynamic  :",ES15.6E2)')   totaltime*t_au
+write(60,'("Omega                   :",ES15.6E2)')   omega/t_au    
 write(60,'("Phase                   :",ES15.6E2)')   phase   
-write(60,'("Width                   :",ES15.6E2)')   width    
-write(60,'("Power                   :",ES15.6E2)')   Ed       
+write(60,'("Width                   :",ES15.6E2)')   width*t_au    
+write(60,'("Power                   :",ES15.6E2)')   Ed*E_au       
 write(60,*)
 write(60,*)
 write(60,*) 
@@ -152,15 +169,14 @@ write(60,*) "The 0th order Hamiltonian is:"
 write(60,*) 
 write(60,'(11x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2)') "0",  "1", "2", "3", "4", "5", "6", "7", "8"
 do i=0,nstates-1
-write(60,'(i2,2x,9es14.6e2)') i, (real(xHam(i,j))/elec, j=0,nstates-1)  
+write(60,'(9f14.6)') (Ham(i,j)*Energ_au/elec, j=0,nstates-1)  
 enddo
-
 write(60,*) 
 write(60,*) "And the transition dipole matrix is:"
 write(60,*) 
 write(60,'(11x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2,12x,a2)') "0",  "1", "2", "3", "4", "5", "6", "7", "8"
 do i=0,nstates-1
-write(60,'(i2,2x,9es14.6e2)') i, (real(TransHam(i,j)/Cm_to_D), j=0,nstates-1)
+write(60,'(9f14.6)') (TransHam(i,j)*Dip_au/Cm_to_D, j=0,nstates-1)
 enddo
 
 
@@ -179,11 +195,32 @@ write(60,*) "The wavefunction of states e, h1 and h2 on QDB has been stored in:"
 write(60,*)
 write(60,*) "The initial parameters are:"
 write(60,*)
-write(60,'("Electron effective mass              :",f8.4," m0")') me
-write(60,'("Hole effective mass                  :",f8.4," m0")') mh
+write(60,'("Electron effective mass              :",f8.4," m0")') me/m0
+write(60,'("Hole effective mass                  :",f8.4," m0")') mh/m0
 write(60,'("Bulk dielectric constant             :",f8.4)')      eps
 write(60,'("Ligands dielectric constant          :",f8.4)')      epsout
 write(60,'("Bulk band gap                        :",f8.4)')      V0eV
+
+write(60,*) "The initial parameters of the dynamic are:"
+write(60,*)
+write(60,'("Number of states        :",2x,i2)')   nstates
+write(60,'("Number of pulses        :",2x,i2)')   npulses
+if ( npulses .eq. 1 ) then
+write(60,'("t0 of pulse             :",ES15.6E2)')   t01*t_au
+elseif ( npulses .ge. 2 ) then
+write(60,'("t0 of first pulse       :",ES15.6E2)')   t01*t_au
+write(60,'("t0 of second pulse      :",ES15.6E2)')   t02*t_au
+elseif ( npulses .eq. 3 ) then
+write(60,'("t0 of first pulse       :",ES15.6E2)')   t01*t_au
+write(60,'("t0 of second pulse      :",ES15.6E2)')   t02*t_au
+write(60,'("t0 of third pulse       :",ES15.6E2)')   t03*t_au
+endif
+write(60,'("Time step               :",ES15.6E2)')   timestep*t_au
+write(60,'("Time length of dynamic  :",ES15.6E2)')   totaltime*t_au
+write(60,'("Omega                   :",ES15.6E2)')   omega/t_au
+write(60,'("Phase                   :",ES15.6E2)')   phase
+write(60,'("Width                   :",ES15.6E2)')   width*t_au
+write(60,'("Power                   :",ES15.6E2)')   Ed*E_au
 
 do n = rmin, rmax
 write(11,*) aR(n), linker(n),  Eeh1(n), Eeh2(n)
@@ -225,16 +262,20 @@ write(60,*)
 write(60,*)
 write(60,*) "The process has generated the following files:"
 write(60,*)
-write(60,'("Dimers.dat            contains radius QDA, radius QDB, linker length")')
-write(60,'("Etransitions.dat      contains radius QDA, radius QDB, linker length, Eh1e, Eh2e")')
-write(60,'("Ham0.dat              contains Hamiltonian of 0th order")')
-write(60,'("Pulse.dat             contains the pulse(s)")')
-write(60,'("TransHam.dat          contains the transition dipole moment matrix elements")')
-write(60,'("Hamt.dat              contains the time dependent Hamiltonian of dimer n")')
-write(60,'("Popc.dat              contains the population evolution of each state |c**2(t)| of dimer n")')
-write(60,'("Norm.dat              contains the time dependent norm of dimer n")')
-write(60,*)
-write(60,*)
+!write(60,'("Dimers.dat              contains radius QDA, radius QDB, linker length")')
+!write(60,'("Etransitions.dat        contains radius QDA, radius QDB, linker length, Eh1e, Eh2e")')
+write(60,'("Ham0.dat                contains Hamiltonian of 0th order")')
+write(60,'("Pulse.dat               contains the pulse(s)")')
+write(60,'("TransHam.dat            contains the transition dipole moment matrix elements")')
+write(60,'("Popc.dat                contains the population evolution of each state |c**2(t)| of dimer n")')
+write(60,'("Popc_ei.dat             contains the population evolution of each eigenstate")')
+write(60,'("Norm.dat                contains the time dependent norm of dimer n")')
+write(60,'("Norm_ei.dat             contains the time dependent norm of of eigenstates")')
+write(60,'("Etransitions-he_0.dat   contains the energies of each states")')
+write(60,'("Etransitions-he_ei.dat  contains the energies of each eigenstate")')
+write(60,'("Im_c_ei.dat             contains the imaginary part of each eigenstate during the dynamic")')
+write(60,'("Re_c_ei.dat             contains the real part of each eigenstate during the dynamic")')
+write(60,'("Etransitions-he_ei.dat  contains the energies of each eigenstate")')
 write(60,*)
 write(60,*) "The initial parameters are:"
 write(60,*)
@@ -244,8 +285,8 @@ write(60,'("Average radius of QDB                :",ES14.4E2)') aB
 write(60,'("Average length of linker             :",ES14.4E2)') link
 write(60,'("Size dispersion of QDA radius        :",f10.4)') dispQD
 write(60,'("Length dispersion of linker          :",f10.4)') displink
-write(60,'("Electron effective mass              :",f10.4," m0")') me
-write(60,'("Hole effective mass                  :",f10.4," m0")') mh
+write(60,'("Electron effective mass              :",f10.4," m0")') me/m0
+write(60,'("Hole effective mass                  :",f10.4," m0")') mh/m0
 write(60,'("Bulk dielectric constant             :",f10.4)')      eps
 write(60,'("Ligands dielectric constant          :",f10.4)')      epsout
 write(60,'("Bulk band gap                        :",f10.4)')      V0eV
@@ -256,21 +297,21 @@ write(60,*)
 write(60,'("Number of states        :",2x,i2)')   nstates
 write(60,'("Number of pulses        :",2x,i2)')   npulses
 if ( npulses .eq. 1 ) then
-write(60,'("t0 of pulse             :",ES15.6E2)')   t01
+write(60,'("t0 of pulse             :",ES15.6E2)')   t01*t_au
 elseif ( npulses .ge. 2 ) then
-write(60,'("t0 of first pulse       :",ES15.6E2)')   t01
-write(60,'("t0 of second pulse      :",ES15.6E2)')   t02
+write(60,'("t0 of first pulse       :",ES15.6E2)')   t01*t_au
+write(60,'("t0 of second pulse      :",ES15.6E2)')   t02*t_au
 elseif ( npulses .eq. 3 ) then
-write(60,'("t0 of first pulse       :",ES15.6E2)')   t01
-write(60,'("t0 of second pulse      :",ES15.6E2)')   t02
-write(60,'("t0 of third pulse       :",ES15.6E2)')   t03
+write(60,'("t0 of first pulse       :",ES15.6E2)')   t01*t_au
+write(60,'("t0 of second pulse      :",ES15.6E2)')   t02*t_au
+write(60,'("t0 of third pulse       :",ES15.6E2)')   t03*t_au
 endif
-write(60,'("Time step               :",ES15.6E2)')   timestep
-write(60,'("Time length of dynamic  :",ES15.6E2)')   totaltime
-write(60,'("Omega                   :",ES15.6E2)')   omega
+write(60,'("Time step               :",ES15.6E2)')   timestep*t_au
+write(60,'("Time length of dynamic  :",ES15.6E2)')   totaltime*t_au
+write(60,'("Omega                   :",ES15.6E2)')   omega/t_au
 write(60,'("Phase                   :",ES15.6E2)')   phase
-write(60,'("Width                   :",ES15.6E2)')   width
-write(60,'("Power                   :",ES15.6E2)')   Ed
+write(60,'("Width                   :",ES15.6E2)')   width*t_au
+write(60,'("Power                   :",ES15.6E2)')   Ed*E_au
 write(60,*)
 
 

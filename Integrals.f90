@@ -1,7 +1,7 @@
 module Integrals
 
-      use Constants
-      use Variables
+      use Constants_au
+      use Variables_au
       use Vectors
 
 contains
@@ -206,7 +206,7 @@ d2 = 52.6179d0
 d3 = 4.36573d0
 d4 = 9.86824d0
 
-TransDip_Fit_h1e_ho =  d1 + d2 / ((a*1d9)**d3) * exp(-1.0d0*d4*b*1d9)
+TransDip_Fit_h1e_ho =  ( d1 + d2 / ((a*1d9)**d3) * exp(-1.0d0*d4*b*1d9) )*1.0d-33
 
 end function TransDip_Fit_h1e_ho
 
@@ -227,7 +227,7 @@ d4   = 8.88849d0
 !d3              = 1.82566        
 !d4              = 2.70059
 
-TransDip_Fit_h2e_ho =  d1 + d2 / ((a*1d9)**d3) * exp(-1.0d0*d4*b*1d9)
+TransDip_Fit_h2e_ho = ( d1 + d2 / ((a*1d9)**d3) * exp(-1.0d0*d4*b*1d9) )*1.0d-33
 
 end function TransDip_Fit_h2e_ho
 
@@ -237,15 +237,19 @@ real(dp) function TransDip_Fit_h1e_he(a,b)
       implicit none
       real(dp) :: d1,d2,d3,d4,a,b
 
-!if ( link .eq. 0.2d-9 ) then
+if ( link .eq. 0.2d-9 ) then
 d1              = 0.00341214
 d2              = 5.2295
 d3              = 2.0988
 d4              = 1.66728
-!else if ( link .eq. 0.55d-9 )
-!endif
+else if ( link .eq. 0.55d-9 ) then
+d1              = 1.08959e-05  
+d2              = 0.00281484   
+d3              = 1.82872      
+d4              = 2.70292
+endif
 
-TransDip_Fit_h1e_he = d1 + d2 / ((a*1d9)**d3*(b*1d9)**d4)
+TransDip_Fit_h1e_he = ( d1 + d2 / ((a*1d9)**d3*(b*1d9)**d4) )*1.0d-33
 
 end function TransDip_Fit_h1e_he
 
@@ -255,15 +259,19 @@ real(dp) function TransDip_Fit_h2e_he(a,b)
       implicit none
       real(dp) :: d1,d2,d3,d4,a,b
 
-!if ( link .eq. 0.2d-9 ) then
+if ( link .eq. 0.2d-9 ) then
 d1              = 0.159035d0
 d2              = 79.9838d0
 d3              = 0.96669d0
 d4              = 1.9961d0
-!else if ( link .eq. 0.55d-9 )
-!endif
-
-TransDip_Fit_h2e_he =  d1 + d2*((a*1d9-d3))*exp(-2.0d0*(a*1d9))/((b*1d9)**d4)
+TransDip_Fit_h2e_he = ( d1 + d2*((a*1.d9-d3))*exp(-2.0d0*(a*1.d9))/((b*1.d9)**d4) )*1.0d-33
+else if ( link .eq. 0.55d-9 ) then
+d1              = 0.000193625d0  
+d2              = 0.00896372d0   
+d3              = -11.1744d0     
+d4              = 0.927031d0
+TransDip_Fit_h2e_he = (d1+d2*(1-exp(-(a*1.d9)**d3))/((b*1.d9)**d4) )*1.d-33
+endif
 
 end function TransDip_Fit_h2e_he
 
@@ -550,10 +558,10 @@ end function Norm_cart
 !!Normalization of WF in cartesian coordinates using Monte Carlo method 
 !real(dp) function Norm_cart_Rdm(AB1,AB2,k1,k2,a,b)
 !      implicit none
-!      integer(kind=8) :: m, i, iin, iout, j
+!      integer(dp) :: m, i, iin, iout, j
 !      real(dp) :: x, y, z, f, fin, fout, f1in, f2in, f1out, f2out, AB1,AB2,k1,k2,a,b , n, maxv
 !      real(dp), dimension(3) :: r
-!      integer(kind=8), dimension(18) :: list
+!      integer(dp), dimension(18) :: list
 !      
 !      f= 0.0
 !      f1in= 0.0
@@ -1542,16 +1550,29 @@ real(dp) function DXXex(A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4
 
 end function DXXex
 
-complex(dp) function RK_k(t,xHam,xTransHam,xc)
+complex(kind=8) function RK_k(t,Ham,TransHam,xc)
 implicit none
 
-complex(dp) :: t,xHam,xTransHam,xc
+real(dp) :: t,Ham,TransHam
+complex(kind=8) :: xc
 
-RK_k = (-1.0d0)*(im/xhbar) * &
-(xHam - pulse1 * xTransHam * xEd * cos(xomega*(t-xt01)+xphase) * exp(-1.0d0*(t-xt01)**2/(2.0d0*(xwidth**2))) - &
-        pulse2 * xTransHam * xEd * cos(xomega*(t-xt02)+xphase) * exp(-1.0d0*(t-xt02)**2/(2.0d0*(xwidth**2))) - &
-        pulse3 * xTransHam * xEd * cos(xomega*(t-xt03)+xphase) * exp(-1.0d0*(t-xt03)**2/(2.0d0*(xwidth**2))))*xc
+RK_k = -im * (Ham - pulse1 * TransHam * Ed * cos(omega*(t-t01)+phase) * exp(-1.0d0*(t-t01)**2.d0/(2.0d0*(width**2))) - &
+                    pulse2 * TransHam * Ed * cos(omega*(t-t02)+phase) * exp(-1.0d0*(t-t02)**2.d0/(2.0d0*(width**2))) - &
+                    pulse3 * TransHam * Ed * cos(omega*(t-t03)+phase) * exp(-1.0d0*(t-t03)**2.d0/(2.0d0*(width**2))))*xc
 
 end function RK_k
+
+!complex(dp) function RK_k(t,xHam,xTransHam,xc)
+!implicit none
+!
+!integer :: i,j 
+!complex(dp) :: t,xHam,xTransHam,xc
+!
+!RK_k = (-1.0d0)*(im/xhbar_au) * &
+!(xHam - pulse1 * xTransHam * xEd * cos(xomega*(t-xt01)+xphase) * exp(-1.0d0*(t-xt01)**2.d0/(2.0d0*(xwidth**2))) - &
+!        pulse2 * xTransHam * xEd * cos(xomega*(t-xt02)+xphase) * exp(-1.0d0*(t-xt02)**2.d0/(2.0d0*(xwidth**2))) - &
+!        pulse3 * xTransHam * xEd * cos(xomega*(t-xt03)+xphase) * exp(-1.0d0*(t-xt03)**2.d0/(2.0d0*(xwidth**2))))*xc
+!
+!end function RK_k
 
 end module Integrals
