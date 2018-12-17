@@ -58,12 +58,13 @@ V0         = V0eV*elec
 
 if ( dyn .eq. 'y' ) then
 
+write(6,*) timestep, t01, omega, width
 timestep   =  timestep*1.d-15/t_au  !timestep*1.d-15/t_au
-totaltime  =  totaltime/t_au !totaltime*1.d-15/t_au
-t01        =  t01/t_au       !t01*1.d-15/t_au
-t02        =  t02/t_au       !t02*1.d-15/t_au
-t03        =  t03/t_au       !t03*1.d-15/t_au
-width      =  width/t_au     !width*1.d-15/t_au
+totaltime  =  totaltime*1.d-15/t_au !totaltime*1.d-15/t_au
+t01        =  t01*1.d-15/t_au       !t01*1.d-15/t_au
+t02        =  t02*1.d-15/t_au       !t02*1.d-15/t_au
+t03        =  t03*1.d-15/t_au       !t03*1.d-15/t_au
+width      =  width*1.d-15/t_au     !width*1.d-15/t_au
 omega      =  omega*t_au      !omega*1.d15*t_au
 Ed         =  Ed/E_au        !0.024 !Ed/E_au
 xh         =  dcmplx(timestep,0.0d0)

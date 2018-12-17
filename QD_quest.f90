@@ -568,11 +568,12 @@ k4 = dcmplx(0.0d0,0.0d0)
 !write(6,'(9f12.6)') (Ham(i,j)*Energ_au/elec, j=0,8)
 !enddo
 
+!write(6,*) im, Ed*E_au, omega/t_au, t01*t_au, timestep*t_au, phase, width*t_au
 do i=0,nstates-1
 do j=0,nstates-1
 k1(i) = k1(i) + RK_k(time,Ham(i,j), TransHam(i,j), xc(j,t))
 !k1(i) = k1(i) + (-1.0d0)*im * (Ham(i,j) - TransHam(i,j) * Ed * cos(omega*(time-t01)+phase) * &
-!                  exp(-1.0d0*(time-t01)**2.d0/(2.0d0*(width**2))))*xc(j,t)
+!                  exp(-1.0d0*(time-t01)**2.d0/(2.0d0*(width**2.d0))))*xc(j,t)
 enddo
 enddo
 
@@ -580,7 +581,7 @@ do i=0,nstates-1
 do j=0,nstates-1
 k2(i) = k2(i) + RK_k(time+(timestep/2.d0),Ham(i,j), TransHam(i,j), xc(j,t) + k1(j)*(dcmplx(timestep,0.d0))/2.0d0)
 !k2(i) = k2(i) + (-1.0d0)*im * (Ham(i,j) - TransHam(i,j) * Ed * cos(omega*((time+timestep/2.d0)-t01)+phase) * &
-!                  exp(-1.0d0*((time+timestep/2.d0)-t01)**2.d0/(2.0d0*(width**2))))*(xc(j,t) + k1(j)*xh/2.d0)
+!                  exp(-1.0d0*((time+timestep/2.d0)-t01)**2.d0/(2.0d0*(width**2.d0))))*(xc(j,t) + k1(j)*xh/2.d0)
 enddo
 enddo
 
@@ -588,7 +589,7 @@ do i=0,nstates-1
 do j=0,nstates-1
 k3(i) = k3(i) + RK_k(time+(timestep/2.d0),Ham(i,j), TransHam(i,j),  xc(j,t) + k2(j)*(dcmplx(timestep,0.d0))/2.0d0)
 !k3(i) = k3(i) + (-1.0d0)*im * (Ham(i,j) - TransHam(i,j) * Ed * cos(omega*((time+timestep/2.d0)-t01)+phase) * &
-!                  exp(-1.0d0*((time+timestep/2.d0)-t01)**2.d0/(2.0d0*(width**2))))*(xc(j,t) + k2(j)*xh/2.d0)
+!                  exp(-1.0d0*((time+timestep/2.d0)-t01)**2.d0/(2.0d0*(width**2.d0))))*(xc(j,t) + k2(j)*xh/2.d0)
 enddo
 enddo
 
@@ -596,7 +597,7 @@ do i=0,nstates-1
 do j=0,nstates-1
 k4(i) = k4(i) + RK_k(time+timestep,Ham(i,j), TransHam(i,j),  xc(j,t) + k3(j)*dcmplx(timestep,0.d0))
 !k4(i) = k4(i) + (-1.0d0)*im * (Ham(i,j) - TransHam(i,j) * Ed * cos(omega*((time+timestep)-t01)+phase) * &
-!                  exp(-1.0d0*((time+timestep)-t01)**2.d0/(2.0d0*(width**2))))*(xc(j,t) + k3(j)*xh)
+!                  exp(-1.0d0*((time+timestep)-t01)**2.d0/(2.0d0*(width**2.d0))))*(xc(j,t) + k3(j)*xh)
 enddo
 enddo
 
@@ -613,7 +614,7 @@ enddo
 !!!NORM
 write(46,*) time*t_au, cnorm2 !cnormabs !, cnormconj, cnorm2
 !!!POPULATIONS
-write(44,'(10ES18.6E2)') time*t_au, (dreal(xc(i,t))**2+aimag(xc(i,t))**2, i=0,8) 
+write(44,'(10ES15.6E2)') time*t_au, (dreal(xc(i,t))**2+aimag(xc(i,t))**2, i=0,8) 
 else if ( vers .eq. 'singl' ) then
 cnorm2 = 0.d0
 do i=0,nstates-1
@@ -622,7 +623,7 @@ enddo
 !!!NORM
 write(46,*) time*t_au, cnorm2 !cnormabs !, cnormconj, cnorm2
 !!!POPULATIONS
-write(44,'(26ES18.6E2)') time*t_au, (dreal(xc(i,t))**2+aimag(xc(i,t))**2, i=0,24)
+write(44,'(26ES15.6E2)') time*t_au, (dreal(xc(i,t))**2+aimag(xc(i,t))**2, i=0,24)
 endif
 endif
 
