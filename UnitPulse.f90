@@ -3,12 +3,12 @@ implicit none
 
 real*8 :: w, c, e0, n, e, P, I, Ener, PnJ, l, EVm, EnJ
 
-w = 100.d-6 !m
+w = 1.d-4 !m
 c = 299792458 !m/s
-e0 = 8.8541878
+e0 = 8.8541878d-15
 n = 1.33
 e = 10.d-9
-EVm = 2.d8
+EVm = 5.142d9
 l = 10.d-15
 !P = e/1.d-15
 
@@ -22,6 +22,6 @@ P = (3.1416*w*w*I)/2
 
 EnJ = P * l
 
-write(6,*) EVm, EnJ*1.d-9
+write(6,*) EVm, EnJ
 
 end 

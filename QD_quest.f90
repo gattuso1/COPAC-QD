@@ -474,9 +474,9 @@ write(33,*)
 
 if ( ( ( (vers .eq. 'randm' ) .or. (vers .eq. 'dimer' ) ) .and. ( aA .eq. aB ) )  .or. ( vers .eq. 'range' ) )  then
 !write(47,'(11f14.10)') aR(n)*1.d9, linker(n)*1.d9, (Ham(i,i)*Energ_au/elec, i=0,nstates-1)
-write(47,'(11f14.10)') aR(n)*1.d9, linker(n)*1.d9, (Ham(i,i), i=0,nstates-1)
+write(47,'(11f14.10)') aR(n)*1.d9, linker(n)*1.d9, (Ham(i,i)*Energ_au/elec, i=0,nstates-1)
 elseif ( ( (vers .eq. 'randm' ) .or. (vers .eq. 'dimer' ) ) .and. ( aA .ne. aB ) ) then
-write(47,'(11f14.10)') aR(n)*1.d9, aR(n+nsys)*1.d9, (Ham(i,i), i=0,nstates-1)
+write(47,'(11f14.10)') aR(n)*1.d9, aR(n+nsys)*1.d9, (Ham(i,i)*Energ_au/elec, i=0,nstates-1)
 elseif ( vers .eq. 'singl' ) then
 write(47,'(26f14.10)') aR(n)*1.d9, (Ham(i,i)*Energ_au/elec, i=0,nstates-1)
 endif
@@ -501,9 +501,9 @@ endif
 enddo
 write(58,*) 
 if ( ( ( (vers .eq. 'randm' ) .or. (vers .eq. 'dimer' ) ) .and. ( aA .eq. aB ) ) .or. ( vers .eq. 'range' ) ) then
-write(52,'(11f14.10)') aR(n)*1.d9, linker(n)*1.d9, (lambda(i), i=0,nstates-1)
+write(52,'(11f14.10)') aR(n)*1.d9, linker(n)*1.d9, (lambda(i)*Energ_au/elec, i=0,nstates-1)
 elseif ( ( (vers .eq. 'randm' ) .or. (vers .eq. 'dimer' ) ) .and. ( aA .ne. aB ) ) then
-write(52,'(11f14.10)') aR(n)*1.d9, aR(n+nsys)*1.d9, (lambda(i), i=0,nstates-1)
+write(52,'(11f14.10)') aR(n)*1.d9, aR(n+nsys)*1.d9, (lambda(i)*Energ_au/elec, i=0,nstates-1)
 elseif (vers .eq. 'singl' ) then
 call make_TransHam_ei_fineSt 
 write(52,'(26f14.10)') aR(n)*1.d9, (lambda(i)*Energ_au/elec, i=0,nstates-1)
