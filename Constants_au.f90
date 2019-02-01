@@ -10,7 +10,7 @@ implicit none
    real(dp), parameter :: Dip_au = 8.4783532619d-30
    real(dp), parameter :: a0 = 5.291772109217d-11
    real(dp), parameter :: t_au = 2.41888432650516d-17
-   real(dp), parameter :: Energ_au = 4.3597441775e-18
+   real(dp), parameter :: Energ_au = 4.3597441775d-18
    real(dp), parameter :: h  = 6.62607004d-34
    real(dp), parameter :: hbar_au  = 1
    real(dp), parameter :: hbar = h/(2.0d0*pi)

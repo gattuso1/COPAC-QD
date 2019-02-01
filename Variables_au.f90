@@ -104,8 +104,6 @@ allocate(dk2(0:nstates-1))
 allocate(dk3(0:nstates-1))
 allocate(dk4(0:nstates-1))
 
-
-
 if ( npulses .eq. 3) then
 pulse1 = 1.d0 
 pulse2 = 1.d0
@@ -132,7 +130,6 @@ read(150,NML=syst_random)
 else if ( vers .eq. 'singl' ) then
 read(150,NML=syst_single)
 endif
-
 
 if ( vers .eq. 'singl' ) then
 

@@ -318,27 +318,24 @@ enddo
 !                                              Ah2(n),Bh2(n),kinh2(n),kouth2(n),aR(n),aR(n),linker)
 
 
-!if ( o_DipD == 'y' ) then
-!do r1=rmin,rmax
-!do r1=rmin,rmax
-!
-!!do r2=rmin,rmax
-!
-!do r2=rmin,rmax
-!
-!!linker = r2*rsteps
-!
-!write(24,*) r1, r2, aR(r1), aR(r2), &
-! TransDip_dimer_MC_off(Ah1(r1),Bh1(r1),kinh1(r1),kouth1(r1),Ae(r2),Be(r2),kine(r2),koute(r2),aR(r1), aR(r2),linker), &
-! TransDip_dimer_MC_off(Ah2(r1),Bh2(r1),kinh2(r1),kouth2(r1),Ae(r2),Be(r2),kine(r2),koute(r2),aR(r1), aR(r2),linker)
-!
-!enddo
-!
-!write(23,*) '     '
-!
-!enddo
+if ( o_DipD == 'y' ) then
+do r1=rmin,rmax
+ 
+do r2=rmin,rmax
+ 
+!linker = r2*rsteps
+ 
+write(24,*) r1, r2, aR(r1), aR(r2), &
+TransDip_dimer_MC_off(Ah1(r1),Bh1(r1),kinh1(r1),kouth1(r1),Ae(r2),Be(r2),kine(r2),koute(r2),aR(r1),aR(r2),linker(n)), &
+TransDip_dimer_MC_off(Ah2(r1),Bh2(r1),kinh2(r1),kouth2(r1),Ae(r2),Be(r2),kine(r2),koute(r2),aR(r1),aR(r2),linker(n))
+ 
+enddo
+ 
+write(24,*) '     '
+ 
+enddo
 
-!endif
+endif
 
 !enddo
 
@@ -432,8 +429,7 @@ write(32,*) n , aR(n), aR(n+nsys), linker(n)
 write(33,*) n , aR(n), aR(n+nsys), linker(n)
 do i=0,nstates-1
 if ( (vers .eq. 'randm' ) .or. ( vers .eq. 'range' ) .or. (vers .eq. 'dimer' ) ) then
-!write(33,'(9es14.6e2)') (Ham(i,j)*Energ_au/elec, j=0,nstates-1)
-write(33,'(9es14.6e2)') (Ham(i,j), j=0,nstates-1)
+write(33,'(9es14.6e2)') (Ham(i,j)*Energ_au/elec, j=0,nstates-1)
 elseif ( vers .eq. 'singl' ) then
 write(33,'(25es14.6e2)') (Ham(i,j)*Energ_au/elec, j=0,nstates-1)
 endif
@@ -627,6 +623,9 @@ write(44,'(26ES15.6E2)') time*t_au, (dreal(xc(i,t))**2+aimag(xc(i,t))**2, i=0,24
 endif
 endif
 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!Eigenstates dynamics!!!!!!!!!!!!!!!!!!!!!!!!
 if ( dyn_ei .eq. 'y' ) then
 
 xc_ei = dcmplx(0.d0,0.d0)
@@ -666,6 +665,8 @@ endif !endif write Re, Im, xc
 endif !endif get c in eigenstates
 
 enddo !end loop time
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 !do i=1,nstates-1
 !xc_ei_av(i,t) = dcmplx(dreal(xc_ei_av(i,t)) + dreal(xc_ei(0,t)), aimag(xc_ei_av(i,t)) + aimag(xc_ei(0,t)))
@@ -718,15 +719,15 @@ enddo !end loop number of systems
 
 !write(6,*) finish - start
 
-if ( vers .eq. 'singl') then
-call makeOutputSingle
-elseif ( vers .eq. 'dimer') then
-call makeOutputDimer
-elseif ( vers .eq. 'range') then
-call makeOutputRange
-elseif ( vers .eq. 'randm') then
-call makeOutputRandm
-endif
+!if ( vers .eq. 'singl') then
+!call makeOutputSingle
+!elseif ( vers .eq. 'dimer') then
+!call makeOutputDimer
+!elseif ( vers .eq. 'range') then
+!call makeOutputRange
+!elseif ( vers .eq. 'randm') then
+!call makeOutputRandm
+!endif
 
 !write(outputdir,'(a7,a5,a1,i2,a1,i2)') "Output-", vers, "-", nint(aA*1d9*10), "-" , nint(aB*1d9*10) 
 !

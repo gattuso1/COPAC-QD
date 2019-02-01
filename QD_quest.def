@@ -1,7 +1,7 @@
 ! Namelist definition
 write(6,*) timestep, t01, omega, width
 &version !version of the code, choose between singl, dimer, range, randm
-vers = "singl"   
+vers = "dimer"   
 /
 
 &outputs !Select output and computation modules, yes ("y") or ("no") 
@@ -14,9 +14,9 @@ o_Exti  = "n" !Molar extinction coefficients of local excitons
 o_DipD  = "n" !Transition dipole moments of CT states
 get_ei  = "y" !Provide eigenstates and obtain coef of eigenstates after dynamic if dyn = y
 dyn     = "y" !Should I perform dynamics?
-dyn_ei  = "y" !Should I perform dynamics?
+dyn_ei  = "n" !Should I perform dynamics?
 hamilt  = "n" !Should I print the time dependent Hamiltonian (very heavy and time consuming)
-fineSt  = "y" !Request fine structure 
+fineSt  = "n" !Request fine structure 
 /
 
 &elecSt !Parameters of CdSe QD and the model
@@ -40,19 +40,18 @@ Dxf = 0.025d0
 /
 
 &pulses !Parameters of quantum dynamic and pulses
-nstates   = 25           !Total number of excitons + GS
+nstates   = 9           !Total number of excitons + GS
 npulses   = 2           !Number of pulses (up to 3)
 t01       = 100.d0     !Pulse 1 centered at (s)
 t02       = 200.d0     !Pulse 2 centered at (s)
 t03       = 90.d0     !Pulse 3 centered at (s)
-timestep  = 0.020d0      !Time step of quantum dynamic
+timestep  = 0.050d0      !Time step of quantum dynamic
 totaltime = 500.d0     !Total time simulated (s)
 omega     = 0.5d15      !Frequency (s-1)
 !omega     = 0.90d15      !Frequency (s-1)
 !phase     = pi Careful here, it is defined in the code
 width     = 6.0d0       !Width of the pulse (s) 
 Ed        = 5.d9     !Field strength (V/m so far)
-!Ed        = 2.d8     !Field strength (V/m so far)
 /
 
 &syst_single !Parameters of the single dot
@@ -62,9 +61,9 @@ dispQD    = 0.00d0     !Dispersion of QD radius
 /
 
 &syst_dimer !Parameters of the dimer
-aA     = 1.2d-9      !Radius of QDA
-aB     = 1.6d-9      !Radius of QDB
-link   = 0.2d-9      !Linker length
+aA     = 1.1d-9      !Radius of QDA
+aB     = 1.10000001d-9      !Radius of QDB
+link   = 0.55d-9      !Linker length
 /
 
 &syst_range !Parameters of the range of QD radius
