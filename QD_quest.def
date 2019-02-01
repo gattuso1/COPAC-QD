@@ -61,23 +61,23 @@ dispQD    = 0.00d0     !Dispersion of QD radius
 /
 
 &syst_dimer !Parameters of the dimer
-aA     = 1.1d-9      !Radius of QDA
-aB     = 1.10000001d-9      !Radius of QDB
-link   = 0.55d-9      !Linker length
+aA     = 1.375d-9      !Radius of QDA
+aB     = 1.725d-9      !Radius of QDB
+idlink = 55         !Linker length
 /
 
 &syst_range !Parameters of the range of QD radius
 rsteps = 0.01d-9     !Step of QD radius
 minr   = 1.0d-9      !Minimum size QD radius
 maxr   = 3.0d-9      !Maximum size QD radius
-link   = 0.2d-9      !Linker length
+idlink = 55        !Linker length
 /
 
 &syst_random !Parameters of a random distribution of dimers either homo (aA=aB) or hetero (aA!=aB,linker fixed)
 nsys      = 10         !Number of dimers
 aA        = 1.3d-9      !Radius of QDA
 aB        = 1.3d-9      !Radius of QDB
-link      = 0.2d-9      !Linker length  (if hetero must be 0.2 or 0.55 nm so far)
+idlink    = 55        !Linker length  (if hetero must be 0.2 or 0.55 nm so far)
 displink  = 0.05d0        !Dispersion on the linker length
 dispQD    = 0.05d0        !Dispersion of QD radius
 /

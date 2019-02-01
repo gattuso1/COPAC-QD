@@ -9,10 +9,10 @@ implicit none
    character*5 :: vers
    character*64 :: popc, hmti, norm, tdmM, hmt0, outputdir, norm_ei, popc_ei, Re_c_ei, Im_c_ei
    character*1 :: o_Norm, o_Over, o_Coul, o_DipS, o_Osci, o_Exti, o_DipD, dyn, hamilt, get_ei, finest, dyn_ei
-   integer :: ndots, n, rmin, rmax, nsys, npulses, nstates, ntime, i, j, t, lwork, info
+   integer :: ndots, n, rmin, rmax, nsys, npulses, nstates, ntime, i, j, t, lwork, info, idlink
    integer,allocatable :: seed(:)
-   real(dp) :: aA, aB, me, mh, eps, epsout, V0, omegaLO, rhoe, rhoh, slope, V0eV, minr, maxr, rsteps, side
-   real(dp) :: dispQD, displink, rdmlinker, rdmQDA, rdmQDB, link, t01, t02, t03, timestep, totaltime, omega, phase, width, Ed
+   real(dp) :: aA, aB, me, mh, eps, epsout, V0, omegaLO, rhoe, rhoh, slope, V0eV, minr, maxr, rsteps, side, link
+   real(dp) :: dispQD, displink, rdmlinker, rdmQDA, rdmQDB, t01, t02, t03, timestep, totaltime, omega, phase, width, Ed
    real(dp) :: pulse1, pulse2, pulse3, test, time, cnorm, cnormabs, cnormconj, cnorm2, cnorm2_ei, Kas, Kbs, Kcs, Dso1, Dso2, Dxf
    real(dp),allocatable :: aR(:), aRA(:), aRB(:), epsin(:), epsR(:), V0e(:), V0h(:), linker(:)
    real(dp),allocatable :: epsinA(:), epsinB(:), epsRA(:), epsRB(:), V0eA(:), V0eB(:), V0hA(:), V0hB(:)
@@ -20,8 +20,8 @@ implicit none
    real(dp),allocatable :: OverlapAna_h1e(:), OverlapAna_h2e(:), Cb_Num_eh1(:), Cb_Num_eh1_eh2(:), Cb_Num_eh2(:)
    real(dp),allocatable :: minEe(:,:),minEh(:,:), TransDip_Num_h1e(:), TransDip_Num_h2e(:), work(:), lambda(:)
    real(dp),allocatable :: TransDip_Ana_h1e(:), TransDip_Ana_h2e(:), Oscillator_Ana_h1e(:), Oscillator_Ana_h2e(:), Transvec(:)
-   real(dp),allocatable :: ExctCoef_h1e(:), ExctCoef_h2e(:), Ham(:,:), E0(:), c0(:), TransHam(:,:), Hamt(:,:,:), c(:,:), Ham_ei(:,:)
-   real(dp),allocatable :: TransMat_ei(:,:), TransHam0(:,:)
+   real(dp),allocatable :: ExctCoef_h1e(:), ExctCoef_h2e(:), Ham(:,:), E0(:), c0(:), TransHam(:,:), Hamt(:,:,:), c(:,:)
+   real(dp),allocatable :: TransMat_ei(:,:), TransHam0(:,:), Ham_0(:), Ham_dir(:,:), Ham_ex(:,:), Ham_ei(:,:)
    complex(kind=8) :: ct1, ct2, ct3, ct4, xt01, xt02, xt03, xhbar, im, xwidth, xomega , xEd, xh, xphase, xtime, xhbar_au
    complex(kind=8),allocatable :: xHam(:,:) , xHamt(:,:,:), xTransHam(:,:), xE0(:), xHamtk2(:,:,:), xHamtk3(:,:,:), xHamtk4(:,:,:)
    complex(kind=8),allocatable :: xc0(:), xc(:,:), xc_ei(:,:), xcnew(:,:), k1(:), k2(:), k3(:) , k4(:), xHam_ei(:,:)
@@ -38,9 +38,9 @@ NAMELIST /elecSt/ me,mh,eps,epsout,V0eV,omegaLO,slope,side
 NAMELIST /fineStruc/ Kas,Kbs,Kcs,Dso1,Dso2,Dxf
 NAMELIST /pulses/ nstates,npulses,t01,t02,t03,timestep,totaltime,omega,phase,width,Ed
 NAMELIST /syst_single/ nsys,aA,dispQD
-NAMELIST /syst_dimer/ aA,aB,link
-NAMELIST /syst_range/ rsteps,minr,maxr,link
-NAMELIST /syst_random/ nsys,aA,aB,link,displink,dispQD
+NAMELIST /syst_dimer/ aA,aB,idlink
+NAMELIST /syst_range/ rsteps,minr,maxr,idlink
+NAMELIST /syst_random/ nsys,aA,aB,idlink,displink,dispQD
 
 open(150,file='QD_quest.def',form='formatted')
 read(150,NML=version)
@@ -55,6 +55,11 @@ rhoe       = 1.0d0/sqrt((2.d0*me*omegaLO)/hbar)
 rhoh       = 1.0d0/sqrt((2.d0*mh*omegaLO)/hbar)
 V0         = V0eV*elec
 
+if ( idlink .eq. 20 ) then
+link = 0.2d0
+elseif ( idlink .eq. 55 ) then
+link = 0.55d0
+endif
 
 if ( dyn .eq. 'y' ) then
 
