@@ -237,19 +237,32 @@ real(dp) function TransDip_Fit_h1e_he(a,b)
       implicit none
       real(dp) :: d1,d2,d3,d4,a,b
 
-if ( link .eq. 0.2d-9 ) then
-d1              = 0.00341214
-d2              = 5.2295
-d3              = 2.0988
-d4              = 1.66728
-else if ( link .eq. 0.55d-9 ) then
-d1              = 1.08959e-05  
-d2              = 0.00281484   
-d3              = 1.82872      
-d4              = 2.70292
+if ( idlink .eq. 20 ) then
+!!!!!!OLD!!!!!!!!!!!!!!!!!!!!!!
+!d1              = 0.00341214
+!d2              = 5.2295
+!d3              = 2.0988
+!d4              = 1.66728
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+d1              = 0.096906
+d2              = 4.65974
+d3              = 1.03234
+d4              = 1.23659
+else if ( idlink .eq. 55 ) then
+!!!!!!OLD!!!!!!!!!!!!!!!!!!!!!!
+!d1              = 1.08959e-05  
+!d2              = 0.00281484   
+!d3              = 1.82872      
+!d4              = 2.70292
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+d1              = 0.0133057
+d2              = 0.3502   
+d3              = 1.07038  
+d4              = 2.18361  
 endif
 
-TransDip_Fit_h1e_he = ( d1 + d2 / ((a*1d9)**d3*(b*1d9)**d4) )*1.0d-33
+!TransDip_Fit_h1e_he = ( d1 + d2 / ((a*1d9)**d3*(b*1d9)**d4) )*1.0d-33
+TransDip_Fit_h1e_he =  d1 + d2 / ((a*1d9)**d3*(b*1d9)**d4)
 
 end function TransDip_Fit_h1e_he
 
@@ -259,19 +272,33 @@ real(dp) function TransDip_Fit_h2e_he(a,b)
       implicit none
       real(dp) :: d1,d2,d3,d4,a,b
 
-if ( link .eq. 0.2d-9 ) then
-d1              = 0.159035d0
-d2              = 79.9838d0
-d3              = 0.96669d0
-d4              = 1.9961d0
-TransDip_Fit_h2e_he = ( d1 + d2*((a*1.d9-d3))*exp(-2.0d0*(a*1.d9))/((b*1.d9)**d4) )*1.0d-33
-else if ( link .eq. 0.55d-9 ) then
-d1              = 0.000193625d0  
-d2              = 0.00896372d0   
-d3              = -11.1744d0     
-d4              = 0.927031d0
-TransDip_Fit_h2e_he = (d1+d2*(1-exp(-(a*1.d9)**d3))/((b*1.d9)**d4) )*1.d-33
+if ( idlink .eq. 20 ) then
+!!!!!!!!OLD!!!!!!!!!!!!!!!!!!!!
+!d1              = 0.159035d0
+!d2              = 79.9838d0
+!d3              = 0.96669d0
+!d4              = 1.9961d0
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!TransDip_Fit_h2e_he = ( d1 + d2*((a*1.d9-d3))*exp(-2.0d0*(a*1.d9))/((b*1.d9)**d4) )*1.0d-33
+d1              = 0.0596336
+d2              = 9.28833
+d3              = 1.03381
+d4              = 1.11717
+else if ( idlink .eq. 55 ) then
+!!!!!!!!OLD!!!!!!!!!!!!!!!!!!!!
+!d1              = 0.000193625d0  
+!d2              = 0.00896372d0   
+!d3              = -11.1744d0     
+!d4              = 0.927031d0
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+d1              = 0.0133057
+d2              = 0.3502   
+d3              = 1.07038  
+d4              = 2.18361  
+!TransDip_Fit_h2e_he = (d1+d2*(1-exp(-(a*1.d9)**d3))/((b*1.d9)**d4) )*1.d-33
 endif
+
+TransDip_Fit_h2e_he =  d1 + d2 / ((a*1d9)**d3*(b*1d9)**d4)
 
 end function TransDip_Fit_h2e_he
 
@@ -660,8 +687,8 @@ real(dp) function Norm_cart_MC(m,AB1,AB2,k1,k2,a,b)
  
       enddo
 
-write(6,*) (1.0*i1/iin)*(4*pi/24)*maxv*a**3 , (1.0*i2/iout)*(b**3-(4*pi/24)*a**3)*maxv  ,&
-                                          (1.0*i1/iin)*(4*pi/24)*a**3*maxv + (1.0*i2/iout)*(b**3-(4*pi/24)*a**3)*maxv 
+!write(6,*) (1.0*i1/iin)*(4*pi/24)*maxv*a**3 , (1.0*i2/iout)*(b**3-(4*pi/24)*a**3)*maxv  ,&
+                                          !(1.0*i1/iin)*(4*pi/24)*a**3*maxv + (1.0*i2/iout)*(b**3-(4*pi/24)*a**3)*maxv 
 !write(6,*) (f1*i1/m)*maxv*b**3 !, (sqrt((f2/m)-(f1/m))/(m-1))*b**3*maxv   !sqrt((f2-f1**2)/m)*maxv*(2*b)**3
 
       Norm_cart_MC=(f/m)*(b)**3
@@ -718,11 +745,11 @@ real(dp) function TransDip_Ana(A1,A2,B1,B2,kin1,kin2,kout1,kout2,r)
       rmin=0.0d0
       rmax=2*r
 
-      TransDip_Ana=-1.0d0*elec*(((A1*A2*0.5d0*((r*sin(r*(kin1-kin2))/(kin1-kin2))-(r*sin(r*(kin1+kin2))/(kin1+kin2))+&
+      TransDip_Ana=(-1.0d0*elec*(((A1*A2*0.5d0*((r*sin(r*(kin1-kin2))/(kin1-kin2))-(r*sin(r*(kin1+kin2))/(kin1+kin2))+&
                        (cos(r*(kin1-kin2))/(kin1-kin2)**2)-(cos(r*(kin1+kin2))/(kin1+kin2)**2))) - &
                        A1*A2*0.5d0*((cos(rmin*(kin1-kin2))/(kin1-kin2)**2)-(cos(rmin*(kin1+kin2))/(kin1+kin2)**2))) + &
                        (B1*B2*((-1.0d0*(exp(-1.0d0*rmax*(kout1+kout2))*(kout1*rmax+kout2*rmax+1d0)/(kout1+kout2)**2))+&
-                       ((exp(-1.0d0*r*(kout1+kout2))*(kout1*r+kout2*r+1.d0)/(kout1+kout2)**2)))))
+                       ((exp(-1.0d0*r*(kout1+kout2))*(kout1*r+kout2*r+1.d0)/(kout1+kout2)**2))))))/Cm_to_D
 
 end function TransDip_Ana
 

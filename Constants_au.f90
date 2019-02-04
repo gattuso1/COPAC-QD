@@ -20,5 +20,6 @@ implicit none
    real(dp), parameter :: elec_au  = 1
    real(dp), parameter :: m0  = 9.10938356d-31
    real(dp), parameter :: Cm_to_D  = 3.33564d-30
+   real(dp), parameter :: D_to_au  = 2.5417462310548435 
 
 end module Constants_au 

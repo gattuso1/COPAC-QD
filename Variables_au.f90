@@ -63,7 +63,7 @@ endif
 
 if ( dyn .eq. 'y' ) then
 
-write(6,*) timestep, t01, omega, width
+!write(6,*) timestep, t01, omega, width
 timestep   =  timestep*1.d-15/t_au  !timestep*1.d-15/t_au
 totaltime  =  totaltime*1.d-15/t_au !totaltime*1.d-15/t_au
 t01        =  t01*1.d-15/t_au       !t01*1.d-15/t_au

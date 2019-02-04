@@ -362,6 +362,9 @@ endif
 open(22,file='Pulse.dat')
 open(32,file='TransMat.dat')
 open(33,file='Ham0.dat')
+open(34,file='Ham_dir.dat')
+open(35,file='Ham_ex.dat')
+open(36,file='Ham_JK.dat')
 open(58,file='Ham_ei.dat')
 open(47,file='Etransitions-he_0.dat')
 open(52,file='Etransitions-he_ei.dat')
@@ -430,9 +433,15 @@ endif
 !!!write Hamiltonians (ho and tdm)
 write(32,*) n , aR(n), aR(n+nsys), linker(n)
 write(33,*) n , aR(n), aR(n+nsys), linker(n)
+write(34,*) n , aR(n), aR(n+nsys), linker(n)
+write(35,*) n , aR(n), aR(n+nsys), linker(n)
+write(36,*) n , aR(n), aR(n+nsys), linker(n)
 do i=0,nstates-1
 if ( (vers .eq. 'randm' ) .or. ( vers .eq. 'range' ) .or. (vers .eq. 'dimer' ) ) then
 write(33,'(9es14.6e2)') (Ham(i,j)*Energ_au/elec, j=0,nstates-1)
+write(34,'(9es14.6e2)') (Ham_dir(i,j)*Energ_au/elec, j=0,nstates-1)
+write(35,'(9es14.6e2)') (Ham_ex(i,j)*Energ_au/elec, j=0,nstates-1)
+write(36,'(9es14.6e2)') ((-1.d0*Ham_dir(i,j) + Ham_ex(i,j))*Energ_au/elec, j=0,nstates-1)
 elseif ( vers .eq. 'singl' ) then
 write(33,'(25es14.6e2)') (Ham(i,j)*Energ_au/elec, j=0,nstates-1)
 endif
@@ -613,7 +622,7 @@ enddo
 !!!NORM
 write(46,*) time*t_au, cnorm2 !cnormabs !, cnormconj, cnorm2
 !!!POPULATIONS
-write(44,'(10ES15.6E2)') time*t_au, (dreal(xc(i,t))**2+aimag(xc(i,t))**2, i=0,8) 
+write(44,'(10ES15.6E3)') time*t_au, (dreal(xc(i,t))**2+aimag(xc(i,t))**2, i=0,8) 
 else if ( vers .eq. 'singl' ) then
 cnorm2 = 0.d0
 do i=0,nstates-1
@@ -622,7 +631,7 @@ enddo
 !!!NORM
 write(46,*) time*t_au, cnorm2 !cnormabs !, cnormconj, cnorm2
 !!!POPULATIONS
-write(44,'(26ES15.6E2)') time*t_au, (dreal(xc(i,t))**2+aimag(xc(i,t))**2, i=0,24)
+write(44,'(26ES15.6E3)') time*t_au, (dreal(xc(i,t))**2+aimag(xc(i,t))**2, i=0,24)
 endif
 endif
 
@@ -648,18 +657,18 @@ do i=0,nstates-1
 cnorm2_ei = cnorm2_ei + dreal(xc_ei(i,t))**2 + aimag(xc_ei(i,t))**2
 enddo
 write(48,*) time*t_au, cnorm2_ei
-write(49,'(ES11.5E2,25ES15.6E2)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,nstates-1)
-write(52,'(ES11.5E2,25ES15.6E2)') time*t_au, (dreal(xc_ei(i,t)), i=0,nstates-1)
-write(53,'(ES11.5E2,25ES15.6E2)') time*t_au, (aimag(xc_ei(i,t)), i=0,nstates-1)
+write(49,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,nstates-1)
+write(52,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc_ei(i,t)), i=0,nstates-1)
+write(53,'(ES11.5E2,25ES15.6E3)') time*t_au, (aimag(xc_ei(i,t)), i=0,nstates-1)
 
 else if ( vers .eq. 'singl' ) then 
 do i=0,nstates-1
 cnorm2_ei = cnorm2_ei + dreal(xc_ei(i,t))**2 + aimag(xc_ei(i,t))**2
 enddo
 write(48,*) time*t_au, cnorm2_ei
-write(49,'(ES11.5E2,25ES15.6E2)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,nstates-1)
-write(52,'(ES11.5E2,25ES15.6E2)') time*t_au, (dreal(xc_ei(i,t)), i=0,nstates-1)
-write(53,'(ES11.5E2,25ES15.6E2)') time*t_au, (aimag(xc_ei(i,t)), i=0,nstates-1)
+write(49,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,nstates-1)
+write(52,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc_ei(i,t)), i=0,nstates-1)
+write(53,'(ES11.5E2,25ES15.6E3)') time*t_au, (aimag(xc_ei(i,t)), i=0,nstates-1)
 
 endif !endif select vers
 !endif !endif if vers writing
