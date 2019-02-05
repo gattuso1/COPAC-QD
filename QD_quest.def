@@ -1,7 +1,7 @@
 ! Namelist definition
 write(6,*) timestep, t01, omega, width
 &version !version of the code, choose between singl, dimer, range, randm
-vers = "dimer"   
+vers = "randm"   
 /
 
 &outputs !Select output and computation modules, yes ("y") or ("no") 
@@ -13,8 +13,8 @@ o_Osci  = "n" !Oscillator strength of local excitons
 o_Exti  = "n" !Molar extinction coefficients of local excitons
 o_DipD  = "n" !Transition dipole moments of CT states
 get_ei  = "y" !Provide eigenstates and obtain coef of eigenstates after dynamic if dyn = y
-dyn     = "y" !Should I perform dynamics?
-dyn_ei  = "y" !Should I perform dynamics?
+dyn     = "n" !Should I perform dynamics?
+dyn_ei  = "n" !Should I perform dynamics?
 hamilt  = "n" !Should I print the time dependent Hamiltonian (very heavy and time consuming)
 fineSt  = "n" !Request fine structure 
 /
@@ -74,11 +74,11 @@ idlink = 55        !Linker length
 /
 
 &syst_random !Parameters of a random distribution of dimers either homo (aA=aB) or hetero (aA!=aB,linker fixed)
-nsys      = 100         !Number of dimers
+nsys      = 200         !Number of dimers
 aA        = 1.375d-9      !Radius of QDA
 aB        = 1.725d-9      !Radius of QDB
 idlink    = 55        !Linker length  (if hetero must be 0.2 or 0.55 nm so far)
-displink  = 0.05d0        !Dispersion on the linker length
-dispQD    = 0.05d0        !Dispersion of QD radius
+displink  = 0.03d0        !Dispersion on the linker length
+dispQD    = 0.03d0        !Dispersion of QD radius
 /
 

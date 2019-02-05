@@ -367,7 +367,7 @@ open(35,file='Ham_ex.dat')
 open(36,file='Ham_JK.dat')
 open(58,file='Ham_ei.dat')
 open(47,file='Etransitions-he_0.dat')
-open(52,file='Etransitions-he_ei.dat')
+open(48,file='Etransitions-he_ei.dat')
 open(57,file='TransDip_ei.dat')
 write(32,'("#     Number                  QDA                       QDB                    linker")')
 write(33,'("#     Number                  QDA                       QDB                    linker")')
@@ -509,12 +509,12 @@ endif
 enddo
 write(58,*) 
 if ( ( ( (vers .eq. 'randm' ) .or. (vers .eq. 'dimer' ) ) .and. ( aA .eq. aB ) ) .or. ( vers .eq. 'range' ) ) then
-write(52,'(11f14.10)') aR(n)*1.d9, linker(n)*1.d9, (lambda(i)*Energ_au/elec, i=0,nstates-1)
+write(48,'(11f14.10)') aR(n)*1.d9, linker(n)*1.d9, (lambda(i)*Energ_au/elec, i=0,nstates-1)
 elseif ( ( (vers .eq. 'randm' ) .or. (vers .eq. 'dimer' ) ) .and. ( aA .ne. aB ) ) then
-write(52,'(11f14.10)') aR(n)*1.d9, aR(n+nsys)*1.d9, (lambda(i)*Energ_au/elec, i=0,nstates-1)
+write(48,'(11f14.10)') aR(n)*1.d9, aR(n+nsys)*1.d9, (lambda(i)*Energ_au/elec, i=0,nstates-1)
 elseif (vers .eq. 'singl' ) then
 call make_TransHam_ei_fineSt 
-write(52,'(26f14.10)') aR(n)*1.d9, (lambda(i)*Energ_au/elec, i=0,nstates-1)
+write(48,'(26f14.10)') aR(n)*1.d9, (lambda(i)*Energ_au/elec, i=0,nstates-1)
 write(57,'(26f12.6)') aR(n)*1.d9, (TransHam(0,i), i=0,nstates-1)
 endif
 deallocate(lambda)
