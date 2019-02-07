@@ -7,7 +7,7 @@ use Normal
 implicit none
 
    character*5 :: vers
-   character*64 :: popc, hmti, norm, tdmM, hmt0, outputdir, norm_ei, popc_ei, Re_c_ei, Im_c_ei
+   character*64 :: popc, hmti, norm, tdmM, hmt0, outputdir, norm_ei, popc_ei, Re_c_ei, Im_c_ei, integ
    character*1 :: o_Norm, o_Over, o_Coul, o_DipS, o_Osci, o_Exti, o_DipD, dyn, hamilt, get_ei, finest, dyn_ei
    integer :: ndots, n, rmin, rmax, nsys, npulses, nstates, ntime, i, j, t, lwork, info, idlink
    integer,allocatable :: seed(:)
@@ -25,7 +25,7 @@ implicit none
    complex(kind=8) :: ct1, ct2, ct3, ct4, xt01, xt02, xt03, xhbar, im, xwidth, xomega , xEd, xh, xphase, xtime, xhbar_au
    complex(kind=8),allocatable :: xHam(:,:) , xHamt(:,:,:), xTransHam(:,:), xE0(:), xHamtk2(:,:,:), xHamtk3(:,:,:), xHamtk4(:,:,:)
    complex(kind=8),allocatable :: xc0(:), xc(:,:), xc_ei(:,:), xcnew(:,:), k1(:), k2(:), k3(:) , k4(:), xHam_ei(:,:)
-   complex(kind=8),allocatable :: dk1(:), dk2(:), dk3(:) , dk4(:)
+   complex(kind=8),allocatable :: dk1(:), dk2(:), dk3(:) , dk4(:), k5(:), k6(:), k7(:) , k8(:)
    complex(kind=8),allocatable :: xc_ei_av(:,:), xctemp(:)
 
 contains 
@@ -36,7 +36,7 @@ NAMELIST /version/ vers
 NAMELIST /outputs/ o_Norm,o_Over,o_Coul,o_DipS,o_Osci,o_Exti,o_DipD,dyn,dyn_ei,hamilt,get_ei,fineSt
 NAMELIST /elecSt/ me,mh,eps,epsout,V0eV,omegaLO,slope,side
 NAMELIST /fineStruc/ Kas,Kbs,Kcs,Dso1,Dso2,Dxf
-NAMELIST /pulses/ nstates,npulses,t01,t02,t03,timestep,totaltime,omega,phase,width,Ed
+NAMELIST /pulses/ integ,nstates,npulses,t01,t02,t03,timestep,totaltime,omega,phase,width,Ed
 NAMELIST /syst_single/ nsys,aA,dispQD
 NAMELIST /syst_dimer/ aA,aB,idlink
 NAMELIST /syst_range/ rsteps,minr,maxr,idlink
@@ -104,6 +104,10 @@ allocate(k1(0:nstates-1))
 allocate(k2(0:nstates-1))
 allocate(k3(0:nstates-1))
 allocate(k4(0:nstates-1))
+allocate(k5(0:nstates-1))
+allocate(k6(0:nstates-1))
+allocate(k7(0:nstates-1))
+allocate(k8(0:nstates-1))
 allocate(dk1(0:nstates-1))
 allocate(dk2(0:nstates-1))
 allocate(dk3(0:nstates-1))

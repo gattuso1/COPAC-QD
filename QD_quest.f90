@@ -566,52 +566,113 @@ write(22,*) time*t_au ,pulse1 * Ed * cos(omega*(time-t01)+phase) * exp(-1.0d0*(t
                        pulse3 * Ed * cos(omega*(time-t03)+phase) * exp(-1.0d0*(time-t03)**2/(2.0d0*(width**2)))
 endif
 
+if ( integ .eq. 'RK4' ) then
 
 k1 = dcmplx(0.0d0,0.0d0)
 k2 = dcmplx(0.0d0,0.0d0)
 k3 = dcmplx(0.0d0,0.0d0)
 k4 = dcmplx(0.0d0,0.0d0)
 
-!do i=0,nstates-1
-!write(6,'(9f12.6)') (Ham(i,j)*Energ_au/elec, j=0,8)
-!enddo
-
-!write(6,*) im, Ed*E_au, omega/t_au, t01*t_au, timestep*t_au, phase, width*t_au
 do i=0,nstates-1
 do j=0,nstates-1
 k1(i) = k1(i) + RK_k(time,Ham(i,j), TransHam(i,j), xc(j,t))
-!k1(i) = k1(i) + (-1.0d0)*im * (Ham(i,j) - TransHam(i,j) * Ed * cos(omega*(time-t01)+phase) * &
-!                  exp(-1.0d0*(time-t01)**2.d0/(2.0d0*(width**2.d0))))*xc(j,t)
 enddo
 enddo
 
 do i=0,nstates-1
 do j=0,nstates-1
 k2(i) = k2(i) + RK_k(time+(timestep/2.d0),Ham(i,j), TransHam(i,j), xc(j,t) + k1(j)*(dcmplx(timestep,0.d0))/2.0d0)
-!k2(i) = k2(i) + (-1.0d0)*im * (Ham(i,j) - TransHam(i,j) * Ed * cos(omega*((time+timestep/2.d0)-t01)+phase) * &
-!                  exp(-1.0d0*((time+timestep/2.d0)-t01)**2.d0/(2.0d0*(width**2.d0))))*(xc(j,t) + k1(j)*xh/2.d0)
 enddo
 enddo
 
 do i=0,nstates-1
 do j=0,nstates-1
 k3(i) = k3(i) + RK_k(time+(timestep/2.d0),Ham(i,j), TransHam(i,j),  xc(j,t) + k2(j)*(dcmplx(timestep,0.d0))/2.0d0)
-!k3(i) = k3(i) + (-1.0d0)*im * (Ham(i,j) - TransHam(i,j) * Ed * cos(omega*((time+timestep/2.d0)-t01)+phase) * &
-!                  exp(-1.0d0*((time+timestep/2.d0)-t01)**2.d0/(2.0d0*(width**2.d0))))*(xc(j,t) + k2(j)*xh/2.d0)
 enddo
 enddo
 
 do i=0,nstates-1
 do j=0,nstates-1
 k4(i) = k4(i) + RK_k(time+timestep,Ham(i,j), TransHam(i,j),  xc(j,t) + k3(j)*dcmplx(timestep,0.d0))
-!k4(i) = k4(i) + (-1.0d0)*im * (Ham(i,j) - TransHam(i,j) * Ed * cos(omega*((time+timestep)-t01)+phase) * &
-!                  exp(-1.0d0*((time+timestep)-t01)**2.d0/(2.0d0*(width**2.d0))))*(xc(j,t) + k3(j)*xh)
 enddo
 enddo
 
 do i=0,nstates-1
 xc(i,t+1) = xc(i,t)+(dcmplx(timestep,0.d0)/6.d0)*(k1(i)+2.d0*k2(i)+2.d0*k3(i)+k4(i))
 enddo
+
+elseif ( integ .eq. 'RK6' ) then 
+
+k1 = dcmplx(0.0d0,0.0d0)
+k2 = dcmplx(0.0d0,0.0d0)
+k3 = dcmplx(0.0d0,0.0d0)
+k4 = dcmplx(0.0d0,0.0d0)
+k5 = dcmplx(0.0d0,0.0d0)
+k6 = dcmplx(0.0d0,0.0d0)
+k7 = dcmplx(0.0d0,0.0d0)
+k8 = dcmplx(0.0d0,0.0d0)
+
+do i=0,nstates-1
+do j=0,nstates-1
+k1(i) = k1(i) + dcmplx(timestep,0.d0)*RK_k(time,Ham(i,j), TransHam(i,j), xc(j,t)) 
+enddo
+enddo
+
+do i=0,nstates-1
+do j=0,nstates-1
+k2(i) = k2(i) + dcmplx(timestep,0.d0)*RK_k(time+(timestep/9.e0_dp),Ham(i,j), TransHam(i,j), &
+xc(j,t)+(1.e0_dp/9.e0_dp)*k1(j)) 
+enddo
+enddo
+
+do i=0,nstates-1
+do j=0,nstates-1
+k3(i) = k3(i) + dcmplx(timestep,0.d0)*RK_k(time+(timestep/6.e0_dp),Ham(i,j), TransHam(i,j), &
+xc(j,t)+(1.e0_dp/24.e0_dp)*(k1(j)+3.e0_dp*k2(j))) 
+enddo
+enddo
+
+do i=0,nstates-1
+do j=0,nstates-1
+k4(i) = k4(i) + dcmplx(timestep,0.d0)*RK_k(time+(timestep/3.e0_dp),Ham(i,j), TransHam(i,j), &
+xc(j,t)+(1.e0_dp/6.e0_dp)*(k1(j)-3.e0_dp*k2(j)+4.e0_dp*k3(j))) 
+enddo
+enddo
+
+do i=0,nstates-1
+do j=0,nstates-1
+k5(i) = k5(i) + dcmplx(timestep,0.d0)*RK_k(time+(timestep/2.e0_dp),Ham(i,j), TransHam(i,j), &
+xc(j,t)+(1.e0_dp/8.e0_dp)*(-5.e0_dp*k1(j)+27.e0_dp*k2(j)-24.e0_dp*k3(j)+6.e0_dp*k4(j)))
+enddo
+enddo
+
+do i=0,nstates-1
+do j=0,nstates-1
+k6(i) = k6(i) + dcmplx(timestep,0.d0)*RK_k(time+(2.e0_dp*timestep/3.e0_dp),Ham(i,j), TransHam(i,j), &
+xc(j,t)+(1.e0_dp/9.e0_dp)*(221.e0_dp*k1(j)-981.e0_dp*k2(j)+867.e0_dp*k3(j)-102.e0_dp*k4(j)+k5(j)))
+enddo
+enddo
+
+do i=0,nstates-1
+do j=0,nstates-1
+k7(i) = k7(i) + dcmplx(timestep,0.d0)*RK_k(time+(5.e0_dp*timestep/6.e0_dp),Ham(i,j), TransHam(i,j), &
+xc(j,t)+(1.e0_dp/48.e0_dp)*(-183.e0_dp*k1(j)+678.e0_dp*k2(j)-472.e0_dp*k3(j)-66.e0_dp*k4(j)+80.e0_dp*k5(j)+3.e0_dp*k6(j)))
+enddo
+enddo
+
+do i=0,nstates-1
+do j=0,nstates-1
+k8(i)=k8(i)+dcmplx(timestep,0.d0)*RK_k(time+timestep,Ham(i,j), TransHam(i,j), &
+xc(j,t)+(1.e0_dp/82.e0_dp)*&
+(716.e0_dp*k1(j)-2079.e0_dp*k2(j)+1002.e0_dp*k3(j)+834.e0_dp*k4(j)-454.e0_dp*k5(j)-9.e0_dp*k6(j)+72.e0_dp*k7(j)))
+enddo
+enddo
+
+do i=0,nstates-1
+xc(i,t+1) = xc(i,t)+(1.e0_dp/840.e0_dp)*(41.e0_dp*(k1(i)+k8(i))+216.e0_dp*(k3(i)+k7(i))+27.e0_dp*(k4(i)+k6(i))+272.e0_dp*k5(i))
+enddo
+
+endif 
 
 if ( MOD(t,10) .eq. 0 ) then
 if ( ( vers .eq. 'dimer' ) .or. ( vers .eq. 'range' ) .or. ( vers .eq. 'randm' ) ) then

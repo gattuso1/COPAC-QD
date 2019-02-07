@@ -1,7 +1,7 @@
 ! Namelist definition
 write(6,*) timestep, t01, omega, width
 &version !version of the code, choose between singl, dimer, range, randm
-vers = "randm"   
+vers = "dimer"   
 /
 
 &outputs !Select output and computation modules, yes ("y") or ("no") 
@@ -13,8 +13,8 @@ o_Osci  = "n" !Oscillator strength of local excitons
 o_Exti  = "n" !Molar extinction coefficients of local excitons
 o_DipD  = "n" !Transition dipole moments of CT states
 get_ei  = "y" !Provide eigenstates and obtain coef of eigenstates after dynamic if dyn = y
-dyn     = "n" !Should I perform dynamics?
-dyn_ei  = "n" !Should I perform dynamics?
+dyn     = "y" !Should I perform dynamics?
+dyn_ei  = "y" !Should I perform dynamics?
 hamilt  = "n" !Should I print the time dependent Hamiltonian (very heavy and time consuming)
 fineSt  = "n" !Request fine structure 
 /
@@ -40,18 +40,19 @@ Dxf = 0.025d0
 /
 
 &pulses !Parameters of quantum dynamic and pulses
+integ     = "RK6"       !Choose between integrator RK4 or RK6
 nstates   = 9           !Total number of excitons + GS
 npulses   = 2           !Number of pulses (up to 3)
 t01       = 100.d0     !Pulse 1 centered at (s)
 t02       = 200.d0     !Pulse 2 centered at (s)
 t03       = 90.d0     !Pulse 3 centered at (s)
 timestep  = 0.050d0      !Time step of quantum dynamic
-totaltime = 3000.d0     !Total time simulated (s)
+totaltime = 1000.d0     !Total time simulated (s)
 omega     = 0.55d15      !Frequency (s-1)
 !omega     = 0.90d15      !Frequency (s-1)
 !phase     = pi Careful here, it is defined in the code
 width     = 6.0d0       !Width of the pulse (s) 
-Ed        = 10.d9     !Field strength (V/m so far)
+Ed        = 5.d8     !Field strength (V/m so far)
 /
 
 &syst_single !Parameters of the single dot
