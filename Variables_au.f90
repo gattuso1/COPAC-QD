@@ -7,7 +7,7 @@ use Normal
 implicit none
 
    character*5 :: vers
-   character*64 :: popc, hmti, norm, tdmM, hmt0, outputdir, norm_ei, popc_ei, Re_c_ei, Im_c_ei, integ
+   character*64 :: popc, hmti, norm, tdmM, hmt0, outputdir, norm_ei, popc_ei, Re_c_ei, Im_c_ei, integ,model
    character*1 :: o_Norm, o_Over, o_Coul, o_DipS, o_Osci, o_Exti, o_DipD, dyn, hamilt, get_ei, finest, dyn_ei
    integer :: ndots, n, rmin, rmax, nsys, npulses, nstates, ntime, i, j, t, lwork, info, idlink
    integer,allocatable :: seed(:)
@@ -34,9 +34,9 @@ subroutine getVariables
 
 NAMELIST /version/ vers
 NAMELIST /outputs/ o_Norm,o_Over,o_Coul,o_DipS,o_Osci,o_Exti,o_DipD,dyn,dyn_ei,hamilt,get_ei,fineSt
-NAMELIST /elecSt/ me,mh,eps,epsout,V0eV,omegaLO,slope,side
+NAMELIST /elecSt/ model,me,mh,eps,epsout,V0eV,omegaLO,slope,side
 NAMELIST /fineStruc/ Kas,Kbs,Kcs,Dso1,Dso2,Dxf
-NAMELIST /pulses/ integ,nstates,npulses,t01,t02,t03,timestep,totaltime,omega,phase,width,Ed
+NAMELIST /pulses/ integ,npulses,t01,t02,t03,timestep,totaltime,omega,phase,width,Ed
 NAMELIST /syst_single/ nsys,aA,dispQD
 NAMELIST /syst_dimer/ aA,aB,idlink
 NAMELIST /syst_range/ rsteps,minr,maxr,idlink
@@ -55,6 +55,16 @@ rhoe       = 1.0d0/sqrt((2.d0*me*omegaLO)/hbar)
 rhoh       = 1.0d0/sqrt((2.d0*mh*omegaLO)/hbar)
 V0         = V0eV*elec
 
+if ( model .eq. "SB") then
+nstates = 9
+elseif ( model .eq. "FO") then
+nstates = 4
+elseif ( model .eq. "FS") then
+nstates = 25
+endif
+
+write(6,*) nstates
+
 if ( idlink .eq. 20 ) then
 link = 0.2d0
 elseif ( idlink .eq. 55 ) then
@@ -63,7 +73,6 @@ endif
 
 if ( dyn .eq. 'y' ) then
 
-!write(6,*) timestep, t01, omega, width
 timestep   =  timestep*1.d-15/t_au  !timestep*1.d-15/t_au
 totaltime  =  totaltime*1.d-15/t_au !totaltime*1.d-15/t_au
 t01        =  t01*1.d-15/t_au       !t01*1.d-15/t_au
@@ -73,15 +82,8 @@ width      =  width*1.d-15/t_au     !width*1.d-15/t_au
 omega      =  omega*t_au      !omega*1.d15*t_au
 Ed         =  Ed/E_au        !0.024 !Ed/E_au
 xh         =  dcmplx(timestep,0.0d0)
-!xt01       = dcmplx(t01/t_au,0.0d0)
-!xt02       = dcmplx(t02/t_au,0.0d0)
-!xt03       = dcmplx(t03/t_au,0.0d0)
-!xphase     = dcmplx(phase,0.0d0)
-!xomega     = dcmplx(omega*t_au,0.0d0)
-!xwidth     = dcmplx(width/t_au,0.0d0)
-!xEd        = dcmplx(Ed/E_au,0.0d0)
-ntime      = nint(totaltime/timestep)
-phase      = pi
+ntime      =  nint(totaltime/timestep)
+phase      =  pi
 
 allocate(Hamt(0:nstates-1,0:nstates-1,0:ntime))
 allocate(xHamt(0:nstates-1,0:nstates-1,0:ntime))
