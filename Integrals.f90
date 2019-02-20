@@ -233,74 +233,111 @@ end function TransDip_Fit_h2e_ho
 
 !TDM homodimer h1e from fit
 real(dp) function TransDip_Fit_h1e_he(a,b)
-
       implicit none
       real(dp) :: d1,d2,d3,d4,a,b
-
 if ( idlink .eq. 20 ) then
-!!!!!!OLD!!!!!!!!!!!!!!!!!!!!!!
-!d1              = 0.00341214
-!d2              = 5.2295
-!d3              = 2.0988
-!d4              = 1.66728
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 d1              = 0.096906
 d2              = 4.65974
 d3              = 1.03234
 d4              = 1.23659
 else if ( idlink .eq. 55 ) then
-!!!!!!OLD!!!!!!!!!!!!!!!!!!!!!!
-!d1              = 1.08959e-05  
-!d2              = 0.00281484   
-!d3              = 1.82872      
-!d4              = 2.70292
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 d1              = 0.0133057
 d2              = 0.3502   
 d3              = 1.07038  
 d4              = 2.18361  
 endif
-
-!TransDip_Fit_h1e_he = ( d1 + d2 / ((a*1d9)**d3*(b*1d9)**d4) )*1.0d-33
 TransDip_Fit_h1e_he =  d1 + d2 / ((a*1d9)**d3*(b*1d9)**d4)
-
 end function TransDip_Fit_h1e_he
 
 !TDM homodimer h1e from fit
 real(dp) function TransDip_Fit_h2e_he(a,b)
-
       implicit none
       real(dp) :: d1,d2,d3,d4,a,b
-
 if ( idlink .eq. 20 ) then
-!!!!!!!!OLD!!!!!!!!!!!!!!!!!!!!
-!d1              = 0.159035d0
-!d2              = 79.9838d0
-!d3              = 0.96669d0
-!d4              = 1.9961d0
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!TransDip_Fit_h2e_he = ( d1 + d2*((a*1.d9-d3))*exp(-2.0d0*(a*1.d9))/((b*1.d9)**d4) )*1.0d-33
 d1              = 0.0596336
 d2              = 9.28833
 d3              = 1.03381
 d4              = 1.11717
 else if ( idlink .eq. 55 ) then
-!!!!!!!!OLD!!!!!!!!!!!!!!!!!!!!
-!d1              = 0.000193625d0  
-!d2              = 0.00896372d0   
-!d3              = -11.1744d0     
-!d4              = 0.927031d0
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 d1              = 0.0133057
 d2              = 0.3502   
 d3              = 1.07038  
 d4              = 2.18361  
-!TransDip_Fit_h2e_he = (d1+d2*(1-exp(-(a*1.d9)**d3))/((b*1.d9)**d4) )*1.d-33
 endif
-
 TransDip_Fit_h2e_he =  d1 + d2 / ((a*1d9)**d3*(b*1d9)**d4)
-
 end function TransDip_Fit_h2e_he
+
+!TDM homodimer h1e from fit
+real(dp) function TransDip_Fit_h1h1_he(a,b)
+      implicit none
+      real(dp) :: d1,d2,d3,d4,a,b
+if ( idlink .eq. 20 ) then
+d1              = 0.000465077  
+d2              = 0.0461328    
+d3              = 1.11291      
+d4              = 1.11376      
+else if ( idlink .eq. 55 ) then
+d1              = 1.27936e-05   
+d2              = 0.00108558  
+d3              = 1.15109     
+d4              = 1.15094     
+endif
+TransDip_Fit_h1h1_he =  d1 + d2 / ((a*1d9)**d3*(b*1d9)**d4)
+end function TransDip_Fit_h1h1_he
+
+!TDM homodimer h1e from fit
+real(dp) function TransDip_Fit_h2h2_he(a,b)
+      implicit none
+      real(dp) :: d1,d2,d3,d4,a,b
+if ( idlink .eq. 20 ) then
+d1                  = 0.00359745 
+d2                  = 0.242846   
+d3                  = 1.27172    
+d4                  = 1.26927    
+else if ( idlink .eq. 55 ) then
+d1                   = 0.000166763 
+d2                   = 0.00893376  
+d3                   = 1.56922     
+d4                   = 1.57073     
+endif
+TransDip_Fit_h2h2_he =  d1 + d2 / ((a*1d9)**d3*(b*1d9)**d4)
+end function TransDip_Fit_h2h2_he
+
+!TDM homodimer h1e from fit
+real(dp) function TransDip_Fit_ee_he(a,b)
+      implicit none
+      real(dp) :: d1,d2,d3,d4,a,b
+if ( idlink .eq. 20 ) then
+d1                = 0.0119711 
+d2                = 2.18843   
+d3                = 0.904435  
+d4                = 0.906561  
+else if ( idlink .eq. 55 ) then
+d1               = 0.00336278 
+d2               = 0.278173   
+d3               = 1.30876    
+d4               = 1.30738    
+endif
+TransDip_Fit_ee_he =  d1 + d2 / ((a*1d9)**d3*(b*1d9)**d4)
+end function TransDip_Fit_ee_he
+
+!TDM homodimer h1e from fit
+real(dp) function TransDip_Fit_h1h2_he(a,b)
+      implicit none
+      real(dp) :: d1,d2,d3,d4,a,b
+if ( idlink .eq. 20 ) then
+d1              = 0.00184203   
+d2              = 0.107537     
+d3              = 1.12685      
+d4              = 1.31525      
+else if ( idlink .eq. 55 ) then
+d1                = 8.62101e-05  
+d2                = 0.0032382    
+d3                = 1.19545      
+d4                = 1.69668      
+endif
+TransDip_Fit_h1h2_he =  d1 + d2 / ((a*1d9)**d3*(b*1d9)**d4)
+end function TransDip_Fit_h1h2_he
 
 !Computation of dimer transition dipole moments integrating using Monte-Carlo
 real(dp) function TransDip_dimer_MC(A1,B1,kin1,kout1,A2,B2,kin2,kout2,a,b,l)

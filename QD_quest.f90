@@ -400,7 +400,7 @@ write(Im_c_ei,'(a8,i5.5,a4)') 'Im_c_ei-', n, '.dat'
 open(44,file=popc)
 !open(45,file=hmti)
 open(46,file=norm)
-open(48,file=norm_ei)
+open(50,file=norm_ei)
 open(49,file=popc_ei)
 open(52,file=Re_c_ei)
 open(53,file=Im_c_ei)
@@ -408,7 +408,7 @@ else if ( ( dyn .eq. 'y' ) .and. ( vers .eq. 'dimer') ) then
 open(44,file='Popc.dat')
 !open(45,file='Hamt.dat')
 open(46,file='Norm.dat')
-open(48,file='Norm_ei.dat')
+open(50,file='Norm_ei.dat')
 open(49,file='Popc_ei.dat')
 open(52,file="Re_c_ei.dat")
 open(53,file="Im_c_ei.dat")
@@ -717,7 +717,7 @@ if ( ( vers .eq. 'dimer' ) .or. ( vers .eq. 'range' ) .or. ( vers .eq. 'randm' )
 do i=0,nstates-1
 cnorm2_ei = cnorm2_ei + dreal(xc_ei(i,t))**2 + aimag(xc_ei(i,t))**2
 enddo
-write(48,*) time*t_au, cnorm2_ei
+write(50,*) time*t_au, cnorm2_ei
 write(49,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,nstates-1)
 write(52,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc_ei(i,t)), i=0,nstates-1)
 write(53,'(ES11.5E2,25ES15.6E3)') time*t_au, (aimag(xc_ei(i,t)), i=0,nstates-1)
@@ -726,7 +726,7 @@ else if ( vers .eq. 'singl' ) then
 do i=0,nstates-1
 cnorm2_ei = cnorm2_ei + dreal(xc_ei(i,t))**2 + aimag(xc_ei(i,t))**2
 enddo
-write(48,*) time*t_au, cnorm2_ei
+write(50,*) time*t_au, cnorm2_ei
 write(49,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,nstates-1)
 write(52,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc_ei(i,t)), i=0,nstates-1)
 write(53,'(ES11.5E2,25ES15.6E3)') time*t_au, (aimag(xc_ei(i,t)), i=0,nstates-1)
