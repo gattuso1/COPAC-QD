@@ -236,15 +236,15 @@ real(dp) function TransDip_Fit_h1e_he(a,b)
       implicit none
       real(dp) :: d1,d2,d3,d4,a,b
 if ( idlink .eq. 20 ) then
-d1              = 0.096906
-d2              = 4.65974
-d3              = 1.03234
-d4              = 1.23659
+d1              = 0.0087115d0 
+d2              = 0.418797d0  
+d3              = 1.03237d0   
+d4              = 1.23661d0   
 else if ( idlink .eq. 55 ) then
-d1              = 0.0133057
-d2              = 0.3502   
-d3              = 1.07038  
-d4              = 2.18361  
+d1              = 0.00119598d0 
+d2              = 0.0314746d0  
+d3              = 1.0704d0     
+d4              = 2.18365d0    
 endif
 TransDip_Fit_h1e_he =  d1 + d2 / ((a*1d9)**d3*(b*1d9)**d4)
 end function TransDip_Fit_h1e_he
@@ -254,15 +254,15 @@ real(dp) function TransDip_Fit_h2e_he(a,b)
       implicit none
       real(dp) :: d1,d2,d3,d4,a,b
 if ( idlink .eq. 20 ) then
-d1              = 0.0596336
-d2              = 9.28833
-d3              = 1.03381
-d4              = 1.11717
+d1              = 0.00536146d0  
+d2              = 0.834794d0    
+d3              = 1.03382d0     
+d4              = 1.11718d0     
 else if ( idlink .eq. 55 ) then
-d1              = 0.0133057
-d2              = 0.3502   
-d3              = 1.07038  
-d4              = 2.18361  
+d1              = 0.0163095d0  
+d2              = 0.752361d0   
+d3              = 1.17482d0    
+d4              = 1.87855d0    
 endif
 TransDip_Fit_h2e_he =  d1 + d2 / ((a*1d9)**d3*(b*1d9)**d4)
 end function TransDip_Fit_h2e_he
@@ -272,15 +272,15 @@ real(dp) function TransDip_Fit_h1h1_he(a,b)
       implicit none
       real(dp) :: d1,d2,d3,d4,a,b
 if ( idlink .eq. 20 ) then
-d1              = 0.000465077  
-d2              = 0.0461328    
-d3              = 1.11291      
-d4              = 1.11376      
+d1              = 0.000465077d0  
+d2              = 0.0461328d0    
+d3              = 1.11291d0      
+d4              = 1.11376d0      
 else if ( idlink .eq. 55 ) then
-d1              = 1.27936e-05   
-d2              = 0.00108558  
-d3              = 1.15109     
-d4              = 1.15094     
+d1              = 1.27936d-05   
+d2              = 0.00108558d0  
+d3              = 1.15109d0     
+d4              = 1.15094d0     
 endif
 TransDip_Fit_h1h1_he =  d1 + d2 / ((a*1d9)**d3*(b*1d9)**d4)
 end function TransDip_Fit_h1h1_he
@@ -290,15 +290,15 @@ real(dp) function TransDip_Fit_h2h2_he(a,b)
       implicit none
       real(dp) :: d1,d2,d3,d4,a,b
 if ( idlink .eq. 20 ) then
-d1                  = 0.00359745 
-d2                  = 0.242846   
-d3                  = 1.27172    
-d4                  = 1.26927    
+d1                  = 0.00359745d0 
+d2                  = 0.242846d0   
+d3                  = 1.27172d0    
+d4                  = 1.26927d0    
 else if ( idlink .eq. 55 ) then
-d1                   = 0.000166763 
-d2                   = 0.00893376  
-d3                   = 1.56922     
-d4                   = 1.57073     
+d1                   = 0.000166763d0 
+d2                   = 0.00893376d0  
+d3                   = 1.56922d0     
+d4                   = 1.57073d0     
 endif
 TransDip_Fit_h2h2_he =  d1 + d2 / ((a*1d9)**d3*(b*1d9)**d4)
 end function TransDip_Fit_h2h2_he
@@ -308,15 +308,15 @@ real(dp) function TransDip_Fit_ee_he(a,b)
       implicit none
       real(dp) :: d1,d2,d3,d4,a,b
 if ( idlink .eq. 20 ) then
-d1                = 0.0119711 
-d2                = 2.18843   
-d3                = 0.904435  
-d4                = 0.906561  
+d1                = 0.0119711d0 
+d2                = 2.18843d0   
+d3                = 0.904435d0  
+d4                = 0.906561d0  
 else if ( idlink .eq. 55 ) then
-d1               = 0.00336278 
-d2               = 0.278173   
-d3               = 1.30876    
-d4               = 1.30738    
+d1               = 0.00336278d0 
+d2               = 0.278173d0   
+d3               = 1.30876d0    
+d4               = 1.30738d0    
 endif
 TransDip_Fit_ee_he =  d1 + d2 / ((a*1d9)**d3*(b*1d9)**d4)
 end function TransDip_Fit_ee_he
@@ -326,15 +326,15 @@ real(dp) function TransDip_Fit_h1h2_he(a,b)
       implicit none
       real(dp) :: d1,d2,d3,d4,a,b
 if ( idlink .eq. 20 ) then
-d1              = 0.00184203   
-d2              = 0.107537     
-d3              = 1.12685      
-d4              = 1.31525      
+d1              = 0.00184203d0   
+d2              = 0.107537d0     
+d3              = 1.12685d0      
+d4              = 1.31525d0      
 else if ( idlink .eq. 55 ) then
-d1                = 8.62101e-05  
-d2                = 0.0032382    
-d3                = 1.19545      
-d4                = 1.69668      
+d1                = 8.62101d-05  
+d2                = 0.0032382d0    
+d3                = 1.19545d0      
+d4                = 1.69668d0      
 endif
 TransDip_Fit_h1h2_he =  d1 + d2 / ((a*1d9)**d3*(b*1d9)**d4)
 end function TransDip_Fit_h1h2_he
