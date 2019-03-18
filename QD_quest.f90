@@ -77,6 +77,7 @@ allocate(Cb_Num_eh1_eh2(rmax+1))
 allocate(Cb_Num_eh2(rmax+1))
 allocate(TransDip_Ana_h1e(rmax+1))
 allocate(TransDip_Ana_h2e(rmax+1))
+allocate(TransDip_Ana_h1h2(rmax+1))
 allocate(TransDip_Num_h1e(rmax+1))
 allocate(TransDip_Num_h2e(rmax+1))
 allocate(Oscillator_Ana_h1e(rmax+1))
@@ -207,6 +208,7 @@ Eeh2(n) = (minEe(1,n)+minEh(2,n))+V0-Cb_eh2(n)
 !Dipole moment 
 if ( o_DipS == 'y' ) then
 TransDip_Ana_h1e(n) = abs(TransDip_Ana(Ae(n),Ah1(n),Be(n),Bh1(n),kine(n),kinh1(n),koute(n),kouth1(n),aR(n)))
+TransDip_Ana_h1h2(n) = abs(TransDip_Ana(Ah1(n),Ah2(n),Bh1(n),Bh2(n),kinh1(n),kinh2(n),kouth1(n),kouth2(n),aR(n)))
 !TransDip_Num_h1e(n) = abs(TransDip_Num(Ae(n),Ah1(n),Be(n),Bh1(n),kine(n),kinh1(n),koute(n),kouth1(n),aR(n)))
 !TransDip_EMA_h1e(n) = abs(TransDip_EMA(Eeh1(n),aR(n)))/Cm_to_D
 TransDip_Ana_h2e(n) = abs(TransDip_Ana(Ae(n),Ah2(n),Be(n),Bh2(n),kine(n),kinh2(n),koute(n),kouth2(n),aR(n)))

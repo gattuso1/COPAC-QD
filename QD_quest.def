@@ -17,6 +17,7 @@ dyn     = "n" !Should I perform dynamics?
 dyn_ei  = "n" !Should I perform dynamics?
 hamilt  = "n" !Should I print the time dependent Hamiltonian (very heavy and time consuming)
 fineSt  = "n" !Request fine structure 
+TDM_ee  = "y" !Request interexciton TDM or not
 /
 
 &elecSt !Parameters of CdSe QD and the model

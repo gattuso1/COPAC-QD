@@ -935,6 +935,8 @@ endif
 Ham = Ham/Energ_au
 Ham_dir = Ham_dir/Energ_au
 Ham_ex = Ham_ex/Energ_au
+
+if ( TDM_ee .eq. 'n') then
 TransHam(0,1) = TransDip_Ana_h1e(n)
 TransHam(0,2) = TransDip_Ana_h2e(n)
 TransHam(0,3) = TransDip_Ana_h1e(n+nsys)
@@ -943,11 +945,43 @@ TransHam(0,5) = TransDip_Fit_h1e_he(aR(n+nsys),aR(n))
 TransHam(0,6) = TransDip_Fit_h2e_he(aR(n+nsys),aR(n))
 TransHam(0,7) = TransDip_Fit_h1e_he(aR(n),aR(n+nsys))
 TransHam(0,8) = TransDip_Fit_h2e_he(aR(n),aR(n+nsys))
-TransHam = TransHam*D_to_au
-
+TransHam = TransHam/D_to_au
 do i=0,nstates-1
 TransHam(i,0) = TransHam(0,i)
 enddo
+elseif ( TDM_ee .eq. 'y') then
+TransHam(0,1) = TransDip_Ana_h1e(n)
+TransHam(0,2) = TransDip_Ana_h2e(n)
+TransHam(0,3) = TransDip_Ana_h1e(n+nsys)
+TransHam(0,4) = TransDip_Ana_h2e(n+nsys)
+TransHam(0,5) = TransDip_Fit_h1e_he(aR(n+nsys),aR(n))
+TransHam(0,6) = TransDip_Fit_h2e_he(aR(n+nsys),aR(n))
+TransHam(0,7) = TransDip_Fit_h1e_he(aR(n),aR(n+nsys))
+TransHam(0,8) = TransDip_Fit_h2e_he(aR(n),aR(n+nsys))
+TransHam(1,2) = TransDip_Ana_h1h2(n)
+TransHam(1,5) = TransDip_Fit_ee_he(aR(n+nsys),aR(n))
+TransHam(1,7) = TransDip_Fit_h1h1_he(aR(n+nsys),aR(n))
+TransHam(1,8) = TransDip_Fit_h1h2_he(aR(n),aR(n+nsys))
+TransHam(2,6) = TransDip_Fit_ee_he(aR(n+nsys),aR(n))
+TransHam(2,7) = TransDip_Fit_h1h2_he(aR(n+nsys),aR(n))
+TransHam(2,8) = TransDip_Fit_h2h2_he(aR(n+nsys),aR(n))
+TransHam(3,4) = TransDip_Ana_h1h2(n+nsys)
+TransHam(3,5) = TransDip_Fit_h1h1_he(aR(n+nsys),aR(n))
+TransHam(3,6) = TransDip_Fit_h1h2_he(aR(n+nsys),aR(n))
+TransHam(3,7) = TransDip_Fit_ee_he(aR(n+nsys),aR(n))
+TransHam(4,5) = TransDip_Fit_h1h2_he(aR(n),aR(n+nsys))
+TransHam(4,6) = TransDip_Fit_h2h2_he(aR(n+nsys),aR(n))
+TransHam(4,8) = TransDip_Fit_ee_he(aR(n+nsys),aR(n))
+TransHam(5,6) = TransDip_Ana_h1h2(n)
+TransHam(7,8) = TransDip_Ana_h1h2(n+nsys)
+do i=0,nstates-1
+do j=i+1,nstates-1
+TransHam(j,i) = TransHam(i,j)
+enddo
+enddo
+endif
+
+TransHam = TransHam/D_to_au
 
 end subroutine make_Ham_he
 
