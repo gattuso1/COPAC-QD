@@ -85,6 +85,8 @@ allocate(Oscillator_Ana_h2e(rmax+1))
 allocate(ExctCoef_h1e(rmax+1))
 allocate(ExctCoef_h2e(rmax+1))
 allocate(TransHam(0:nstates-1,0:nstates-1))
+allocate(TransHam_ei(0:nstates-1,0:nstates-1))
+allocate(Mat(0:nstates-1,0:nstates-1))
 allocate(Ham(0:nstates-1,0:nstates-1))
 allocate(Ham_0(0:nstates-1))
 allocate(Ham_dir(0:nstates-1,0:nstates-1))
@@ -363,6 +365,7 @@ endif
 
 open(22,file='Pulse.dat')
 open(32,file='TransMat.dat')
+open(37,file='TransMat_ei.dat')
 open(33,file='Ham0.dat')
 open(34,file='Ham_dir.dat')
 open(35,file='Ham_ex.dat')
@@ -372,6 +375,7 @@ open(47,file='Etransitions-he_0.dat')
 open(48,file='Etransitions-he_ei.dat')
 open(57,file='TransDip_ei.dat')
 write(32,'("#     Number                  QDA                       QDB                    linker")')
+write(37,'("#     Number                  QDA                       QDB                    linker")')
 write(33,'("#     Number                  QDA                       QDB                    linker")')
 write(22,'("#  time                      pulse1                    pulse2                    pulse3")')
 write(58,'("#     Number                  QDA                       QDB                    linker")')
@@ -434,6 +438,7 @@ endif
 
 !!!write Hamiltonians (ho and tdm)
 write(32,*) n , aR(n), aR(n+nsys), linker(n)
+write(37,*) n , aR(n), aR(n+nsys), linker(n)
 write(33,*) n , aR(n), aR(n+nsys), linker(n)
 write(34,*) n , aR(n), aR(n+nsys), linker(n)
 write(35,*) n , aR(n), aR(n+nsys), linker(n)
@@ -502,9 +507,14 @@ deallocate (work)
 allocate(work(0:lwork))
 call dsyev('V', 'U', nstates, Ham_ei(0:nstates-1,0:nstates-1), nstates, lambda, Work, lwork, info)
 deallocate (work)
+!!!Make eigenstate TDM
+Mat(:,:) = matmul(TransHam(:,:),Ham_ei(:,:))
+TransHam_ei(:,:) = matmul(transpose(Ham_ei(:,:)),Mat(:,:))
+!!!
 do i=0,nstates-1
 if ( (vers .eq. 'randm' ) .or. ( vers .eq. 'range' ) .or. (vers .eq. 'dimer' ) ) then
 write(58,'(10f12.6)') (Ham_ei(i,j), j=0,nstates-1)
+write(37,'(9es14.6e2)') (TransHam_ei(i,j), j=0,nstates-1)
 elseif ( vers .eq. 'singl' ) then
 write(58,'(25f7.3)') (Ham_ei(i,j), j=0,nstates-1)
 endif
