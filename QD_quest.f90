@@ -88,6 +88,7 @@ allocate(TransHam(0:nstates-1,0:nstates-1))
 allocate(TransHam_ei(0:nstates-1,0:nstates-1))
 allocate(Mat(0:nstates-1,0:nstates-1))
 allocate(Ham(0:nstates-1,0:nstates-1))
+allocate(Ham_l(0:nstates-1,0:nstates-1))
 allocate(Ham_0(0:nstates-1))
 allocate(Ham_dir(0:nstates-1,0:nstates-1))
 allocate(Ham_ex(0:nstates-1,0:nstates-1))
@@ -395,7 +396,7 @@ do n=rmin,rmax
 write(6,*) "Computing system number:    ", n
 
 !!!Opens output files
-if ( ( dyn .eq. 'y' ) .and. ( ( vers .eq. 'randm' ) .or. ( vers .eq. 'singl' ) ) ) then
+if ( ( ( Dyn_0 .eq. 'y' ) .or. ( Dyn_ei .eq. 'y' ) ) .and. ( ( vers .eq. 'randm' ) .or. ( vers .eq. 'singl' ) ) ) then
 write(popc,'(a5,i5.5,a4)') 'Popc-', n, '.dat'
 !write(hmti,'(a5,i5.5,a4)') 'Hamt-', n, '.dat'
 write(norm,'(a5,i5.5,a4)') 'Norm-', n, '.dat'
@@ -410,7 +411,7 @@ open(50,file=norm_ei)
 open(49,file=popc_ei)
 open(52,file=Re_c_ei)
 open(53,file=Im_c_ei)
-else if ( ( dyn .eq. 'y' ) .and. ( vers .eq. 'dimer') ) then
+else if ( ( ( Dyn_0 .eq. 'y' ) .or. ( Dyn_ei .eq. 'y' ) ) .and. ( vers .eq. 'dimer') ) then
 open(44,file='Popc.dat')
 !open(45,file='Hamt.dat')
 open(46,file='Norm.dat')
@@ -511,6 +512,7 @@ deallocate (work)
 Mat(:,:) = matmul(TransHam(:,:),Ham_ei(:,:))
 TransHam_ei(:,:) = matmul(transpose(Ham_ei(:,:)),Mat(:,:))
 !!!
+call make_Ham_l
 do i=0,nstates-1
 if ( (vers .eq. 'randm' ) .or. ( vers .eq. 'range' ) .or. (vers .eq. 'dimer' ) ) then
 write(58,'(10f12.6)') (Ham_ei(i,j), j=0,nstates-1)
@@ -555,7 +557,7 @@ endif
 !
 !endif
 
-if ( dyn .eq. 'y' ) then
+if ( ( Dyn_0 .eq. 'y' ) .or. ( Dyn_ei .eq. 'n' ) ) then
 
 !!!!!INITIAL POPULATIONS
 c0(0) = 1.0d0
@@ -567,188 +569,50 @@ xc0 = dcmplx(c0,0.0d0)
 xc(:,:) = dcmplx(0.d0,0.0d0)
 xc_ei(:,:) = dcmplx(0.d0,0.0d0)
 xc(:,0) = xc0(:)
+xc_ei(:,0) = xc0(:)
 
-do t=0,ntime
-
-time = t*timestep
-
-if ( MOD(t,100) .eq. 0 ) then
-write(22,*) time*t_au ,pulse1 * Ed * cos(omega*(time-t01)+phase) * exp(-1.0d0*(time-t01)**2/(2.0d0*(width**2))) , &
-                       pulse2 * Ed * cos(omega*(time-t02)+phase) * exp(-1.0d0*(time-t02)**2/(2.0d0*(width**2))) , &
-                       pulse3 * Ed * cos(omega*(time-t03)+phase) * exp(-1.0d0*(time-t03)**2/(2.0d0*(width**2)))
-endif
-
-if ( integ .eq. 'RK4' ) then
-
-k1 = dcmplx(0.0d0,0.0d0)
-k2 = dcmplx(0.0d0,0.0d0)
-k3 = dcmplx(0.0d0,0.0d0)
-k4 = dcmplx(0.0d0,0.0d0)
-
-do i=0,nstates-1
-do j=0,nstates-1
-k1(i) = k1(i) + RK_k(time,Ham(i,j), TransHam(i,j), xc(j,t))
-enddo
-enddo
-
-do i=0,nstates-1
-do j=0,nstates-1
-k2(i) = k2(i) + RK_k(time+(timestep/2.d0),Ham(i,j), TransHam(i,j), xc(j,t) + k1(j)*(dcmplx(timestep,0.d0))/2.0d0)
-enddo
-enddo
-
-do i=0,nstates-1
-do j=0,nstates-1
-k3(i) = k3(i) + RK_k(time+(timestep/2.d0),Ham(i,j), TransHam(i,j),  xc(j,t) + k2(j)*(dcmplx(timestep,0.d0))/2.0d0)
-enddo
-enddo
-
-do i=0,nstates-1
-do j=0,nstates-1
-k4(i) = k4(i) + RK_k(time+timestep,Ham(i,j), TransHam(i,j),  xc(j,t) + k3(j)*dcmplx(timestep,0.d0))
-enddo
-enddo
-
-do i=0,nstates-1
-xc(i,t+1) = xc(i,t)+(dcmplx(timestep,0.d0)/6.d0)*(k1(i)+2.d0*k2(i)+2.d0*k3(i)+k4(i))
-enddo
-
-elseif ( integ .eq. 'RK6' ) then 
-
-k1 = dcmplx(0.0d0,0.0d0)
-k2 = dcmplx(0.0d0,0.0d0)
-k3 = dcmplx(0.0d0,0.0d0)
-k4 = dcmplx(0.0d0,0.0d0)
-k5 = dcmplx(0.0d0,0.0d0)
-k6 = dcmplx(0.0d0,0.0d0)
-k7 = dcmplx(0.0d0,0.0d0)
-k8 = dcmplx(0.0d0,0.0d0)
-
-do i=0,nstates-1
-do j=0,nstates-1
-k1(i) = k1(i) + dcmplx(timestep,0.d0)*RK_k(time,Ham(i,j), TransHam(i,j), xc(j,t)) 
-enddo
-enddo
-
-do i=0,nstates-1
-do j=0,nstates-1
-k2(i) = k2(i) + dcmplx(timestep,0.d0)*RK_k(time+(timestep/9.e0_dp),Ham(i,j), TransHam(i,j), &
-xc(j,t)+(1.e0_dp/9.e0_dp)*k1(j)) 
-enddo
-enddo
-
-do i=0,nstates-1
-do j=0,nstates-1
-k3(i) = k3(i) + dcmplx(timestep,0.d0)*RK_k(time+(timestep/6.e0_dp),Ham(i,j), TransHam(i,j), &
-xc(j,t)+(1.e0_dp/24.e0_dp)*(k1(j)+3.e0_dp*k2(j))) 
-enddo
-enddo
-
-do i=0,nstates-1
-do j=0,nstates-1
-k4(i) = k4(i) + dcmplx(timestep,0.d0)*RK_k(time+(timestep/3.e0_dp),Ham(i,j), TransHam(i,j), &
-xc(j,t)+(1.e0_dp/6.e0_dp)*(k1(j)-3.e0_dp*k2(j)+4.e0_dp*k3(j))) 
-enddo
-enddo
-
-do i=0,nstates-1
-do j=0,nstates-1
-k5(i) = k5(i) + dcmplx(timestep,0.d0)*RK_k(time+(timestep/2.e0_dp),Ham(i,j), TransHam(i,j), &
-xc(j,t)+(1.e0_dp/8.e0_dp)*(-5.e0_dp*k1(j)+27.e0_dp*k2(j)-24.e0_dp*k3(j)+6.e0_dp*k4(j)))
-enddo
-enddo
-
-do i=0,nstates-1
-do j=0,nstates-1
-k6(i) = k6(i) + dcmplx(timestep,0.d0)*RK_k(time+(2.e0_dp*timestep/3.e0_dp),Ham(i,j), TransHam(i,j), &
-xc(j,t)+(1.e0_dp/9.e0_dp)*(221.e0_dp*k1(j)-981.e0_dp*k2(j)+867.e0_dp*k3(j)-102.e0_dp*k4(j)+k5(j)))
-enddo
-enddo
-
-do i=0,nstates-1
-do j=0,nstates-1
-k7(i) = k7(i) + dcmplx(timestep,0.d0)*RK_k(time+(5.e0_dp*timestep/6.e0_dp),Ham(i,j), TransHam(i,j), &
-xc(j,t)+(1.e0_dp/48.e0_dp)*(-183.e0_dp*k1(j)+678.e0_dp*k2(j)-472.e0_dp*k3(j)-66.e0_dp*k4(j)+80.e0_dp*k5(j)+3.e0_dp*k6(j)))
-enddo
-enddo
-
-do i=0,nstates-1
-do j=0,nstates-1
-k8(i)=k8(i)+dcmplx(timestep,0.d0)*RK_k(time+timestep,Ham(i,j), TransHam(i,j), &
-xc(j,t)+(1.e0_dp/82.e0_dp)*&
-(716.e0_dp*k1(j)-2079.e0_dp*k2(j)+1002.e0_dp*k3(j)+834.e0_dp*k4(j)-454.e0_dp*k5(j)-9.e0_dp*k6(j)+72.e0_dp*k7(j)))
-enddo
-enddo
-
-do i=0,nstates-1
-xc(i,t+1) = xc(i,t)+(1.e0_dp/840.e0_dp)*(41.e0_dp*(k1(i)+k8(i))+216.e0_dp*(k3(i)+k7(i))+27.e0_dp*(k4(i)+k6(i))+272.e0_dp*k5(i))
-enddo
-
-endif 
-
-if ( MOD(t,10) .eq. 0 ) then
-if ( ( vers .eq. 'dimer' ) .or. ( vers .eq. 'range' ) .or. ( vers .eq. 'randm' ) ) then
-cnorm2 = 0.d0
-do i=0,nstates-1
-cnorm2 = cnorm2 + dreal(xc(i,t))**2 + aimag(xc(i,t))**2
-enddo
-!!!NORM
-write(46,*) time*t_au, cnorm2 !cnormabs !, cnormconj, cnorm2
-!!!POPULATIONS
-write(44,'(10ES15.6E3)') time*t_au, (dreal(xc(i,t))**2+aimag(xc(i,t))**2, i=0,8) 
-else if ( vers .eq. 'singl' ) then
-cnorm2 = 0.d0
-do i=0,nstates-1
-cnorm2 = cnorm2 + dreal(xc(i,t))**2 + aimag(xc(i,t))**2
-enddo
-!!!NORM
-write(46,*) time*t_au, cnorm2 !cnormabs !, cnormconj, cnorm2
-!!!POPULATIONS
-write(44,'(26ES15.6E3)') time*t_au, (dreal(xc(i,t))**2+aimag(xc(i,t))**2, i=0,24)
-endif
-endif
+call RK_0_ei
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!Eigenstates dynamics!!!!!!!!!!!!!!!!!!!!!!!!
-if ( dyn_ei .eq. 'y' ) then
+!if ( dyn_ei .eq. 'y' ) then
+!
+!xc_ei = dcmplx(0.d0,0.d0)
+!cnorm2_ei = 0.d0
+!
+!do i=0,nstates-1
+!   do j=0,nstates-1
+!      xc_ei(i,t) = xc_ei(i,t) + dcmplx(Ham_ei(j,i),0.d0) * xc(j,t)  
+!   enddo
+!enddo
+!
+!if ( MOD(t,10) .eq. 0 ) then
+!
+!if ( ( vers .eq. 'dimer' ) .or. ( vers .eq. 'range' ) .or. ( vers .eq. 'randm' ) ) then
+!
+!do i=0,nstates-1
+!cnorm2_ei = cnorm2_ei + dreal(xc_ei(i,t))**2 + aimag(xc_ei(i,t))**2
+!enddo
+!write(50,*) time*t_au, cnorm2_ei
+!write(49,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,nstates-1)
+!write(52,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc_ei(i,t)), i=0,nstates-1)
+!write(53,'(ES11.5E2,25ES15.6E3)') time*t_au, (aimag(xc_ei(i,t)), i=0,nstates-1)
+!
+!else if ( vers .eq. 'singl' ) then 
+!do i=0,nstates-1
+!cnorm2_ei = cnorm2_ei + dreal(xc_ei(i,t))**2 + aimag(xc_ei(i,t))**2
+!enddo
+!write(50,*) time*t_au, cnorm2_ei
+!write(49,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,nstates-1)
+!write(52,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc_ei(i,t)), i=0,nstates-1)
+!write(53,'(ES11.5E2,25ES15.6E3)') time*t_au, (aimag(xc_ei(i,t)), i=0,nstates-1)
+!
+!endif !endif select vers
+!!endif !endif if vers writing
+!endif !endif write Re, Im, xc
+!
+!endif !endif get c in eigenstates
 
-xc_ei = dcmplx(0.d0,0.d0)
-cnorm2_ei = 0.d0
-
-do i=0,nstates-1
-   do j=0,nstates-1
-      xc_ei(i,t) = xc_ei(i,t) + dcmplx(Ham_ei(j,i),0.d0) * xc(j,t)  
-   enddo
-enddo
-
-if ( MOD(t,10) .eq. 0 ) then
-
-if ( ( vers .eq. 'dimer' ) .or. ( vers .eq. 'range' ) .or. ( vers .eq. 'randm' ) ) then
-
-do i=0,nstates-1
-cnorm2_ei = cnorm2_ei + dreal(xc_ei(i,t))**2 + aimag(xc_ei(i,t))**2
-enddo
-write(50,*) time*t_au, cnorm2_ei
-write(49,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,nstates-1)
-write(52,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc_ei(i,t)), i=0,nstates-1)
-write(53,'(ES11.5E2,25ES15.6E3)') time*t_au, (aimag(xc_ei(i,t)), i=0,nstates-1)
-
-else if ( vers .eq. 'singl' ) then 
-do i=0,nstates-1
-cnorm2_ei = cnorm2_ei + dreal(xc_ei(i,t))**2 + aimag(xc_ei(i,t))**2
-enddo
-write(50,*) time*t_au, cnorm2_ei
-write(49,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,nstates-1)
-write(52,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc_ei(i,t)), i=0,nstates-1)
-write(53,'(ES11.5E2,25ES15.6E3)') time*t_au, (aimag(xc_ei(i,t)), i=0,nstates-1)
-
-endif !endif select vers
-!endif !endif if vers writing
-endif !endif write Re, Im, xc
-
-endif !endif get c in eigenstates
-
-enddo !end loop time
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

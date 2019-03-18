@@ -12,9 +12,9 @@ o_DipS  = "y" !Transition dipole moments of local excitons (must be "y")
 o_Osci  = "n" !Oscillator strength of local excitons
 o_Exti  = "n" !Molar extinction coefficients of local excitons
 o_DipD  = "n" !Transition dipole moments of CT states
-get_ei  = "y" !Provide eigenstates and obtain coef of eigenstates after dynamic if dyn = y
-dyn     = "n" !Should I perform dynamics?
-dyn_ei  = "n" !Should I perform dynamics?
+get_ei  = "y" !Generates eigenstate vectors and TDM 
+Dyn_0   = "y" !Should I perform dynamics in 0 order basis?
+Dyn_ei  = "y" !Should I perform dynamics in eigenstate basis?
 hamilt  = "n" !Should I print the time dependent Hamiltonian (very heavy and time consuming)
 fineSt  = "n" !Request fine structure 
 TDM_ee  = "y" !Request interexciton TDM or not
@@ -53,7 +53,7 @@ totaltime = 1000.d0     !Total time simulated (s)
 omega     = 0.55d15      !Frequency (s-1)
 !phase     = pi Careful here, it is defined in the code
 width     = 6.0d0       !Width of the pulse (s) 
-Ed        = 5.d8     !Field strength (V/m so far)
+Ed        = 5.d9     !Field strength (V/m so far)
 /
 
 &syst_single !Parameters of the single dot

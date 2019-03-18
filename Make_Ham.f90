@@ -1108,4 +1108,15 @@ enddo
 
 end subroutine make_TransHam_ei_fineSt
 
+subroutine make_Ham_l
+
+Ham_l = 0.e0_dp
+
+do i=0,nstates-1
+Ham_l(i,i) = lambda(i)
+write(6,*) lambda(i), Ham_l(i,i)
+enddo
+
+end subroutine make_Ham_l
+
 end module Make_Ham
