@@ -573,91 +573,12 @@ xc_ei(:,0) = xc0(:)
 
 call RK_0_ei
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!Eigenstates dynamics!!!!!!!!!!!!!!!!!!!!!!!!
-!if ( dyn_ei .eq. 'y' ) then
-!
-!xc_ei = dcmplx(0.d0,0.d0)
-!cnorm2_ei = 0.d0
-!
-!do i=0,nstates-1
-!   do j=0,nstates-1
-!      xc_ei(i,t) = xc_ei(i,t) + dcmplx(Ham_ei(j,i),0.d0) * xc(j,t)  
-!   enddo
-!enddo
-!
-!if ( MOD(t,10) .eq. 0 ) then
-!
-!if ( ( vers .eq. 'dimer' ) .or. ( vers .eq. 'range' ) .or. ( vers .eq. 'randm' ) ) then
-!
-!do i=0,nstates-1
-!cnorm2_ei = cnorm2_ei + dreal(xc_ei(i,t))**2 + aimag(xc_ei(i,t))**2
-!enddo
-!write(50,*) time*t_au, cnorm2_ei
-!write(49,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,nstates-1)
-!write(52,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc_ei(i,t)), i=0,nstates-1)
-!write(53,'(ES11.5E2,25ES15.6E3)') time*t_au, (aimag(xc_ei(i,t)), i=0,nstates-1)
-!
-!else if ( vers .eq. 'singl' ) then 
-!do i=0,nstates-1
-!cnorm2_ei = cnorm2_ei + dreal(xc_ei(i,t))**2 + aimag(xc_ei(i,t))**2
-!enddo
-!write(50,*) time*t_au, cnorm2_ei
-!write(49,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,nstates-1)
-!write(52,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc_ei(i,t)), i=0,nstates-1)
-!write(53,'(ES11.5E2,25ES15.6E3)') time*t_au, (aimag(xc_ei(i,t)), i=0,nstates-1)
-!
-!endif !endif select vers
-!!endif !endif if vers writing
-!endif !endif write Re, Im, xc
-!
-!endif !endif get c in eigenstates
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-!do i=1,nstates-1
-!xc_ei_av(i,t) = dcmplx(dreal(xc_ei_av(i,t)) + dreal(xc_ei(0,t)), aimag(xc_ei_av(i,t)) + aimag(xc_ei(0,t)))
-!enddo
-
-!open(61,file="Popc_ei_av.dat")
-!
-!write(61,*) (real(xc_ei_av(0,t))**2+aimag(xc_ei_av(0,t))**2)/nsys, &
-!            (real(xc_ei_av(1,t))**2+aimag(xc_ei_av(1,t))**2)/nsys
-
-!do i = 0,nstates-1
-!write(6,"(9f8.4)") (real(xHam_ei(i,j)), j=0,nstates-1)
-!enddo
-
 !close(44)
 !close(45)
 !close(46)
 !close(48)
 !close(49)
 
-
-!xc_ei = 0.d0
-
-!do i=0,nstates
-!   do j=0,nstates-1
-!      xc_ei(i,t) = xc_ei(i,t) + xHam(i,j) * xc(i,t)  
-!   enddo
-!enddo
-!
-!!!!NORM
-!write(48,*) real(xtime), &
-!real(xc_ei(1,t))**2+aimag(xc_ei(1,t))**2+real(xc_ei(2,t))**2+aimag(xc_ei(2,t))**2+real(xc_ei(3,t))**2+aimag(xc_ei(3,t))**2+&
-!real(xc_ei(4,t))**2+aimag(xc_ei(4,t))**2+real(xc_ei(5,t))**2+aimag(xc_ei(5,t))**2+real(xc_ei(6,t))**2+aimag(xc_ei(6,t))**2+&
-!real(xc_ei(7,t))**2+aimag(xc_ei(7,t))**2+real(xc_ei(8,t))**2+aimag(xc_ei(8,t))**2+real(xc_ei(0,t))**2+aimag(xc_ei(0,t))**2
-!
-!
-!!!!!POPULATIONS
-!write(49,'(10f12.6)') real(xtime), real(xc_ei(0,t))**2+aimag(xc_ei(0,t))**2, real(xc_ei(1,t))**2+aimag(xc_ei(1,t))**2,&
-!                         real(xc_ei(2,t))**2+aimag(xc_ei(2,t))**2, real(xc_ei(3,t))**2+aimag(xc_ei(3,t))**2,&
-!                         real(xc_ei(4,t))**2+aimag(xc_ei(4,t))**2, real(xc_ei(5,t))**2+aimag(xc_ei(5,t))**2,&
-!                         real(xc_ei(6,t))**2+aimag(xc_ei(6,t))**2, real(xc_ei(7,t))**2+aimag(xc_ei(7,t))**2,&
-!                         real(xc_ei(8,t))**2+aimag(xc_ei(8,t))**2
-!
 endif !endif dynamics
 
 

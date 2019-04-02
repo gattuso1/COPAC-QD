@@ -1626,19 +1626,6 @@ RK_k = -im * (Ham - pulse1 * TransHam * Ed * cos(omega*(t-t01)+phase) * exp(-1.0
 
 end function RK_k
 
-!complex(dp) function RK_k(t,xHam,xTransHam,xc)
-!implicit none
-!
-!integer :: i,j 
-!complex(dp) :: t,xHam,xTransHam,xc
-!
-!RK_k = (-1.0d0)*(im/xhbar_au) * &
-!(xHam - pulse1 * xTransHam * xEd * cos(xomega*(t-xt01)+xphase) * exp(-1.0d0*(t-xt01)**2.d0/(2.0d0*(xwidth**2))) - &
-!        pulse2 * xTransHam * xEd * cos(xomega*(t-xt02)+xphase) * exp(-1.0d0*(t-xt02)**2.d0/(2.0d0*(xwidth**2))) - &
-!        pulse3 * xTransHam * xEd * cos(xomega*(t-xt03)+xphase) * exp(-1.0d0*(t-xt03)**2.d0/(2.0d0*(xwidth**2))))*xc
-!
-!end function RK_k
-
 subroutine RK_0_ei
 
 do t=0,ntime
