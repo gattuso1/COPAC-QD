@@ -431,7 +431,6 @@ call make_Ham_he
 elseif ( vers .eq. "singl" ) then
 call make_Ham_fineSt
 call make_TransHam_0_fineSt
-!write(6,*) Ham(3,5), Ham(9,10)
 !do i = 0,nstates-1
 !write(6,'(25f12.8)') (Ham(i,j)*Energ_au/elec, j=0,nstates-1)
 !enddo
@@ -463,6 +462,7 @@ endif
 enddo
 write(32,*) 
 write(33,*) 
+
 !if ( hamilt .eq. "y" ) then
 !do t=0,ntime
 ! 
@@ -557,7 +557,7 @@ endif
 !
 !endif
 
-if ( ( Dyn_0 .eq. 'y' ) .or. ( Dyn_ei .eq. 'n' ) ) then
+if ( ( Dyn_0 .eq. 'y' ) .or. ( Dyn_ei .eq. 'y' ) ) then
 
 !!!!!INITIAL POPULATIONS
 c0(0) = 1.0d0

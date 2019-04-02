@@ -8,7 +8,7 @@ implicit none
 
    character*5 :: vers
    character*64 :: popc, hmti, norm, tdmM, hmt0, outputdir, norm_ei, popc_ei, Re_c_ei, Im_c_ei, integ,model
-   character*1 :: o_Norm, o_Over, o_Coul, o_DipS, o_Osci, o_Exti, o_DipD, dyn, hamilt, get_ei, finest
+   character*1 :: o_Norm, o_Over, o_Coul, o_DipS, o_Osci, o_Exti, o_DipD, dyn, hamilt, get_ei, finest, get_sp
    character*1 :: TDM_ee, Dyn_0, Dyn_ei
    integer :: ndots, n, rmin, rmax, nsys, npulses, nstates, ntime, i, j, t, lwork, info, idlink
    integer,allocatable :: seed(:)
@@ -35,7 +35,7 @@ contains
 subroutine getVariables
 
 NAMELIST /version/ vers
-NAMELIST /outputs/ o_Norm,o_Over,o_Coul,o_DipS,o_Osci,o_Exti,o_DipD,get_ei,Dyn_0,Dyn_ei,hamilt,fineSt,TDM_ee
+NAMELIST /outputs/ o_Norm,o_Over,o_Coul,o_DipS,o_Osci,o_Exti,o_DipD,get_sp,get_ei,Dyn_0,Dyn_ei,hamilt,fineSt,TDM_ee
 NAMELIST /elecSt/ model,me,mh,eps,epsout,V0eV,omegaLO,slope,side
 NAMELIST /fineStruc/ Kas,Kbs,Kcs,Dso1,Dso2,Dxf
 NAMELIST /pulses/ integ,npulses,t01,t02,t03,timestep,totaltime,omega,phase,width,Ed
@@ -64,8 +64,6 @@ nstates = 4
 elseif ( model .eq. "FS") then
 nstates = 25
 endif
-
-write(6,*) nstates
 
 if ( idlink .eq. 20 ) then
 link = 0.2d0
@@ -293,12 +291,23 @@ linker = link
 rmin = 1
 rmax = 2*nsys
 
+if ( get_sp .eq. 'y' ) then
+call system("mv Etransitions-he_0.dat tmp.dat ")
+open(11,file="tmp.dat")
+endif
+
 do n = 1,nsys
+if ( get_sp .eq. 'n' ) then
 aR(n) = r8_NORMAL_AB(aA,dispQD*1d-9,seed(1))
 aR(n+nsys) = r8_NORMAL_AB(aB,dispQD*1d-9,seed(2))
+elseif ( get_sp .eq. 'y' ) then
+read(11,*) aR(n), aR(n+nsys)
+aR(n) = aR(n)*1.e-9_dp
+aR(n+nsys) = aR(n+nsys)*1.e-9_dp
+endif
 epsin(n) = 1.0 + (eps - 1.0) / (1.0 + (0.75d-9/(2*aR(n)))**1.2)
 epsin(n+nsys) = 1.0 + (eps - 1.0) / (1.0 + (0.75d-9/(2*aR(n+nsys)))**1.2)
-epsR(n)= 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-(36/35)*aR(n)/rhoe)+exp(-(36/35)*aR(n)/rhoh))/2))
+epsR(n)= 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-(36.d0/35)*aR(n)/rhoe)+exp(-(36.d0/35)*aR(n)/rhoh))/2))
 epsR(n+nsys)= 1.0/((1.0/epsin(n+nsys))-((1.0/epsin(n+nsys))-(1.0/(epsin(n+nsys)+3.5)))*&
                   (1-(exp(-(36/35)*aR(n+nsys)/rhoe)+exp(-(36/35)*aR(n+nsys)/rhoh))/2))
 V0e(n)=-1*(-3.49+2.47*(1d9*2*aR(n))**(-1.32))*elec
