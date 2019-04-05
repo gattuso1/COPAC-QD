@@ -1,5 +1,4 @@
 ! Namelist definition
-write(6,*) timestep, t01, omega, width
 &version !version of the code, choose between singl, dimer, range, randm
 vers = "randm"   
 /
@@ -12,10 +11,11 @@ o_DipS  = "y" !Transition dipole moments of local excitons (must be "y")
 o_Osci  = "n" !Oscillator strength of local excitons
 o_Exti  = "n" !Molar extinction coefficients of local excitons
 o_DipD  = "n" !Transition dipole moments of CT states
+inbox   = "y" !For phase matching directions, read coordinates in space, orient mus ... 
 get_sp  = "n" !recover sampling from a previous Etransitions_0.dat
 get_ei  = "y" !Generates eigenstate vectors and TDM 
-Dyn_0   = "n" !Should I perform dynamics in 0 order basis?
-Dyn_ei  = "n" !Should I perform dynamics in eigenstate basis?
+Dyn_0   = "y" !Should I perform dynamics in 0 order basis?
+Dyn_ei  = "y" !Should I perform dynamics in eigenstate basis?
 hamilt  = "n" !Should I print the time dependent Hamiltonian (very heavy and time consuming)
 fineSt  = "n" !Request fine structure 
 TDM_ee  = "y" !Request interexciton TDM or not
@@ -43,18 +43,26 @@ Dxf = 0.025d0
 /
 
 &pulses !Parameters of quantum dynamic and pulses
-integ     = "RK6"       !Choose between integrator RK4 or RK6
+integ      = "RK6"       !Choose between integrator RK4 or RK6
 !nstates   = 9           !Total number of excitons + GS, redifined setting "model"
-npulses   = 2           !Number of pulses (up to 3)
-t01       = 100.d0     !Pulse 1 centered at (s)
-t02       = 200.d0     !Pulse 2 centered at (s)
-t03       = 90.d0     !Pulse 3 centered at (s)
-timestep  = 0.050d0      !Time step of quantum dynamic
-totaltime = 1000.d0     !Total time simulated (s)
-omega     = 0.55d15      !Frequency (s-1)
-!phase     = pi Careful here, it is defined in the code
-width     = 6.0d0       !Width of the pulse (s) 
-Ed        = 5.d9     !Field strength (V/m so far)
+npulses    = 2           !Number of pulses (up to 3)
+t01        = 100.d0     !Pulse 1 centered at (s)
+t02        = 200.d0     !Pulse 2 centered at (s)
+t03        = 300.d0     !Pulse 3 centered at (s)
+timestep   = 0.050d0      !Time step of quantum dynamic
+totaltime  = 500.d0     !Total time simulated (s)
+omega01    = 0.55d15      !Frequency (s-1)
+omega02    = 0.55d15      !Frequency (s-1)
+omega03    = 0.55d15      !Frequency (s-1)
+!phase01   = pi Careful here, it is defined in the code
+!phase02   = pi Careful here, it is defined in the code
+!phase03   = pi Careful here, it is defined in the code
+width01    = 6.0d0       !Width of the pulse (s) 
+width02    = 6.0d0       !Width of the pulse (s) 
+width03    = 6.0d0       !Width of the pulse (s) 
+Ed01       = 5.d9     !Field strength (V/m so far)
+Ed02       = 5.d9     !Field strength (V/m so far)
+Ed03       = 5.d9     !Field strength (V/m so far)
 /
 
 &syst_single !Parameters of the single dot
@@ -64,9 +72,9 @@ dispQD    = 0.00d0     !Dispersion of QD radius
 /
 
 &syst_dimer !Parameters of the dimer
-aA     = 1.375d-9      !Radius of QDA
-aB     = 1.725d-9      !Radius of QDB
-idlink = 55         !Linker length
+aA     = 1.175d-9      !Radius of QDA
+aB     = 1.925d-9      !Radius of QDB
+idlink = 20         !Linker length
 /
 
 &syst_range !Parameters of the range of QD radius
@@ -77,10 +85,10 @@ idlink = 55        !Linker length
 /
 
 &syst_random !Parameters of a random distribution of dimers either homo (aA=aB) or hetero (aA!=aB,linker fixed)
-nsys      = 100         !Number of dimers
+nsys      = 1         !Number of dimers
 aA        = 1.375d-9      !Radius of QDA
 aB        = 1.725d-9      !Radius of QDB
-idlink    = 55        !Linker length  (if hetero must be 0.2 or 0.55 nm so far)
+idlink    = 20        !Linker length  (if hetero must be 0.2 or 0.55 nm so far)
 displink  = 0.03d0        !Dispersion on the linker length
 dispQD    = 0.03d0        !Dispersion of QD radius
 /

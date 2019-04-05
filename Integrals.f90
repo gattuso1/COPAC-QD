@@ -1620,9 +1620,34 @@ implicit none
 real(dp) :: t,Ham,TransHam
 complex(kind=8) :: xc
 
-RK_k = -im * (Ham - pulse1 * TransHam * Ed * cos(omega*(t-t01)+phase) * exp(-1.0d0*(t-t01)**2.d0/(2.0d0*(width**2))) - &
-                    pulse2 * TransHam * Ed * cos(omega*(t-t02)+phase) * exp(-1.0d0*(t-t02)**2.d0/(2.0d0*(width**2))) - &
-                    pulse3 * TransHam * Ed * cos(omega*(t-t03)+phase) * exp(-1.0d0*(t-t03)**2.d0/(2.0d0*(width**2))))*xc
+if ( inbox .eq. "y" ) then
+
+RK_k = -im * (Ham - pulse1 * Pe1(1) * TransHam * Ed01 * cos(k1(1)*Dcenter(n,1)-omega01*(t-t01)+phase01) &
+                                                    * exp(-1.0d0*(t-t01)**2.d0/(2.0d0*(width01**2))) - &
+                    pulse1 * Pe1(2) * TransHam * Ed01 * cos(k1(2)*Dcenter(n,2)-omega01*(t-t01)+phase01) &
+                                                    * exp(-1.0d0*(t-t01)**2.d0/(2.0d0*(width01**2))) - &
+                    pulse1 * Pe1(3) * TransHam * Ed01 * cos(k1(3)*Dcenter(n,3)-omega01*(t-t01)+phase01) &
+                                                    * exp(-1.0d0*(t-t01)**2.d0/(2.0d0*(width01**2))) - &
+                    pulse2 * Pe2(1) * TransHam * Ed02 * cos(k2(1)*Dcenter(n,1)-omega02*(t-t02)+phase02) &
+                                                    * exp(-1.0d0*(t-t02)**2.d0/(2.0d0*(width02**2))) - &
+                    pulse2 * Pe2(2) * TransHam * Ed02 * cos(k2(2)*Dcenter(n,2)-omega02*(t-t02)+phase02) &
+                                                    * exp(-1.0d0*(t-t02)**2.d0/(2.0d0*(width02**2))) - &
+                    pulse2 * Pe2(3) * TransHam * Ed02 * cos(k2(3)*Dcenter(n,3)-omega02*(t-t02)+phase02) &
+                                                    * exp(-1.0d0*(t-t02)**2.d0/(2.0d0*(width02**2))) - &
+                    pulse3 * Pe3(1) * TransHam * Ed03 * cos(k3(1)*Dcenter(n,1)-omega03*(t-t03)+phase03) &
+                                                    * exp(-1.0d0*(t-t03)**2.d0/(2.0d0*(width03**2))) - &
+                    pulse3 * Pe3(2) * TransHam * Ed03 * cos(k3(2)*Dcenter(n,2)-omega03*(t-t03)+phase03) &
+                                                    * exp(-1.0d0*(t-t03)**2.d0/(2.0d0*(width03**2))) - &
+                    pulse3 * Pe3(3) * TransHam * Ed03 * cos(k3(3)*Dcenter(n,3)-omega03*(t-t03)+phase03) &
+                                                    * exp(-1.0d0*(t-t03)**2.d0/(2.0d0*(width03**2))))*xc
+
+else
+
+RK_k = -im * (Ham - pulse1 * TransHam * Ed01 * cos(omega01*(t-t01)+phase01) * exp(-1.0d0*(t-t01)**2.d0/(2.0d0*(width01**2))) - &
+                    pulse2 * TransHam * Ed02 * cos(omega02*(t-t02)+phase02) * exp(-1.0d0*(t-t02)**2.d0/(2.0d0*(width02**2))) - &
+                    pulse3 * TransHam * Ed03 * cos(omega03*(t-t03)+phase03) * exp(-1.0d0*(t-t03)**2.d0/(2.0d0*(width03**2))))*xc
+
+endif
 
 end function RK_k
 
@@ -1633,9 +1658,9 @@ do t=0,ntime
 time = t*timestep
 
 if ( MOD(t,100) .eq. 0 ) then
-write(22,*) time*t_au , pulse1 * Ed * cos(omega*(time-t01)+phase) * exp(-1.0d0*(time-t01)**2/(2.0d0*(width**2))) , &
-                        pulse2 * Ed * cos(omega*(time-t02)+phase) * exp(-1.0d0*(time-t02)**2/(2.0d0*(width**2))) , &
-                        pulse3 * Ed * cos(omega*(time-t03)+phase) * exp(-1.0d0*(time-t03)**2/(2.0d0*(width**2)))
+write(22,*) time*t_au , pulse1 * Ed01 * cos(omega01*(time-t01)+phase01) * exp(-1.0d0*(time-t01)**2/(2.0d0*(width01**2))) , &
+                        pulse2 * Ed02 * cos(omega02*(time-t02)+phase02) * exp(-1.0d0*(time-t02)**2/(2.0d0*(width02**2))) , &
+                        pulse3 * Ed03 * cos(omega03*(time-t03)+phase03) * exp(-1.0d0*(time-t03)**2/(2.0d0*(width03**2)))
 endif
 
 if ( Dyn_0 .eq. 'y' ) then
