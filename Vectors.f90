@@ -9,7 +9,6 @@ function vector(d)
 
       implicit none
       integer :: i,j
-      double precision, external:: s13adf
       real(kind=8), dimension(3) :: vector
       real(kind=8) :: d, phi, teta, x, y, z, rand1, rand2, PI
 

@@ -13,7 +13,7 @@ implicit none
    integer :: ndots, n, rmin, rmax, nsys, npulses, nstates, ntime, i, j, t, lwork, info, idlink
    integer,allocatable :: seed(:)
    real(dp) :: aA, aB, me, mh, eps, epsout, V0, omegaLO, rhoe, rhoh, slope, V0eV, minr, maxr, rsteps, side, link
-   real(dp) :: dispQD, displink, rdmlinker, rdmQDA, rdmQDB, t01, t02, t03, timestep, totaltime 
+   real(dp) :: dispQD, displink, rdmlinker, rdmQDA, rdmQDB, t01, t02, t03, timestep, totaltime, distQD
    real(dp) :: omega01, omega02, omega03, phase01, phase02, phase03, width01, width02, width03, Ed01, Ed02, Ed03
    real(dp) :: pulse1, pulse2, pulse3, test, time, cnorm, cnormabs, cnormconj, cnorm2, cnorm2_ei, Kas, Kbs, Kcs, Dso1, Dso2, Dxf
    real(dp),allocatable :: aR(:), aRA(:), aRB(:), epsin(:), epsR(:), V0e(:), V0h(:), linker(:)
@@ -25,6 +25,7 @@ implicit none
    real(dp),allocatable :: ExctCoef_h1e(:), ExctCoef_h2e(:), Ham(:,:), E0(:), c0(:), TransHam(:,:), Hamt(:,:,:), c(:,:)
    real(dp),allocatable :: TransMat_ei(:,:), TransHam0(:,:), Ham_0(:), Ham_dir(:,:), Ham_ex(:,:), Ham_ei(:,:), Ham_l(:,:)
    real(dp),allocatable :: TransDip_Ana_h1h2(:), TransHam_ei(:,:), Mat(:,:), QDcoor(:,:), Dcenter(:,:), Pe1(:), Pe2(:), Pe3(:)
+   real(dp),allocatable :: TransHam_d(:,:,:), TransHam_l(:,:,:)
    complex(kind=8) :: ct1, ct2, ct3, ct4, xt01, xt02, xt03, xhbar, im, xwidth, xomega , xEd, xh, xphase, xtime, xhbar_au
    complex(kind=8),allocatable :: xHam(:,:) , xHamt(:,:,:), xTransHam(:,:), xE0(:), xHamtk2(:,:,:), xHamtk3(:,:,:), xHamtk4(:,:,:)
    complex(kind=8),allocatable :: xc0(:), xc(:,:), xc_ei(:,:), xcnew(:,:), k1(:), k2(:), k3(:) , k4(:), xHam_ei(:,:)
@@ -67,11 +68,11 @@ elseif ( model .eq. "FS") then
 nstates = 25
 endif
 
-if ( idlink .eq. 20 ) then
-link = 0.2d0
-elseif ( idlink .eq. 55 ) then
-link = 0.55d0
-endif
+!if ( idlink .eq. 20 ) then
+!link = 0.2d-9
+!elseif ( idlink .eq. 55 ) then
+!link = 0.55d-9
+!endif
 
 if ( ( Dyn_0 .eq. 'y' ) .or. ( Dyn_ei .eq. 'y' ) ) then
 
@@ -297,7 +298,13 @@ allocate(Pe1(3))
 allocate(Pe2(3))
 allocate(Pe3(3))
 
-linker = link
+if ( idlink .eq. 20 ) then
+link = 0.2d-9
+elseif ( idlink .eq. 55 ) then
+link = 0.55d-9
+endif
+
+linker(1) = link
 
   call random_seed(size = n)
   allocate(seed(n))

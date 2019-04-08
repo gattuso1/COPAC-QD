@@ -936,6 +936,61 @@ Ham = Ham/Energ_au
 Ham_dir = Ham_dir/Energ_au
 Ham_ex = Ham_ex/Energ_au
 
+if ( inbox .eq. "y" ) then
+
+TransHam_d = 0.d0
+TransHam_l = 0.d0
+
+if ( TDM_ee .eq. 'n') then
+TransHam(0,1) = TransDip_Ana_h1e(n)
+TransHam(0,2) = TransDip_Ana_h2e(n)
+TransHam(0,3) = TransDip_Ana_h1e(n+nsys)
+TransHam(0,4) = TransDip_Ana_h2e(n+nsys)
+TransHam(0,5) = TransDip_Fit_h1e_he(aR(n+nsys),aR(n))
+TransHam(0,6) = TransDip_Fit_h2e_he(aR(n+nsys),aR(n))
+TransHam(0,7) = TransDip_Fit_h1e_he(aR(n),aR(n+nsys))
+TransHam(0,8) = TransDip_Fit_h2e_he(aR(n),aR(n+nsys))
+TransHam = TransHam/D_to_au
+do i=0,nstates-1
+TransHam(i,0) = TransHam(0,i)
+enddo
+elseif ( TDM_ee .eq. 'y') then
+TransHam_d(0,1,1) = TransDip_Ana_h1e(n)
+TransHam_d(0,2,1) = TransDip_Ana_h2e(n)
+TransHam_d(0,3,1) = TransDip_Ana_h1e(n+nsys)
+TransHam_d(0,4,1) = TransDip_Ana_h2e(n+nsys)
+TransHam_d(0,5,1) = TransDip_Fit_h1e_he(aR(n+nsys),aR(n))
+TransHam_d(0,6,1) = TransDip_Fit_h2e_he(aR(n+nsys),aR(n))
+TransHam_d(0,7,1) = TransDip_Fit_h1e_he(aR(n),aR(n+nsys))
+TransHam_d(0,8,1) = TransDip_Fit_h2e_he(aR(n),aR(n+nsys))
+TransHam_d(1,2,1) = TransDip_Ana_h1h2(n)
+TransHam_d(1,5,1) = TransDip_Fit_ee_he(aR(n+nsys),aR(n))
+TransHam_d(1,7,1) = TransDip_Fit_h1h1_he(aR(n+nsys),aR(n))
+TransHam_d(1,8,1) = TransDip_Fit_h1h2_he(aR(n),aR(n+nsys))
+TransHam_d(2,6,1) = TransDip_Fit_ee_he(aR(n+nsys),aR(n))
+TransHam_d(2,7,1) = TransDip_Fit_h1h2_he(aR(n+nsys),aR(n))
+TransHam_d(2,8,1) = TransDip_Fit_h2h2_he(aR(n+nsys),aR(n))
+TransHam_d(3,4,1) = TransDip_Ana_h1h2(n+nsys)
+TransHam_d(3,5,1) = TransDip_Fit_h1h1_he(aR(n+nsys),aR(n))
+TransHam_d(3,6,1) = TransDip_Fit_h1h2_he(aR(n+nsys),aR(n))
+TransHam_d(3,7,1) = TransDip_Fit_ee_he(aR(n+nsys),aR(n))
+TransHam_d(4,5,1) = TransDip_Fit_h1h2_he(aR(n),aR(n+nsys))
+TransHam_d(4,6,1) = TransDip_Fit_h2h2_he(aR(n+nsys),aR(n))
+TransHam_d(4,8,1) = TransDip_Fit_ee_he(aR(n+nsys),aR(n))
+TransHam_d(5,6,1) = TransDip_Ana_h1h2(n)
+TransHam_d(7,8,1) = TransDip_Ana_h1h2(n+nsys)
+
+call TDM_d2l
+
+do i=0,nstates-1
+do j=i+1,nstates-1
+TransHam_l(j,i,:) = TransHam_l(i,j,:)
+enddo
+enddo
+endif
+
+else 
+
 if ( TDM_ee .eq. 'n') then
 TransHam(0,1) = TransDip_Ana_h1e(n)
 TransHam(0,2) = TransDip_Ana_h2e(n)
@@ -980,6 +1035,10 @@ TransHam(j,i) = TransHam(i,j)
 enddo
 enddo
 endif
+
+endif
+
+
 
 TransHam = TransHam/D_to_au
 
@@ -1117,5 +1176,38 @@ Ham_l(i,i) = lambda(i)
 enddo
 
 end subroutine make_Ham_l
+
+subroutine TDM_d2l
+
+distQD = sqrt((QDcoor(n,1) - QDcoor(n+nsys,1))**2 + (QDcoor(n,2) - QDcoor(n+nsys,2))**2 + (QDcoor(n,3) - QDcoor(n+nsys,3))**2)
+
+!!TDM from A to B
+!do i=0,nstates-1
+!do j=0,nstates-1
+!TransHam_l(i,j,1) = (QDcoor(n+nsys,1) - QDcoor(n,1)) * TransHam_d(i,j,1)/distQD
+!TransHam_l(i,j,2) = (QDcoor(n+nsys,2) - QDcoor(n,2)) * TransHam_d(i,j,1)/distQD
+!TransHam_l(i,j,3) = (QDcoor(n+nsys,3) - QDcoor(n,3)) * TransHam_d(i,j,1)/distQD
+!enddo
+!enddo
+!
+!!TDM from B to A
+!do i=0,nstates-1
+!do j=0,nstates-1
+!TransHam_l(i,j,1) = (QDcoor(n,1) - QDcoor(n+nsys,1)) * TransHam_d(i,j,1)/distQD
+!TransHam_l(i,j,2) = (QDcoor(n,2) - QDcoor(n+nsys,2)) * TransHam_d(i,j,1)/distQD
+!TransHam_l(i,j,3) = (QDcoor(n,3) - QDcoor(n+nsys,3)) * TransHam_d(i,j,1)/distQD
+!enddo
+!enddo
+
+!TDM intradot
+do i=0,nstates-1
+do j=0,nstates-1
+TransHam_l(i,j,1) = (QDcoor(n+nsys,1) - QDcoor(n,1)) * TransHam_d(i,j,1)/distQD
+TransHam_l(i,j,2) = (QDcoor(n+nsys,2) - QDcoor(n,2)) * TransHam_d(i,j,1)/distQD
+TransHam_l(i,j,3) = (QDcoor(n+nsys,3) - QDcoor(n,3)) * TransHam_d(i,j,1)/distQD
+enddo
+enddo
+
+end subroutine TDM_d2l
 
 end module Make_Ham
