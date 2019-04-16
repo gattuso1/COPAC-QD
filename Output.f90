@@ -4,6 +4,7 @@ use Constants_au
 use Variables_au
 use Integrals
 use Vectors
+use omp_lib
 
 contains
 

@@ -1,5 +1,6 @@
 ! Namelist definition
 &version !version of the code, choose between singl, dimer, range, randm
+threads = 1
 vers = "randm"   
 /
 
@@ -50,7 +51,7 @@ t01        = 100.d0     !Pulse 1 centered at (s)
 t02        = 200.d0     !Pulse 2 centered at (s)
 t03        = 300.d0     !Pulse 3 centered at (s)
 timestep   = 0.050d0      !Time step of quantum dynamic
-totaltime  = 500.d0     !Total time simulated (s)
+totaltime  = 1000.d0     !Total time simulated (s)
 omega01    = 0.55d15      !Frequency (s-1)
 omega02    = 0.55d15      !Frequency (s-1)
 omega03    = 0.55d15      !Frequency (s-1)
@@ -85,7 +86,7 @@ idlink = 55        !Linker length
 /
 
 &syst_random !Parameters of a random distribution of dimers either homo (aA=aB) or hetero (aA!=aB,linker fixed)
-nsys      = 5         !Number of dimers
+nsys      = 4         !Number of dimers
 aA        = 1.375d-9      !Radius of QDA
 aB        = 1.725d-9      !Radius of QDB
 idlink    = 20        !Linker length  (if hetero must be 0.2 or 0.55 nm so far)

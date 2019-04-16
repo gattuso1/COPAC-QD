@@ -11,7 +11,7 @@ implicit none
    character*64 :: Re_c, Im_c
    character*1 :: o_Norm, o_Over, o_Coul, o_DipS, o_Osci, o_Exti, o_DipD, dyn, hamilt, get_ei, finest, get_sp
    character*1 :: TDM_ee, Dyn_0, Dyn_ei, inbox
-   integer :: ndots, n, rmin, rmax, nsys, npulses, nstates, ntime, i, j, t, lwork, info, idlink
+   integer :: ndots, n, rmin, rmax, nsys, npulses, nstates, ntime, i, j, t, lwork, info, idlink, threads
    integer,allocatable :: seed(:)
    real(dp) :: aA, aB, me, mh, eps, epsout, V0, omegaLO, rhoe, rhoh, slope, V0eV, minr, maxr, rsteps, side, link
    real(dp) :: dispQD, displink, rdmlinker, rdmQDA, rdmQDB, t01, t02, t03, timestep, totaltime, distQD
@@ -37,7 +37,7 @@ contains
 
 subroutine getVariables
 
-NAMELIST /version/ vers
+NAMELIST /version/ threads,vers
 NAMELIST /outputs/ o_Norm,o_Over,o_Coul,o_DipS,o_Osci,o_Exti,o_DipD,inbox,get_sp,get_ei,Dyn_0,Dyn_ei,hamilt,fineSt,TDM_ee
 NAMELIST /elecSt/ model,me,mh,eps,epsout,V0eV,omegaLO,slope,side
 NAMELIST /fineStruc/ Kas,Kbs,Kcs,Dso1,Dso2,Dxf

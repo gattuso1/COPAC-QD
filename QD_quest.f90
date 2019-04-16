@@ -2,7 +2,7 @@ include 'specfun.f90'
 
 program ModelQD_one
 
-!use omp_lib
+use omp_lib
 use Constants_au
 use Variables_au
 use Integrals
@@ -28,16 +28,12 @@ Ef=     1.28174d-18
 nsteps= int(Ef/delta)
 ifail=  1
 
-!  nthreads = 4
-!
-!CALL OMP_SET_NUM_THREADS(4)
-!!$OMP PARALLEL PRIVATE(NTHREADS, TID)
-!TID = omp_get_thread_num()
-!
+CALL OMP_SET_NUM_THREADS(threads)
+
 !   write(*,*) omp_get_num_procs()
 !   write(*,*) omp_get_max_threads()
 !   write(*,*) omp_get_num_threads()
-!   call omp_set_num_threads(4)
+!   write(*,*) omp_get_max_threads()
 !   write(*,*) omp_get_num_threads()
 
 allocate(E(nsteps))
@@ -393,7 +389,14 @@ endif
 
 !call cpu_time(start)
 
+!$OMP PARALLEL DO private(lambda,work,Ham,Mat,TransHam_ei,Ham_ei,TransHam,Ham_dir,Ham_ex,Ham_l)
+
+!!$OMP DO num_threads(4)
+
 do n=rmin,rmax
+
+!write(*,*) omp_get_num_threads()
+!write(*,*) omp_get_thread_num()
 
 write(6,*) "Computing system number:    ", n
 
@@ -517,8 +520,7 @@ deallocate (work)
 !!!Make eigenstate TDM
 Mat(:,:) = matmul(TransHam(:,:),Ham_ei(:,:))
 TransHam_ei(:,:) = matmul(transpose(Ham_ei(:,:)),Mat(:,:))
-!!!
-call make_Ham_l
+!call make_Ham_l
 do i=0,nstates-1
 if ( (vers .eq. 'randm' ) .or. ( vers .eq. 'range' ) .or. (vers .eq. 'dimer' ) ) then
 write(58,'(10f12.6)') (Ham_ei(i,j), j=0,nstates-1)
@@ -539,6 +541,7 @@ write(57,'(26f12.6)') aR(n)*1.d9, (TransHam(0,i), i=0,nstates-1)
 endif
 deallocate(lambda)
 endif
+
 
 !if ( fineSt .eq. 'y' ) then
 !write(6,*) "fineSt"
@@ -589,6 +592,10 @@ endif !endif dynamics
 
 
 enddo !end loop number of systems
+
+!!$OMP END DO
+
+!$OMP END PARALLEL DO
 
 !call cpu_time(finish)
 
