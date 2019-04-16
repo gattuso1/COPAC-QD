@@ -1657,7 +1657,7 @@ do t=0,ntime
 
 time = t*timestep
 
-if ( MOD(t,100) .eq. 0 ) then
+if ( MOD(t,10) .eq. 0 ) then
 write(22,*) time*t_au , pulse1 * Ed01 * cos(omega01*(time-t01)+phase01) * exp(-1.0d0*(time-t01)**2/(2.0d0*(width01**2))) , &
                         pulse2 * Ed02 * cos(omega02*(time-t02)+phase02) * exp(-1.0d0*(time-t02)**2/(2.0d0*(width02**2))) , &
                         pulse3 * Ed03 * cos(omega03*(time-t03)+phase03) * exp(-1.0d0*(time-t03)**2/(2.0d0*(width03**2)))
@@ -1783,6 +1783,8 @@ enddo
 write(46,*) time*t_au, cnorm2 !cnormabs !, cnormconj, cnorm2
 !!!POPULATIONS
 write(44,'(10ES15.6E3)') time*t_au, (dreal(xc(i,t))**2+aimag(xc(i,t))**2, i=0,8)
+write(54,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc(i,t)), i=0,nstates-1)
+write(55,'(ES11.5E2,25ES15.6E3)') time*t_au, (aimag(xc(i,t)), i=0,nstates-1)
 else if ( vers .eq. 'singl' ) then
 cnorm2 = 0.d0
 do i=0,nstates-1
@@ -1792,6 +1794,8 @@ enddo
 write(46,*) time*t_au, cnorm2 !cnormabs !, cnormconj, cnorm2
 !!!POPULATIONS
 write(44,'(26ES15.6E3)') time*t_au, (dreal(xc(i,t))**2+aimag(xc(i,t))**2, i=0,24)
+write(54,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc(i,t)), i=0,nstates-1)
+write(55,'(ES11.5E2,25ES15.6E3)') time*t_au, (aimag(xc(i,t)), i=0,nstates-1)
 endif
 endif
 
@@ -1917,6 +1921,8 @@ enddo
 write(50,*) time*t_au, cnorm2 !cnormabs !, cnormconj, cnorm2
 !!!POPULATIONS
 write(49,'(10ES15.6E3)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,8)
+write(52,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc_ei(i,t)), i=0,nstates-1)
+write(53,'(ES11.5E2,25ES15.6E3)') time*t_au, (aimag(xc_ei(i,t)), i=0,nstates-1)
 else if ( vers .eq. 'singl' ) then
 cnorm2 = 0.d0
 do i=0,nstates-1
@@ -1926,10 +1932,12 @@ enddo
 write(50,*) time*t_au, cnorm2 !cnormabs !, cnormconj, cnorm2
 !!!POPULATIONS
 write(49,'(26ES15.6E3)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,24)
+write(52,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc_ei(i,t)), i=0,nstates-1)
+write(53,'(ES11.5E2,25ES15.6E3)') time*t_au, (aimag(xc_ei(i,t)), i=0,nstates-1)
 endif
 endif
 
-endif 
+endif
 
 enddo
 

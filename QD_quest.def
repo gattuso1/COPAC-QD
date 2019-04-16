@@ -11,11 +11,11 @@ o_DipS  = "y" !Transition dipole moments of local excitons (must be "y")
 o_Osci  = "n" !Oscillator strength of local excitons
 o_Exti  = "n" !Molar extinction coefficients of local excitons
 o_DipD  = "n" !Transition dipole moments of CT states
-inbox   = "y" !For phase matching directions, read coordinates in space, orient mus ... 
+inbox   = "n" !For phase matching directions, read coordinates in space, orient mus ... 
 get_sp  = "n" !recover sampling from a previous Etransitions_0.dat
 get_ei  = "y" !Generates eigenstate vectors and TDM 
 Dyn_0   = "y" !Should I perform dynamics in 0 order basis?
-Dyn_ei  = "y" !Should I perform dynamics in eigenstate basis?
+Dyn_ei  = "n" !Should I perform dynamics in eigenstate basis?
 hamilt  = "n" !Should I print the time dependent Hamiltonian (very heavy and time consuming)
 fineSt  = "n" !Request fine structure 
 TDM_ee  = "y" !Request interexciton TDM or not
@@ -85,7 +85,7 @@ idlink = 55        !Linker length
 /
 
 &syst_random !Parameters of a random distribution of dimers either homo (aA=aB) or hetero (aA!=aB,linker fixed)
-nsys      = 1         !Number of dimers
+nsys      = 5         !Number of dimers
 aA        = 1.375d-9      !Radius of QDA
 aB        = 1.725d-9      !Radius of QDB
 idlink    = 20        !Linker length  (if hetero must be 0.2 or 0.55 nm so far)

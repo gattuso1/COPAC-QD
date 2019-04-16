@@ -404,6 +404,8 @@ write(popc,'(a5,i5.5,a4)') 'Popc-', n, '.dat'
 write(norm,'(a5,i5.5,a4)') 'Norm-', n, '.dat'
 write(norm_ei,'(a8,i5.5,a4)') 'Norm_ei-', n, '.dat'
 write(popc_ei,'(a8,i5.5,a4)') 'Popc_ei-', n, '.dat'
+write(Re_c,'(a5,i5.5,a4)') 'Re_c-', n, '.dat'
+write(Im_c,'(a5,i5.5,a4)') 'Im_c-', n, '.dat'
 write(Re_c_ei,'(a8,i5.5,a4)') 'Re_c_ei-', n, '.dat'
 write(Im_c_ei,'(a8,i5.5,a4)') 'Im_c_ei-', n, '.dat'
 open(44,file=popc)
@@ -413,6 +415,8 @@ open(50,file=norm_ei)
 open(49,file=popc_ei)
 open(52,file=Re_c_ei)
 open(53,file=Im_c_ei)
+open(54,file=Re_c)
+open(55,file=Im_c)
 else if ( ( ( Dyn_0 .eq. 'y' ) .or. ( Dyn_ei .eq. 'y' ) ) .and. ( vers .eq. 'dimer') ) then
 open(44,file='Popc.dat')
 !open(45,file='Hamt.dat')

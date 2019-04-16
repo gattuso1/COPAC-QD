@@ -4,7 +4,7 @@
 
 set xlabel 'Time (fs)'
 set ylabel 'Populations'
-#set xrange [90:120]
+set xrange [0:500]
 #set xrange [0:200]
 #set ytics 0,0.2,1
 #set yrange [0:0.01]
