@@ -12,10 +12,10 @@ o_DipS  = "y" !Transition dipole moments of local excitons (must be "y")
 o_Osci  = "n" !Oscillator strength of local excitons
 o_Exti  = "n" !Molar extinction coefficients of local excitons
 o_DipD  = "n" !Transition dipole moments of CT states
-inbox   = "n" !For phase matching directions, read coordinates in space, orient mus ... 
+inbox   = "y" !For phase matching directions, read coordinates in space, orient mus ... 
 get_sp  = "n" !recover sampling from a previous Etransitions_0.dat
 get_ei  = "y" !Generates eigenstate vectors and TDM 
-Dyn_0   = "y" !Should I perform dynamics in 0 order basis?
+Dyn_0   = "n" !Should I perform dynamics in 0 order basis?
 Dyn_ei  = "n" !Should I perform dynamics in eigenstate basis?
 hamilt  = "n" !Should I print the time dependent Hamiltonian (very heavy and time consuming)
 fineSt  = "n" !Request fine structure 
@@ -46,12 +46,12 @@ Dxf = 0.025d0
 &pulses !Parameters of quantum dynamic and pulses
 integ      = "RK6"       !Choose between integrator RK4 or RK6
 !nstates   = 9           !Total number of excitons + GS, redifined setting "model"
-npulses    = 2           !Number of pulses (up to 3)
+npulses    = 3           !Number of pulses (up to 3)
 t01        = 100.d0     !Pulse 1 centered at (s)
 t02        = 200.d0     !Pulse 2 centered at (s)
 t03        = 300.d0     !Pulse 3 centered at (s)
 timestep   = 0.050d0      !Time step of quantum dynamic
-totaltime  = 1000.d0     !Total time simulated (s)
+totaltime  = 500.d0     !Total time simulated (s)
 omega01    = 0.55d15      !Frequency (s-1)
 omega02    = 0.55d15      !Frequency (s-1)
 omega03    = 0.55d15      !Frequency (s-1)
@@ -61,9 +61,21 @@ omega03    = 0.55d15      !Frequency (s-1)
 width01    = 6.0d0       !Width of the pulse (s) 
 width02    = 6.0d0       !Width of the pulse (s) 
 width03    = 6.0d0       !Width of the pulse (s) 
-Ed01       = 5.d9     !Field strength (V/m so far)
-Ed02       = 5.d9     !Field strength (V/m so far)
-Ed03       = 5.d9     !Field strength (V/m so far)
+Ed01       = 2.d9     !Field strength (V/m so far)
+Ed02       = 2.d9     !Field strength (V/m so far)
+Ed03       = 2.d9     !Field strength (V/m so far)
+/
+
+&pulsedir !Orientation of pulses in lab frame
+Pe1x = 0.0
+Pe1y = 0.0
+Pe1z = 1.0
+Pe2x = 0.0
+Pe2y = 0.0
+Pe2z = 1.0
+Pe3x = 0.0
+Pe3y = 0.0
+Pe3z = 1.0
 /
 
 &syst_single !Parameters of the single dot
@@ -86,7 +98,7 @@ idlink = 55        !Linker length
 /
 
 &syst_random !Parameters of a random distribution of dimers either homo (aA=aB) or hetero (aA!=aB,linker fixed)
-nsys      = 4         !Number of dimers
+nsys      = 1         !Number of dimers
 aA        = 1.375d-9      !Radius of QDA
 aB        = 1.725d-9      !Radius of QDB
 idlink    = 20        !Linker length  (if hetero must be 0.2 or 0.55 nm so far)

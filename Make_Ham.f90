@@ -955,32 +955,39 @@ do i=0,nstates-1
 TransHam(i,0) = TransHam(0,i)
 enddo
 elseif ( TDM_ee .eq. 'y') then
-TransHam_d(0,1,1) = TransDip_Ana_h1e(n)
-TransHam_d(0,2,1) = TransDip_Ana_h2e(n)
-TransHam_d(0,3,1) = TransDip_Ana_h1e(n+nsys)
-TransHam_d(0,4,1) = TransDip_Ana_h2e(n+nsys)
-TransHam_d(0,5,1) = TransDip_Fit_h1e_he(aR(n+nsys),aR(n))
-TransHam_d(0,6,1) = TransDip_Fit_h2e_he(aR(n+nsys),aR(n))
-TransHam_d(0,7,1) = TransDip_Fit_h1e_he(aR(n),aR(n+nsys))
-TransHam_d(0,8,1) = TransDip_Fit_h2e_he(aR(n),aR(n+nsys))
-TransHam_d(1,2,1) = TransDip_Ana_h1h2(n)
-TransHam_d(1,5,1) = TransDip_Fit_ee_he(aR(n+nsys),aR(n))
-TransHam_d(1,7,1) = TransDip_Fit_h1h1_he(aR(n+nsys),aR(n))
-TransHam_d(1,8,1) = TransDip_Fit_h1h2_he(aR(n),aR(n+nsys))
-TransHam_d(2,6,1) = TransDip_Fit_ee_he(aR(n+nsys),aR(n))
-TransHam_d(2,7,1) = TransDip_Fit_h1h2_he(aR(n+nsys),aR(n))
-TransHam_d(2,8,1) = TransDip_Fit_h2h2_he(aR(n+nsys),aR(n))
-TransHam_d(3,4,1) = TransDip_Ana_h1h2(n+nsys)
-TransHam_d(3,5,1) = TransDip_Fit_h1h1_he(aR(n+nsys),aR(n))
-TransHam_d(3,6,1) = TransDip_Fit_h1h2_he(aR(n+nsys),aR(n))
-TransHam_d(3,7,1) = TransDip_Fit_ee_he(aR(n+nsys),aR(n))
-TransHam_d(4,5,1) = TransDip_Fit_h1h2_he(aR(n),aR(n+nsys))
-TransHam_d(4,6,1) = TransDip_Fit_h2h2_he(aR(n+nsys),aR(n))
-TransHam_d(4,8,1) = TransDip_Fit_ee_he(aR(n+nsys),aR(n))
-TransHam_d(5,6,1) = TransDip_Ana_h1h2(n)
-TransHam_d(7,8,1) = TransDip_Ana_h1h2(n+nsys)
+!do i=1,100
+TransHam_l(0,1,:) = vector(TransDip_Ana_h1e(n))
+!write(6,*) TransDip_Ana_h1e(n)
+!write(6,*) TransHam_l(0,1,1), TransHam_l(0,1,2), TransHam_l(0,1,3)
+!enddo
+TransHam_l(0,2,:) = vector(TransDip_Ana_h2e(n))
+TransHam_l(0,3,:) = vector(TransDip_Ana_h1e(n+nsys))
+TransHam_l(0,4,:) = vector(TransDip_Ana_h2e(n+nsys))
+TransHam_l(0,5,:) = vector(TransDip_Fit_h1e_he(aR(n+nsys),aR(n)))
+TransHam_l(0,6,:) = vector(TransDip_Fit_h2e_he(aR(n+nsys),aR(n)))
+TransHam_l(0,7,:) = vector(TransDip_Fit_h1e_he(aR(n),aR(n+nsys)))
+TransHam_l(0,8,:) = vector(TransDip_Fit_h2e_he(aR(n),aR(n+nsys)))
+TransHam_l(1,2,:) = vector(TransDip_Ana_h1h2(n))
+TransHam_l(1,5,:) = vector(TransDip_Fit_ee_he(aR(n+nsys),aR(n)))
+TransHam_l(1,7,:) = vector(TransDip_Fit_h1h1_he(aR(n+nsys),aR(n)))
+do i=1,100
+TransHam_l(1,8,:) = vector(TransDip_Fit_h1h2_he(aR(n),aR(n+nsys)))
+write(6,*) TransHam_l(1,8,1), TransHam_l(1,8,2), TransHam_l(1,8,3)
+enddo
+TransHam_l(2,6,:) = vector(TransDip_Fit_ee_he(aR(n+nsys),aR(n)))
+TransHam_l(2,7,:) = vector(TransDip_Fit_h1h2_he(aR(n+nsys),aR(n)))
+TransHam_l(2,8,:) = vector(TransDip_Fit_h2h2_he(aR(n+nsys),aR(n)))
+TransHam_l(3,4,:) = vector(TransDip_Ana_h1h2(n+nsys))
+TransHam_l(3,5,:) = vector(TransDip_Fit_h1h1_he(aR(n+nsys),aR(n)))
+TransHam_l(3,6,:) = vector(TransDip_Fit_h1h2_he(aR(n+nsys),aR(n)))
+TransHam_l(3,7,:) = vector(TransDip_Fit_ee_he(aR(n+nsys),aR(n)))
+TransHam_l(4,5,:) = vector(TransDip_Fit_h1h2_he(aR(n),aR(n+nsys)))
+TransHam_l(4,6,:) = vector(TransDip_Fit_h2h2_he(aR(n+nsys),aR(n)))
+TransHam_l(4,8,:) = vector(TransDip_Fit_ee_he(aR(n+nsys),aR(n)))
+TransHam_l(5,6,:) = vector(TransDip_Ana_h1h2(n))
+TransHam_l(7,8,:) = vector(TransDip_Ana_h1h2(n+nsys))
 
-call TDM_d2l
+!call TDM_d2l
 
 do i=0,nstates-1
 do j=i+1,nstates-1
@@ -1181,6 +1188,11 @@ subroutine TDM_d2l
 
 distQD = sqrt((QDcoor(n,1) - QDcoor(n+nsys,1))**2 + (QDcoor(n,2) - QDcoor(n+nsys,2))**2 + (QDcoor(n,3) - QDcoor(n+nsys,3))**2)
 
+!TransHam_l(1,1,:) = vector(6.9e-9)
+
+!TransHam_l(1,1,:) =vector(1.0d-9)
+!write(6,*) TransHam_l(1,1,1) , TransHam_l(1,1,2), TransHam_l(1,1,3)
+
 !!TDM from A to B
 !do i=0,nstates-1
 !do j=0,nstates-1
@@ -1202,9 +1214,10 @@ distQD = sqrt((QDcoor(n,1) - QDcoor(n+nsys,1))**2 + (QDcoor(n,2) - QDcoor(n+nsys
 !TDM intradot
 do i=0,nstates-1
 do j=0,nstates-1
-TransHam_l(i,j,1) = (QDcoor(n+nsys,1) - QDcoor(n,1)) * TransHam_d(i,j,1)/distQD
-TransHam_l(i,j,2) = (QDcoor(n+nsys,2) - QDcoor(n,2)) * TransHam_d(i,j,1)/distQD
-TransHam_l(i,j,3) = (QDcoor(n+nsys,3) - QDcoor(n,3)) * TransHam_d(i,j,1)/distQD
+TransHam_l(i,j,:) = vector(1.0d-9)
+!TransHam_l(i,j,1) = (QDcoor(n+nsys,1) - QDcoor(n,1)) * TransHam_d(i,j,1)/distQD
+!TransHam_l(i,j,2) = (QDcoor(n+nsys,2) - QDcoor(n,2)) * TransHam_d(i,j,1)/distQD
+!TransHam_l(i,j,3) = (QDcoor(n+nsys,3) - QDcoor(n,3)) * TransHam_d(i,j,1)/distQD
 enddo
 enddo
 

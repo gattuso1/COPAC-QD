@@ -1621,36 +1621,38 @@ implicit none
 real(dp) :: t,Ham,TransHam
 complex(kind=8) :: xc
 
-if ( inbox .eq. "y" ) then
-
-RK_k = -im * (Ham - pulse1 * Pe1(1) * TransHam * Ed01 * cos(k1(1)*Dcenter(n,1)-omega01*(t-t01)+phase01) &
-                                                    * exp(-1.0d0*(t-t01)**2.d0/(2.0d0*(width01**2))) - &
-                    pulse1 * Pe1(2) * TransHam * Ed01 * cos(k1(2)*Dcenter(n,2)-omega01*(t-t01)+phase01) &
-                                                    * exp(-1.0d0*(t-t01)**2.d0/(2.0d0*(width01**2))) - &
-                    pulse1 * Pe1(3) * TransHam * Ed01 * cos(k1(3)*Dcenter(n,3)-omega01*(t-t01)+phase01) &
-                                                    * exp(-1.0d0*(t-t01)**2.d0/(2.0d0*(width01**2))) - &
-                    pulse2 * Pe2(1) * TransHam * Ed02 * cos(k2(1)*Dcenter(n,1)-omega02*(t-t02)+phase02) &
-                                                    * exp(-1.0d0*(t-t02)**2.d0/(2.0d0*(width02**2))) - &
-                    pulse2 * Pe2(2) * TransHam * Ed02 * cos(k2(2)*Dcenter(n,2)-omega02*(t-t02)+phase02) &
-                                                    * exp(-1.0d0*(t-t02)**2.d0/(2.0d0*(width02**2))) - &
-                    pulse2 * Pe2(3) * TransHam * Ed02 * cos(k2(3)*Dcenter(n,3)-omega02*(t-t02)+phase02) &
-                                                    * exp(-1.0d0*(t-t02)**2.d0/(2.0d0*(width02**2))) - &
-                    pulse3 * Pe3(1) * TransHam * Ed03 * cos(k3(1)*Dcenter(n,1)-omega03*(t-t03)+phase03) &
-                                                    * exp(-1.0d0*(t-t03)**2.d0/(2.0d0*(width03**2))) - &
-                    pulse3 * Pe3(2) * TransHam * Ed03 * cos(k3(2)*Dcenter(n,2)-omega03*(t-t03)+phase03) &
-                                                    * exp(-1.0d0*(t-t03)**2.d0/(2.0d0*(width03**2))) - &
-                    pulse3 * Pe3(3) * TransHam * Ed03 * cos(k3(3)*Dcenter(n,3)-omega03*(t-t03)+phase03) &
-                                                    * exp(-1.0d0*(t-t03)**2.d0/(2.0d0*(width03**2))))*xc
-
-else
-
 RK_k = -im * (Ham - pulse1 * TransHam * Ed01 * cos(omega01*(t-t01)+phase01) * exp(-1.0d0*(t-t01)**2.d0/(2.0d0*(width01**2))) - &
                     pulse2 * TransHam * Ed02 * cos(omega02*(t-t02)+phase02) * exp(-1.0d0*(t-t02)**2.d0/(2.0d0*(width02**2))) - &
                     pulse3 * TransHam * Ed03 * cos(omega03*(t-t03)+phase03) * exp(-1.0d0*(t-t03)**2.d0/(2.0d0*(width03**2))))*xc
 
-endif
-
 end function RK_k
+
+complex(kind=8) function RK_k_inbox(t,Ham,TransHamx,TransHamy,TransHamz,xc)
+implicit none
+
+real(dp) :: t,Ham,TransHamx,TransHamy,TransHamz
+complex(kind=8) :: xc
+
+RK_k_inbox = -im * (Ham - pulse1 * Pe1(1) * TransHamx * Ed01 * cos(k1(1)*Dcenter(n,1)-omega01*(t-t01)+phase01) &
+                                                    * exp(-1.0d0*(t-t01)**2.d0/(2.0d0*(width01**2))) - &
+                    pulse1 * Pe1(2) * TransHamy * Ed01 * cos(k1(2)*Dcenter(n,2)-omega01*(t-t01)+phase01) &
+                                                    * exp(-1.0d0*(t-t01)**2.d0/(2.0d0*(width01**2))) - &
+                    pulse1 * Pe1(3) * TransHamz * Ed01 * cos(k1(3)*Dcenter(n,3)-omega01*(t-t01)+phase01) &
+                                                    * exp(-1.0d0*(t-t01)**2.d0/(2.0d0*(width01**2))) - &
+                    pulse2 * Pe2(1) * TransHamx * Ed02 * cos(k2(1)*Dcenter(n,1)-omega02*(t-t02)+phase02) &
+                                                    * exp(-1.0d0*(t-t02)**2.d0/(2.0d0*(width02**2))) - &
+                    pulse2 * Pe2(2) * TransHamy * Ed02 * cos(k2(2)*Dcenter(n,2)-omega02*(t-t02)+phase02) &
+                                                    * exp(-1.0d0*(t-t02)**2.d0/(2.0d0*(width02**2))) - &
+                    pulse2 * Pe2(3) * TransHamz * Ed02 * cos(k2(3)*Dcenter(n,3)-omega02*(t-t02)+phase02) &
+                                                    * exp(-1.0d0*(t-t02)**2.d0/(2.0d0*(width02**2))) - &
+                    pulse3 * Pe3(1) * TransHamx * Ed03 * cos(k3(1)*Dcenter(n,1)-omega03*(t-t03)+phase03) &
+                                                    * exp(-1.0d0*(t-t03)**2.d0/(2.0d0*(width03**2))) - &
+                    pulse3 * Pe3(2) * TransHamy * Ed03 * cos(k3(2)*Dcenter(n,2)-omega03*(t-t03)+phase03) &
+                                                    * exp(-1.0d0*(t-t03)**2.d0/(2.0d0*(width03**2))) - &
+                    pulse3 * Pe3(3) * TransHamz * Ed03 * cos(k3(3)*Dcenter(n,3)-omega03*(t-t03)+phase03) &
+                                                    * exp(-1.0d0*(t-t03)**2.d0/(2.0d0*(width03**2))))*xc
+
+end function RK_k_inbox
 
 subroutine RK_0_ei
 
@@ -1701,7 +1703,7 @@ do i=0,nstates-1
 xc(i,t+1) = xc(i,t)+(dcmplx(timestep,0.d0)/6.d0)*(k1(i)+2.d0*k2(i)+2.d0*k3(i)+k4(i))
 enddo
 
-elseif ( integ .eq. 'RK6' ) then 
+elseif ( ( integ .eq. 'RK6' ) .and. ( inbox .eq. 'n' ) ) then 
 
 k1 = dcmplx(0.0d0,0.0d0)
 k2 = dcmplx(0.0d0,0.0d0)
@@ -1772,6 +1774,83 @@ do i=0,nstates-1
 xc(i,t+1) = xc(i,t)+(1.e0_dp/840.e0_dp)*(41.e0_dp*(k1(i)+k8(i))+216.e0_dp*(k3(i)+k7(i))+27.e0_dp*(k4(i)+k6(i))+272.e0_dp*k5(i))
 enddo
 
+elseif ( ( integ .eq. 'RK6' ) .and. ( inbox .eq. 'y' ) ) then 
+
+k1 = dcmplx(0.0d0,0.0d0)
+k2 = dcmplx(0.0d0,0.0d0)
+k3 = dcmplx(0.0d0,0.0d0)
+k4 = dcmplx(0.0d0,0.0d0)
+k5 = dcmplx(0.0d0,0.0d0)
+k6 = dcmplx(0.0d0,0.0d0)
+k7 = dcmplx(0.0d0,0.0d0)
+k8 = dcmplx(0.0d0,0.0d0)
+
+do i=0,nstates-1
+do j=0,nstates-1
+k1(i) = k1(i) + dcmplx(timestep,0.d0)*RK_k_inbox(time,Ham(i,j), TransHam_l(i,j,1),TransHam_l(i,j,2),TransHam_l(i,j,3), xc(j,t)) 
+enddo
+enddo
+
+do i=0,nstates-1
+do j=0,nstates-1
+k2(i) = k2(i) + dcmplx(timestep,0.d0)*RK_k_inbox(time+(timestep/9.e0_dp),Ham(i,j), &
+TransHam_l(i,j,1),TransHam_l(i,j,2),TransHam_l(i,j,3), &
+xc(j,t)+(1.e0_dp/9.e0_dp)*k1(j)) 
+enddo
+enddo
+
+do i=0,nstates-1
+do j=0,nstates-1
+k3(i) = k3(i) + dcmplx(timestep,0.d0)*RK_k_inbox(time+(timestep/6.e0_dp),Ham(i,j), &
+TransHam_l(i,j,1),TransHam_l(i,j,2),TransHam_l(i,j,3), &
+xc(j,t)+(1.e0_dp/24.e0_dp)*(k1(j)+3.e0_dp*k2(j))) 
+enddo
+enddo
+
+do i=0,nstates-1
+do j=0,nstates-1
+k4(i) = k4(i) + dcmplx(timestep,0.d0)*RK_k_inbox(time+(timestep/3.e0_dp),Ham(i,j), &
+TransHam_l(i,j,1),TransHam_l(i,j,2),TransHam_l(i,j,3), &
+xc(j,t)+(1.e0_dp/6.e0_dp)*(k1(j)-3.e0_dp*k2(j)+4.e0_dp*k3(j))) 
+enddo
+enddo
+
+do i=0,nstates-1
+do j=0,nstates-1
+k5(i) = k5(i) + dcmplx(timestep,0.d0)*RK_k_inbox(time+(timestep/2.e0_dp),Ham(i,j), &
+TransHam_l(i,j,1),TransHam_l(i,j,2),TransHam_l(i,j,3), &
+xc(j,t)+(1.e0_dp/8.e0_dp)*(-5.e0_dp*k1(j)+27.e0_dp*k2(j)-24.e0_dp*k3(j)+6.e0_dp*k4(j)))
+enddo
+enddo
+
+do i=0,nstates-1
+do j=0,nstates-1
+k6(i) = k6(i) + dcmplx(timestep,0.d0)*RK_k_inbox(time+(2.e0_dp*timestep/3.e0_dp),Ham(i,j), &
+TransHam_l(i,j,1),TransHam_l(i,j,2),TransHam_l(i,j,3), &
+xc(j,t)+(1.e0_dp/9.e0_dp)*(221.e0_dp*k1(j)-981.e0_dp*k2(j)+867.e0_dp*k3(j)-102.e0_dp*k4(j)+k5(j)))
+enddo
+enddo
+
+do i=0,nstates-1
+do j=0,nstates-1
+k7(i) = k7(i) + dcmplx(timestep,0.d0)*RK_k_inbox(time+(5.e0_dp*timestep/6.e0_dp),Ham(i,j), &
+TransHam_l(i,j,1),TransHam_l(i,j,2),TransHam_l(i,j,3), &
+xc(j,t)+(1.e0_dp/48.e0_dp)*(-183.e0_dp*k1(j)+678.e0_dp*k2(j)-472.e0_dp*k3(j)-66.e0_dp*k4(j)+80.e0_dp*k5(j)+3.e0_dp*k6(j)))
+enddo
+enddo
+
+do i=0,nstates-1
+do j=0,nstates-1
+k8(i)=k8(i)+dcmplx(timestep,0.d0)*RK_k_inbox(time+timestep,Ham(i,j), TransHam_l(i,j,1),TransHam_l(i,j,2),TransHam_l(i,j,3), &
+xc(j,t)+(1.e0_dp/82.e0_dp)*&
+(716.e0_dp*k1(j)-2079.e0_dp*k2(j)+1002.e0_dp*k3(j)+834.e0_dp*k4(j)-454.e0_dp*k5(j)-9.e0_dp*k6(j)+72.e0_dp*k7(j)))
+enddo
+enddo
+
+do i=0,nstates-1
+xc(i,t+1) = xc(i,t)+(1.e0_dp/840.e0_dp)*(41.e0_dp*(k1(i)+k8(i))+216.e0_dp*(k3(i)+k7(i))+27.e0_dp*(k4(i)+k6(i))+272.e0_dp*k5(i))
+enddo
+
 endif 
 
 if ( MOD(t,10) .eq. 0 ) then
@@ -1804,7 +1883,7 @@ endif
 
 if ( Dyn_ei .eq. 'y' ) then
 
-if ( integ .eq. 'RK4' ) then
+if ( ( integ .eq. 'RK4' ) .and. ( inbox .eq. 'n' ) ) then
 
 k1 = dcmplx(0.0d0,0.0d0)
 k2 = dcmplx(0.0d0,0.0d0)
@@ -1839,7 +1918,78 @@ do i=0,nstates-1
 xc_ei(i,t+1) = xc_ei(i,t)+(dcmplx(timestep,0.d0)/6.d0)*(k1(i)+2.d0*k2(i)+2.d0*k3(i)+k4(i))
 enddo
 
-elseif ( integ .eq. 'RK6' ) then 
+elseif ( ( integ .eq. 'RK6' )  .and. ( inbox .eq. 'n' ) ) then 
+
+k1 = dcmplx(0.0d0,0.0d0)
+k2 = dcmplx(0.0d0,0.0d0)
+k3 = dcmplx(0.0d0,0.0d0)
+k4 = dcmplx(0.0d0,0.0d0)
+k5 = dcmplx(0.0d0,0.0d0)
+k6 = dcmplx(0.0d0,0.0d0)
+k7 = dcmplx(0.0d0,0.0d0)
+k8 = dcmplx(0.0d0,0.0d0)
+
+do i=0,nstates-1
+do j=0,nstates-1
+k1(i) = k1(i) + dcmplx(timestep,0.d0)*RK_k(time,Ham_l(i,j),TransHam_ei(i,j), xc_ei(j,t)) 
+enddo
+enddo
+
+do i=0,nstates-1
+do j=0,nstates-1
+k2(i) = k2(i) + dcmplx(timestep,0.d0)*RK_k(time+(timestep/9.e0_dp),Ham_l(i,j), TransHam_ei(i,j), &
+xc_ei(j,t)+(1.e0_dp/9.e0_dp)*k1(j)) 
+enddo
+enddo
+
+do i=0,nstates-1
+do j=0,nstates-1
+k3(i) = k3(i) + dcmplx(timestep,0.d0)*RK_k(time+(timestep/6.e0_dp),Ham_l(i,j), TransHam_ei(i,j), &
+xc_ei(j,t)+(1.e0_dp/24.e0_dp)*(k1(j)+3.e0_dp*k2(j))) 
+enddo
+enddo
+
+do i=0,nstates-1
+do j=0,nstates-1
+k4(i) = k4(i) + dcmplx(timestep,0.d0)*RK_k(time+(timestep/3.e0_dp),Ham_l(i,j), TransHam_ei(i,j), &
+xc_ei(j,t)+(1.e0_dp/6.e0_dp)*(k1(j)-3.e0_dp*k2(j)+4.e0_dp*k3(j))) 
+enddo
+enddo
+
+do i=0,nstates-1
+do j=0,nstates-1
+k5(i) = k5(i) + dcmplx(timestep,0.d0)*RK_k(time+(timestep/2.e0_dp),Ham_l(i,j), TransHam_ei(i,j), &
+xc_ei(j,t)+(1.e0_dp/8.e0_dp)*(-5.e0_dp*k1(j)+27.e0_dp*k2(j)-24.e0_dp*k3(j)+6.e0_dp*k4(j)))
+enddo
+enddo
+
+do i=0,nstates-1
+do j=0,nstates-1
+k6(i) = k6(i) + dcmplx(timestep,0.d0)*RK_k(time+(2.e0_dp*timestep/3.e0_dp),Ham_l(i,j), TransHam_ei(i,j), &
+xc_ei(j,t)+(1.e0_dp/9.e0_dp)*(221.e0_dp*k1(j)-981.e0_dp*k2(j)+867.e0_dp*k3(j)-102.e0_dp*k4(j)+k5(j)))
+enddo
+enddo
+
+do i=0,nstates-1
+do j=0,nstates-1
+k7(i) = k7(i) + dcmplx(timestep,0.d0)*RK_k(time+(5.e0_dp*timestep/6.e0_dp),Ham_l(i,j), TransHam_ei(i,j), &
+xc_ei(j,t)+(1.e0_dp/48.e0_dp)*(-183.e0_dp*k1(j)+678.e0_dp*k2(j)-472.e0_dp*k3(j)-66.e0_dp*k4(j)+80.e0_dp*k5(j)+3.e0_dp*k6(j)))
+enddo
+enddo
+
+do i=0,nstates-1
+do j=0,nstates-1
+k8(i)=k8(i)+dcmplx(timestep,0.d0)*RK_k(time+timestep,Ham_l(i,j), TransHam_ei(i,j), &
+xc_ei(j,t)+(1.e0_dp/82.e0_dp)*&
+(716.e0_dp*k1(j)-2079.e0_dp*k2(j)+1002.e0_dp*k3(j)+834.e0_dp*k4(j)-454.e0_dp*k5(j)-9.e0_dp*k6(j)+72.e0_dp*k7(j)))
+enddo
+enddo
+
+do i=0,nstates-1
+xc_ei(i,t+1)=xc_ei(i,t)+(1.e0_dp/840.e0_dp)*(41.e0_dp*(k1(i)+k8(i))+216.e0_dp*(k3(i)+k7(i))+27.e0_dp*(k4(i)+k6(i))+272.e0_dp*k5(i))
+enddo
+
+elseif ( ( integ .eq. 'RK6' )  .and. ( inbox .eq. 'y' ) ) then 
 
 k1 = dcmplx(0.0d0,0.0d0)
 k2 = dcmplx(0.0d0,0.0d0)

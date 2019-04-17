@@ -15,18 +15,20 @@ function vector(d)
 
       call random_number(rand1)
       call random_number(rand2)
-      teta = rand1*2*PI
-      phi = acos(2*rand2-1)
+      teta = rand1*2.d0*PI
+      phi = acos(2*rand2-1.d0)
 
-      vector(1)=0
-      vector(2)=0
-      vector(3)=0
+      vector(1)=0.d0
+      vector(2)=0.d0
+      vector(3)=0.d0
 
       vector(1)= d*sqrt(1-cos(phi)**2)*cos(teta)
 
       vector(2)= d*sqrt(1-cos(phi)**2)*sin(teta)
 
       vector(3)= d*cos(phi)
+
+!write(6,*) vector(1), vector(2), vector(3)
 
 end function vector
 

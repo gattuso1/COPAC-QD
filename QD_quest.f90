@@ -2,7 +2,7 @@ include 'specfun.f90'
 
 program ModelQD_one
 
-use omp_lib
+!use omp_lib
 use Constants_au
 use Variables_au
 use Integrals
@@ -28,7 +28,8 @@ Ef=     1.28174d-18
 nsteps= int(Ef/delta)
 ifail=  1
 
-CALL OMP_SET_NUM_THREADS(threads)
+!CALL OMP_SET_NUM_THREADS(omp_get_max_threads())
+CALL OMP_SET_NUM_THREADS(4)
 
 !   write(*,*) omp_get_num_procs()
 !   write(*,*) omp_get_max_threads()
@@ -389,14 +390,11 @@ endif
 
 !call cpu_time(start)
 
-!$OMP PARALLEL DO private(lambda,work,Ham,Mat,TransHam_ei,Ham_ei,TransHam,Ham_dir,Ham_ex,Ham_l)
-
-!!$OMP DO num_threads(4)
+!$OMP PARALLEL DO private(lambda,work,Ham,Mat,TransHam_ei,Ham_ei,TransHam,Ham_dir,Ham_ex,Ham_l,xc0,xc,xc_ei)
 
 do n=rmin,rmax
 
 !write(*,*) omp_get_num_threads()
-!write(*,*) omp_get_thread_num()
 
 write(6,*) "Computing system number:    ", n
 
@@ -541,7 +539,6 @@ write(57,'(26f12.6)') aR(n)*1.d9, (TransHam(0,i), i=0,nstates-1)
 endif
 deallocate(lambda)
 endif
-
 
 !if ( fineSt .eq. 'y' ) then
 !write(6,*) "fineSt"

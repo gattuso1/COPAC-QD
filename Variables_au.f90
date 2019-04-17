@@ -14,6 +14,7 @@ implicit none
    integer :: ndots, n, rmin, rmax, nsys, npulses, nstates, ntime, i, j, t, lwork, info, idlink, threads
    integer,allocatable :: seed(:)
    real(dp) :: aA, aB, me, mh, eps, epsout, V0, omegaLO, rhoe, rhoh, slope, V0eV, minr, maxr, rsteps, side, link
+   real(dp) :: Pe1x, Pe1y, Pe1z, Pe2x, Pe2y, Pe2z, Pe3x, Pe3y, Pe3z
    real(dp) :: dispQD, displink, rdmlinker, rdmQDA, rdmQDB, t01, t02, t03, timestep, totaltime, distQD
    real(dp) :: omega01, omega02, omega03, phase01, phase02, phase03, width01, width02, width03, Ed01, Ed02, Ed03
    real(dp) :: pulse1, pulse2, pulse3, test, time, cnorm, cnormabs, cnormconj, cnorm2, cnorm2_ei, Kas, Kbs, Kcs, Dso1, Dso2, Dxf
@@ -43,6 +44,7 @@ NAMELIST /elecSt/ model,me,mh,eps,epsout,V0eV,omegaLO,slope,side
 NAMELIST /fineStruc/ Kas,Kbs,Kcs,Dso1,Dso2,Dxf
 NAMELIST /pulses/ integ,npulses,t01,t02,t03,timestep,totaltime,omega01,omega02,omega03,phase01,phase02,phase03,&
                   width01,width02,width03,Ed01,Ed02,Ed03
+NAMELIST /pulsedir/ Pe1x, Pe1y, Pe1z, Pe2x, Pe2y, Pe2z, Pe3x, Pe3y, Pe3z 
 NAMELIST /syst_single/ nsys,aA,dispQD
 NAMELIST /syst_dimer/ aA,aB,idlink
 NAMELIST /syst_range/ rsteps,minr,maxr,idlink
@@ -53,6 +55,7 @@ read(150,NML=version)
 read(150,NML=outputs)
 read(150,NML=elecSt)
 read(150,NML=pulses)
+read(150,NML=pulsedir)
 
 im         = dcmplx(0.0d0,1.0d0)
 me         = me*m0
@@ -326,8 +329,9 @@ aR(n) = r8_NORMAL_AB(aA,dispQD*1d-9,seed(1))
 aR(n+nsys) = r8_NORMAL_AB(aB,dispQD*1d-9,seed(2))
 elseif ( get_sp .eq. 'y' ) then
 read(11,*) aR(n), aR(n+nsys)
-aR(n) = aR(n)*1.e-10_dp
-aR(n+nsys) = aR(n+nsys)*1.e-10_dp
+write(6,*) aR(n), aR(n+nsys)
+aR(n) = aR(n)*1.e-9_dp
+aR(n+nsys) = aR(n+nsys)*1.e-9_dp
 endif
 
 epsin(n) = 1.0 + (eps - 1.0) / (1.0 + (0.75d-9/(2*aR(n)))**1.2)
@@ -344,15 +348,15 @@ endif
 
 if ( inbox .eq. 'y' ) then
 
-Pe1(1) = 1.e0_dp 
-Pe1(2) = 1.e0_dp
-Pe1(3) = 0.e0_dp
-Pe2(1) = 1.e0_dp
-Pe2(2) = 1.e0_dp
-Pe2(3) = 0.e0_dp
-Pe3(1) = 0.e0_dp
-Pe3(2) = 1.e0_dp
-Pe3(3) = 0.e0_dp
+Pe1(1) = Pe1x*1.e0_dp 
+Pe1(2) = Pe1y*1.e0_dp
+Pe1(3) = Pe1z*1.e0_dp
+Pe2(1) = Pe2x*1.e0_dp
+Pe2(2) = Pe2y*1.e0_dp
+Pe2(3) = Pe2z*1.e0_dp
+Pe3(1) = Pe3x*1.e0_dp
+Pe3(2) = Pe3y*1.e0_dp
+Pe3(3) = Pe3z*1.e0_dp
 
 open(56,file='box-dimers.xyz',form='formatted',action='read')
 read(56,*) 
