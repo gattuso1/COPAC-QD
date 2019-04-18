@@ -15,7 +15,7 @@ o_DipD  = "n" !Transition dipole moments of CT states
 inbox   = "y" !For phase matching directions, read coordinates in space, orient mus ... 
 get_sp  = "n" !recover sampling from a previous Etransitions_0.dat
 get_ei  = "y" !Generates eigenstate vectors and TDM 
-Dyn_0   = "n" !Should I perform dynamics in 0 order basis?
+Dyn_0   = "y" !Should I perform dynamics in 0 order basis?
 Dyn_ei  = "n" !Should I perform dynamics in eigenstate basis?
 hamilt  = "n" !Should I print the time dependent Hamiltonian (very heavy and time consuming)
 fineSt  = "n" !Request fine structure 
@@ -64,6 +64,8 @@ width03    = 6.0d0       !Width of the pulse (s)
 Ed01       = 2.d9     !Field strength (V/m so far)
 Ed02       = 2.d9     !Field strength (V/m so far)
 Ed03       = 2.d9     !Field strength (V/m so far)
+pgeom      = "boxcar" !useless so far
+vertex     = 8.d0     !vertex angle of beam crossing (inbox=y and 3 pulses)
 /
 
 &pulsedir !Orientation of pulses in lab frame

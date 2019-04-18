@@ -7,6 +7,7 @@ use Normal
 implicit none
 
    character*5 :: vers
+   character*6 :: pgeom
    character*64 :: popc, hmti, norm, tdmM, hmt0, outputdir, norm_ei, popc_ei, Re_c_ei, Im_c_ei, integ,model, line, dummy
    character*64 :: Re_c, Im_c
    character*1 :: o_Norm, o_Over, o_Coul, o_DipS, o_Osci, o_Exti, o_DipD, dyn, hamilt, get_ei, finest, get_sp
@@ -14,7 +15,7 @@ implicit none
    integer :: ndots, n, rmin, rmax, nsys, npulses, nstates, ntime, i, j, t, lwork, info, idlink, threads
    integer,allocatable :: seed(:)
    real(dp) :: aA, aB, me, mh, eps, epsout, V0, omegaLO, rhoe, rhoh, slope, V0eV, minr, maxr, rsteps, side, link
-   real(dp) :: Pe1x, Pe1y, Pe1z, Pe2x, Pe2y, Pe2z, Pe3x, Pe3y, Pe3z
+   real(dp) :: Pe1x, Pe1y, Pe1z, Pe2x, Pe2y, Pe2z, Pe3x, Pe3y, Pe3z, vertex, zbase
    real(dp) :: dispQD, displink, rdmlinker, rdmQDA, rdmQDB, t01, t02, t03, timestep, totaltime, distQD
    real(dp) :: omega01, omega02, omega03, phase01, phase02, phase03, width01, width02, width03, Ed01, Ed02, Ed03
    real(dp) :: pulse1, pulse2, pulse3, test, time, cnorm, cnormabs, cnormconj, cnorm2, cnorm2_ei, Kas, Kbs, Kcs, Dso1, Dso2, Dxf
@@ -27,11 +28,11 @@ implicit none
    real(dp),allocatable :: ExctCoef_h1e(:), ExctCoef_h2e(:), Ham(:,:), E0(:), c0(:), TransHam(:,:), Hamt(:,:,:), c(:,:)
    real(dp),allocatable :: TransMat_ei(:,:), TransHam0(:,:), Ham_0(:), Ham_dir(:,:), Ham_ex(:,:), Ham_ei(:,:), Ham_l(:,:)
    real(dp),allocatable :: TransDip_Ana_h1h2(:), TransHam_ei(:,:), Mat(:,:), QDcoor(:,:), Dcenter(:,:), Pe1(:), Pe2(:), Pe3(:)
-   real(dp),allocatable :: TransHam_d(:,:,:), TransHam_l(:,:,:)
+   real(dp),allocatable :: TransHam_d(:,:,:), TransHam_l(:,:,:), k_1(:), k_2(:), k_3(:)
    complex(kind=8) :: ct1, ct2, ct3, ct4, xt01, xt02, xt03, xhbar, im, xwidth, xomega , xEd, xh, xphase, xtime, xhbar_au
    complex(kind=8),allocatable :: xHam(:,:) , xHamt(:,:,:), xTransHam(:,:), xE0(:), xHamtk2(:,:,:), xHamtk3(:,:,:), xHamtk4(:,:,:)
    complex(kind=8),allocatable :: xc0(:), xc(:,:), xc_ei(:,:), xcnew(:,:), k1(:), k2(:), k3(:) , k4(:), xHam_ei(:,:)
-   complex(kind=8),allocatable :: dk1(:), dk2(:), dk3(:) , dk4(:), k5(:), k6(:), k7(:) , k8(:)
+   complex(kind=8),allocatable :: dk1(:), dk2(:), dk3(:) , dk4(:), k5(:), k6(:), k7(:) , k8(:) 
    complex(kind=8),allocatable :: xc_ei_av(:,:), xctemp(:)
 
 contains 
@@ -43,7 +44,7 @@ NAMELIST /outputs/ o_Norm,o_Over,o_Coul,o_DipS,o_Osci,o_Exti,o_DipD,inbox,get_sp
 NAMELIST /elecSt/ model,me,mh,eps,epsout,V0eV,omegaLO,slope,side
 NAMELIST /fineStruc/ Kas,Kbs,Kcs,Dso1,Dso2,Dxf
 NAMELIST /pulses/ integ,npulses,t01,t02,t03,timestep,totaltime,omega01,omega02,omega03,phase01,phase02,phase03,&
-                  width01,width02,width03,Ed01,Ed02,Ed03
+                  width01,width02,width03,Ed01,Ed02,Ed03,pgeom,vertex
 NAMELIST /pulsedir/ Pe1x, Pe1y, Pe1z, Pe2x, Pe2y, Pe2z, Pe3x, Pe3y, Pe3z 
 NAMELIST /syst_single/ nsys,aA,dispQD
 NAMELIST /syst_dimer/ aA,aB,idlink
@@ -116,6 +117,9 @@ allocate(xHam(0:nstates-1,0:nstates-1))
 allocate(xHam_ei(0:nstates-1,0:nstates-1))
 allocate(Transvec(0:nstates-1))
 allocate(TransMat_ei(0:nstates-1,0:nstates-1))
+allocate(k_1(3))
+allocate(k_2(3))
+allocate(k_3(3))
 allocate(c0(0:nstates-1))
 allocate(k1(0:nstates-1))
 allocate(k2(0:nstates-1))
@@ -146,6 +150,24 @@ elseif ( npulses .eq. 0) then
 pulse1 = 0.d0
 pulse2 = 0.d0
 pulse3 = 0.d0
+endif
+
+if ( inbox .eq. 'y' ) then
+
+zbase = 1000*sqrt(2.)*sqrt(1-cos(pi*vertex/180))/sqrt(cos(pi*vertex/180))
+
+k_1(1) =(-2.d0 * pi / (cl/(omega01/t_au))) * zbase / 2.d0
+k_1(2) = (2.d0 * pi / (cl/(omega01/t_au))) * 1000.d0
+k_1(3) =(-2.d0 * pi / (cl/(omega01/t_au))) *  zbase / 2.d0
+k_2(1) =(-2.d0 * pi / (cl/(omega02/t_au))) *  zbase / 2.d0
+k_2(2) = (2.d0 * pi / (cl/(omega02/t_au))) * 1000.d0
+k_2(3) = (2.d0 * pi / (cl/(omega02/t_au))) * zbase / 2.d0
+k_3(1) = (2.d0 * pi / (cl/(omega03/t_au))) * zbase / 2.d0
+k_3(2) = (2.d0 * pi / (cl/(omega03/t_au))) * 1000.d0
+k_3(3) = (2.d0 * pi / (cl/(omega03/t_au))) * zbase / 2.d0
+
+write(6,*) k_1(1), k_1(2), k_1(3), sqrt(k_1(1)**2 + k_1(2)**2 + k_1(3)**2), 2.d0 * pi / (cl/(omega01/t_au))
+
 endif
 
 endif
