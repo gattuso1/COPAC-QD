@@ -88,7 +88,7 @@ idlink = 55        !Linker length
 /
 
 &syst_random !Parameters of a random distribution of dimers either homo (aA=aB) or hetero (aA!=aB,linker fixed)
-nsys      = 10         !Number of dimers
+nsys      = 2         !Number of dimers
 aA        = 1.175d-9      !Radius of QDA
 aB        = 1.925d-9      !Radius of QDB
 idlink    = 20        !Linker length  (if hetero must be 0.2 or 0.55 nm so far)

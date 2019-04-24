@@ -370,6 +370,9 @@ endif
 open(22,file='Pulse.dat')
 open(32,file='TransMat.dat')
 open(37,file='TransMat_ei.dat')
+open(38,file='TransMat_ei_x.dat')
+open(39,file='TransMat_ei_y.dat')
+open(40,file='TransMat_ei_z.dat')
 open(33,file='Ham0.dat')
 open(34,file='Ham_dir.dat')
 open(35,file='Ham_ex.dat')
@@ -380,6 +383,9 @@ open(48,file='Etransitions-he_ei.dat')
 open(57,file='TransDip_ei.dat')
 write(32,'("#     Number                  QDA                       QDB                    linker")')
 write(37,'("#     Number                  QDA                       QDB                    linker")')
+write(38,'("#     Number                  QDA                       QDB                    linker")')
+write(39,'("#     Number                  QDA                       QDB                    linker")')
+write(40,'("#     Number                  QDA                       QDB                    linker")')
 write(33,'("#     Number                  QDA                       QDB                    linker")')
 write(22,'("#  time                      pulse1                    pulse2                    pulse3")')
 write(58,'("#     Number                  QDA                       QDB                    linker")')
@@ -450,6 +456,9 @@ endif
 !!!write Hamiltonians (ho and tdm)
 write(32,*) n , aR(n), aR(n+nsys), linker(n)
 write(37,*) n , aR(n), aR(n+nsys), linker(n)
+write(38,*) n , aR(n), aR(n+nsys), linker(n)
+write(39,*) n , aR(n), aR(n+nsys), linker(n)
+write(40,*) n , aR(n), aR(n+nsys), linker(n)
 write(33,*) n , aR(n), aR(n+nsys), linker(n)
 write(34,*) n , aR(n), aR(n+nsys), linker(n)
 write(35,*) n , aR(n), aR(n+nsys), linker(n)
@@ -541,6 +550,13 @@ do i=0,nstates-1
 if ( (vers .eq. 'randm' ) .or. ( vers .eq. 'range' ) .or. (vers .eq. 'dimer' ) ) then
 write(58,'(10f12.6)') (Ham_ei(i,j), j=0,nstates-1)
 write(37,'(9es14.6e2)') (TransHam_ei(i,j), j=0,nstates-1)
+
+if ( inbox .eq. "y" ) then
+write(38,'(9es14.6e2)') (TransHam_ei_l(i,j,1), j=0,nstates-1)
+write(39,'(9es14.6e2)') (TransHam_ei_l(i,j,2), j=0,nstates-1)
+write(40,'(9es14.6e2)') (TransHam_ei_l(i,j,3), j=0,nstates-1)
+endif
+
 elseif ( vers .eq. 'singl' ) then
 write(58,'(25f7.3)') (Ham_ei(i,j), j=0,nstates-1)
 endif
