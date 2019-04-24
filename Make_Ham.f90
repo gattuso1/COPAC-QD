@@ -955,11 +955,7 @@ do i=0,nstates-1
 TransHam(i,0) = TransHam(0,i)
 enddo
 elseif ( TDM_ee .eq. 'y') then
-!do i=1,100
 TransHam_l(0,1,:) = vector(TransDip_Ana_h1e(n))
-!write(6,*) TransDip_Ana_h1e(n)
-!write(6,*) TransHam_l(0,1,1), TransHam_l(0,1,2), TransHam_l(0,1,3)
-!enddo
 TransHam_l(0,2,:) = vector(TransDip_Ana_h2e(n))
 TransHam_l(0,3,:) = vector(TransDip_Ana_h1e(n+nsys))
 TransHam_l(0,4,:) = vector(TransDip_Ana_h2e(n+nsys))
@@ -970,10 +966,7 @@ TransHam_l(0,8,:) = vector(TransDip_Fit_h2e_he(aR(n),aR(n+nsys)))
 TransHam_l(1,2,:) = vector(TransDip_Ana_h1h2(n))
 TransHam_l(1,5,:) = vector(TransDip_Fit_ee_he(aR(n+nsys),aR(n)))
 TransHam_l(1,7,:) = vector(TransDip_Fit_h1h1_he(aR(n+nsys),aR(n)))
-!do i=1,100
 TransHam_l(1,8,:) = vector(TransDip_Fit_h1h2_he(aR(n),aR(n+nsys)))
-!write(6,*) TransHam_l(1,8,1), TransHam_l(1,8,2), TransHam_l(1,8,3)
-!enddo
 TransHam_l(2,6,:) = vector(TransDip_Fit_ee_he(aR(n+nsys),aR(n)))
 TransHam_l(2,7,:) = vector(TransDip_Fit_h1h2_he(aR(n+nsys),aR(n)))
 TransHam_l(2,8,:) = vector(TransDip_Fit_h2h2_he(aR(n+nsys),aR(n)))
@@ -986,6 +979,13 @@ TransHam_l(4,6,:) = vector(TransDip_Fit_h2h2_he(aR(n+nsys),aR(n)))
 TransHam_l(4,8,:) = vector(TransDip_Fit_ee_he(aR(n+nsys),aR(n)))
 TransHam_l(5,6,:) = vector(TransDip_Ana_h1h2(n))
 TransHam_l(7,8,:) = vector(TransDip_Ana_h1h2(n+nsys))
+
+!do i=0,nstates-1
+!do j=0,nstates-1
+!write(6,*) i, j, TransHam_l(i,j,1), TransHam_l(i,j,2), TransHam_l(i,j,3), norm2(TransHam_l(i,j,:))
+!enddo
+!enddo
+
 
 !call TDM_d2l
 

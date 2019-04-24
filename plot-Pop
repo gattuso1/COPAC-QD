@@ -4,8 +4,8 @@
 
 set xlabel 'Time (fs)'
 set ylabel 'Populations'
-set xrange [0:500]
-#set xrange [0:200]
+#set xrange [0:500]
+set xrange [0:10000]
 #set ytics 0,0.2,1
 #set yrange [0:0.01]
 #set yrange [0:0.24]
@@ -14,7 +14,7 @@ set xzeroaxis lt -1
 set key center right
 unset ytics
 
-plot 'Popc-00001.dat' u ($1*10**15):2 w l lw 2 lc -1 t '0', \
+plot 'Popc-00002.dat' u ($1*10**15):2 w l lw 2 lc -1 t '0', \
 '' u ($1*10**15):3 w l lw 2 lc 'blue' t '1', \
 '' u ($1*10**15):4 w l lw 2 lc 'light-blue' t '2', \
 '' u ($1*10**15):5 w l lw 2 lc 'blue' t '3' , \

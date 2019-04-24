@@ -45,7 +45,6 @@ NAMELIST /elecSt/ model,me,mh,eps,epsout,V0eV,omegaLO,slope,side
 NAMELIST /fineStruc/ Kas,Kbs,Kcs,Dso1,Dso2,Dxf
 NAMELIST /pulses/ integ,npulses,t01,t02,t03,timestep,totaltime,omega01,omega02,omega03,phase01,phase02,phase03,&
                   width01,width02,width03,Ed01,Ed02,Ed03,pgeom,vertex
-NAMELIST /pulsedir/ Pe1x, Pe1y, Pe1z, Pe2x, Pe2y, Pe2z, Pe3x, Pe3y, Pe3z 
 NAMELIST /syst_single/ nsys,aA,dispQD
 NAMELIST /syst_dimer/ aA,aB,idlink
 NAMELIST /syst_range/ rsteps,minr,maxr,idlink
@@ -56,7 +55,6 @@ read(150,NML=version)
 read(150,NML=outputs)
 read(150,NML=elecSt)
 read(150,NML=pulses)
-read(150,NML=pulsedir)
 
 im         = dcmplx(0.0d0,1.0d0)
 me         = me*m0
@@ -156,17 +154,19 @@ if ( inbox .eq. 'y' ) then
 
 zbase = 1000*sqrt(2.)*sqrt(1-cos(pi*vertex/180))/sqrt(cos(pi*vertex/180))
 
-k_1(1) =(-2.d0 * pi / (cl/(omega01/t_au))) * zbase / 2.d0
-k_1(2) = (2.d0 * pi / (cl/(omega01/t_au))) * 1000.d0
-k_1(3) =(-2.d0 * pi / (cl/(omega01/t_au))) *  zbase / 2.d0
-k_2(1) =(-2.d0 * pi / (cl/(omega02/t_au))) *  zbase / 2.d0
-k_2(2) = (2.d0 * pi / (cl/(omega02/t_au))) * 1000.d0
-k_2(3) = (2.d0 * pi / (cl/(omega02/t_au))) * zbase / 2.d0
-k_3(1) = (2.d0 * pi / (cl/(omega03/t_au))) * zbase / 2.d0
-k_3(2) = (2.d0 * pi / (cl/(omega03/t_au))) * 1000.d0
-k_3(3) = (2.d0 * pi / (cl/(omega03/t_au))) * zbase / 2.d0
+k_1(1) =(-2.d0 * pi / (cl/(omega01/t_au))) * ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
+k_1(2) = (2.d0 * pi / (cl/(omega01/t_au))) * ( 1000.d0      ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
+k_1(3) =(-2.d0 * pi / (cl/(omega01/t_au))) * ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
+k_2(1) =(-2.d0 * pi / (cl/(omega02/t_au))) * ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))  
+k_2(2) = (2.d0 * pi / (cl/(omega02/t_au))) * ( 1000.d0      ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
+k_2(3) = (2.d0 * pi / (cl/(omega02/t_au))) * ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
+k_3(1) = (2.d0 * pi / (cl/(omega03/t_au))) * ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
+k_3(2) = (2.d0 * pi / (cl/(omega03/t_au))) * ( 1000.d0      ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
+k_3(3) = (2.d0 * pi / (cl/(omega03/t_au))) * ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
 
-write(6,*) k_1(1), k_1(2), k_1(3), sqrt(k_1(1)**2 + k_1(2)**2 + k_1(3)**2), 2.d0 * pi / (cl/(omega01/t_au))
+!write(6,*) k_1(1), k_1(2), k_1(3), sqrt(k_1(1)**2 + k_1(2)**2 + k_1(3)**2), 2.d0 * pi / (cl/(omega01/t_au))
+!write(6,*) k_2(1), k_2(2), k_2(3), sqrt(k_2(1)**2 + k_2(2)**2 + k_2(3)**2), 2.d0 * pi / (cl/(omega02/t_au))
+!write(6,*) k_3(1), k_3(2), k_3(3), sqrt(k_3(1)**2 + k_3(2)**2 + k_3(3)**2), 2.d0 * pi / (cl/(omega03/t_au))
 
 endif
 
@@ -370,15 +370,17 @@ endif
 
 if ( inbox .eq. 'y' ) then
 
-Pe1(1) = Pe1x*1.e0_dp 
-Pe1(2) = Pe1y*1.e0_dp
-Pe1(3) = Pe1z*1.e0_dp
-Pe2(1) = Pe2x*1.e0_dp
-Pe2(2) = Pe2y*1.e0_dp
-Pe2(3) = Pe2z*1.e0_dp
-Pe3(1) = Pe3x*1.e0_dp
-Pe3(2) = Pe3y*1.e0_dp
-Pe3(3) = Pe3z*1.e0_dp
+Pe1(1) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
+Pe1(2) =  ( 1000.d0      ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
+Pe1(3) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
+Pe2(1) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))  
+Pe2(2) =  ( 1000.d0      ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
+Pe2(3) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
+Pe3(1) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
+Pe3(2) =  ( 1000.d0      ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
+Pe3(3) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
+
+write(6,*) Pe1(1), Pe1(2), Pe1(3), norm2(Pe1(:))
 
 open(56,file='box-dimers.xyz',form='formatted',action='read')
 read(56,*) 

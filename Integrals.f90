@@ -1634,23 +1634,23 @@ real(dp) :: t,Ham,TransHamx,TransHamy,TransHamz
 complex(kind=8) :: xc
 
 RK_k_inbox = -im * (Ham - pulse1 * Pe1(1) * TransHamx * Ed01 * cos(k_1(1)*Dcenter(n,1)+omega01*(t-t01)+phase01) &
-                                                    * exp(-1.0d0*(t-t01)**2.d0/(2.0d0*(width01**2))) - &
-                    pulse1 * Pe1(2) * TransHamy * Ed01 * cos(k_1(2)*Dcenter(n,2)+omega01*(t-t01)+phase01) &
-                                                    * exp(-1.0d0*(t-t01)**2.d0/(2.0d0*(width01**2))) - &
-                    pulse1 * Pe1(3) * TransHamz * Ed01 * cos(k_1(3)*Dcenter(n,3)+omega01*(t-t01)+phase01) &
-                                                    * exp(-1.0d0*(t-t01)**2.d0/(2.0d0*(width01**2))) - &
-                    pulse2 * Pe2(1) * TransHamx * Ed02 * cos(k_2(1)*Dcenter(n,1)+omega02*(t-t02)+phase02) &
-                                                    * exp(-1.0d0*(t-t02)**2.d0/(2.0d0*(width02**2))) - &
-                    pulse2 * Pe2(2) * TransHamy * Ed02 * cos(k_2(2)*Dcenter(n,2)+omega02*(t-t02)+phase02) &
-                                                    * exp(-1.0d0*(t-t02)**2.d0/(2.0d0*(width02**2))) - &
-                    pulse2 * Pe2(3) * TransHamz * Ed02 * cos(k_2(3)*Dcenter(n,3)+omega02*(t-t02)+phase02) &
-                                                    * exp(-1.0d0*(t-t02)**2.d0/(2.0d0*(width02**2))) - &
-                    pulse3 * Pe3(1) * TransHamx * Ed03 * cos(k_3(1)*Dcenter(n,1)+omega03*(t-t03)+phase03) &
-                                                    * exp(-1.0d0*(t-t03)**2.d0/(2.0d0*(width03**2))) - &
-                    pulse3 * Pe3(2) * TransHamy * Ed03 * cos(k_3(2)*Dcenter(n,2)+omega03*(t-t03)+phase03) &
-                                                    * exp(-1.0d0*(t-t03)**2.d0/(2.0d0*(width03**2))) - &
-                    pulse3 * Pe3(3) * TransHamz * Ed03 * cos(k_3(3)*Dcenter(n,3)+omega03*(t-t03)+phase03) &
-                                                    * exp(-1.0d0*(t-t03)**2.d0/(2.0d0*(width03**2))))*xc
+                                                          * exp(-1.0d0*(t-t01)**2.d0/(2.0d0*(width01**2))) - &
+                          pulse1 * Pe1(2) * TransHamy * Ed01 * cos(k_1(2)*Dcenter(n,2)+omega01*(t-t01)+phase01) &
+                                                          * exp(-1.0d0*(t-t01)**2.d0/(2.0d0*(width01**2))) - &
+                          pulse1 * Pe1(3) * TransHamz * Ed01 * cos(k_1(3)*Dcenter(n,3)+omega01*(t-t01)+phase01) &
+                                                          * exp(-1.0d0*(t-t01)**2.d0/(2.0d0*(width01**2))) - &
+                          pulse2 * Pe2(1) * TransHamx * Ed02 * cos(k_2(1)*Dcenter(n,1)+omega02*(t-t02)+phase02) &
+                                                          * exp(-1.0d0*(t-t02)**2.d0/(2.0d0*(width02**2))) - &
+                          pulse2 * Pe2(2) * TransHamy * Ed02 * cos(k_2(2)*Dcenter(n,2)+omega02*(t-t02)+phase02) &
+                                                          * exp(-1.0d0*(t-t02)**2.d0/(2.0d0*(width02**2))) - &
+                          pulse2 * Pe2(3) * TransHamz * Ed02 * cos(k_2(3)*Dcenter(n,3)+omega02*(t-t02)+phase02) &
+                                                          * exp(-1.0d0*(t-t02)**2.d0/(2.0d0*(width02**2))) - &
+                          pulse3 * Pe3(1) * TransHamx * Ed03 * cos(k_3(1)*Dcenter(n,1)+omega03*(t-t03)+phase03) &
+                                                          * exp(-1.0d0*(t-t03)**2.d0/(2.0d0*(width03**2))) - &
+                          pulse3 * Pe3(2) * TransHamy * Ed03 * cos(k_3(2)*Dcenter(n,2)+omega03*(t-t03)+phase03) &
+                                                          * exp(-1.0d0*(t-t03)**2.d0/(2.0d0*(width03**2))) - &
+                          pulse3 * Pe3(3) * TransHamz * Ed03 * cos(k_3(3)*Dcenter(n,3)+omega03*(t-t03)+phase03) &
+                                                          * exp(-1.0d0*(t-t03)**2.d0/(2.0d0*(width03**2))))*xc
 
 end function RK_k_inbox
 
