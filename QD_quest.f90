@@ -82,10 +82,14 @@ allocate(Oscillator_Ana_h2e(rmax+1))
 allocate(ExctCoef_h1e(rmax+1))
 allocate(ExctCoef_h2e(rmax+1))
 allocate(TransHam(0:nstates-1,0:nstates-1))
+allocate(TransHam_ei_l(0:nstates-1,0:nstates-1,3))
 allocate(TransHam_l(0:nstates-1,0:nstates-1,3))
 allocate(TransHam_d(0:nstates-1,0:nstates-1,3))
 allocate(TransHam_ei(0:nstates-1,0:nstates-1))
 allocate(Mat(0:nstates-1,0:nstates-1))
+allocate(Matx(0:nstates-1,0:nstates-1))
+allocate(Maty(0:nstates-1,0:nstates-1))
+allocate(Matz(0:nstates-1,0:nstates-1))
 allocate(Ham(0:nstates-1,0:nstates-1))
 allocate(Ham_l(0:nstates-1,0:nstates-1))
 allocate(Ham_0(0:nstates-1))
@@ -517,7 +521,21 @@ call dsyev('V', 'U', nstates, Ham_ei(0:nstates-1,0:nstates-1), nstates, lambda, 
 deallocate (work)
 !!!Make eigenstate TDM
 Mat(:,:) = matmul(TransHam(:,:),Ham_ei(:,:))
+
+if ( inbox .eq. "y" ) then
+Matx(:,:) = matmul(TransHam_l(:,:,1),Ham_ei(:,:))
+Maty(:,:) = matmul(TransHam_l(:,:,2),Ham_ei(:,:))
+Matz(:,:) = matmul(TransHam_l(:,:,3),Ham_ei(:,:))
+endif
+
 TransHam_ei(:,:) = matmul(transpose(Ham_ei(:,:)),Mat(:,:))
+
+if ( inbox .eq. "y" ) then
+TransHam_ei_l(:,:,1) = matmul(transpose(Ham_ei(:,:)),Matx(:,:))
+TransHam_ei_l(:,:,2) = matmul(transpose(Ham_ei(:,:)),Maty(:,:))
+TransHam_ei_l(:,:,3) = matmul(transpose(Ham_ei(:,:)),Matz(:,:))
+endif
+
 !call make_Ham_l
 do i=0,nstates-1
 if ( (vers .eq. 'randm' ) .or. ( vers .eq. 'range' ) .or. (vers .eq. 'dimer' ) ) then

@@ -2002,56 +2002,62 @@ k8 = dcmplx(0.0d0,0.0d0)
 
 do i=0,nstates-1
 do j=0,nstates-1
-k1(i) = k1(i) + dcmplx(timestep,0.d0)*RK_k(time,Ham_l(i,j),TransHam_ei(i,j), xc_ei(j,t)) 
+k1(i) = k1(i) + dcmplx(timestep,0.d0)*RK_k_inbox(time,Ham_l(i,j),&
+TransHam_ei_l(i,j,1),TransHam_ei_l(i,j,2),TransHam_ei_l(i,j,3),xc_ei(j,t)) 
 enddo
 enddo
 
 do i=0,nstates-1
 do j=0,nstates-1
-k2(i) = k2(i) + dcmplx(timestep,0.d0)*RK_k(time+(timestep/9.e0_dp),Ham_l(i,j), TransHam_ei(i,j), &
-xc_ei(j,t)+(1.e0_dp/9.e0_dp)*k1(j)) 
+k2(i) = k2(i) + dcmplx(timestep,0.d0)*RK_k_inbox(time+(timestep/9.e0_dp),Ham_l(i,j),&
+TransHam_ei_l(i,j,1),TransHam_ei_l(i,j,2),TransHam_ei_l(i,j,3),xc_ei(j,t)+(1.e0_dp/9.e0_dp)*k1(j)) 
 enddo
 enddo
 
 do i=0,nstates-1
 do j=0,nstates-1
-k3(i) = k3(i) + dcmplx(timestep,0.d0)*RK_k(time+(timestep/6.e0_dp),Ham_l(i,j), TransHam_ei(i,j), &
+k3(i) = k3(i) + dcmplx(timestep,0.d0)*RK_k_inbox(time+(timestep/6.e0_dp),Ham_l(i,j),&
+TransHam_ei_l(i,j,1),TransHam_ei_l(i,j,2),TransHam_ei_l(i,j,3), &
 xc_ei(j,t)+(1.e0_dp/24.e0_dp)*(k1(j)+3.e0_dp*k2(j))) 
 enddo
 enddo
 
 do i=0,nstates-1
 do j=0,nstates-1
-k4(i) = k4(i) + dcmplx(timestep,0.d0)*RK_k(time+(timestep/3.e0_dp),Ham_l(i,j), TransHam_ei(i,j), &
+k4(i) = k4(i) + dcmplx(timestep,0.d0)*RK_k_inbox(time+(timestep/3.e0_dp),Ham_l(i,j),&
+TransHam_ei_l(i,j,1),TransHam_ei_l(i,j,2),TransHam_ei_l(i,j,3), &
 xc_ei(j,t)+(1.e0_dp/6.e0_dp)*(k1(j)-3.e0_dp*k2(j)+4.e0_dp*k3(j))) 
 enddo
 enddo
 
 do i=0,nstates-1
 do j=0,nstates-1
-k5(i) = k5(i) + dcmplx(timestep,0.d0)*RK_k(time+(timestep/2.e0_dp),Ham_l(i,j), TransHam_ei(i,j), &
+k5(i) = k5(i) + dcmplx(timestep,0.d0)*RK_k_inbox(time+(timestep/2.e0_dp),Ham_l(i,j),&
+TransHam_ei_l(i,j,1),TransHam_ei_l(i,j,2),TransHam_ei_l(i,j,3), &
 xc_ei(j,t)+(1.e0_dp/8.e0_dp)*(-5.e0_dp*k1(j)+27.e0_dp*k2(j)-24.e0_dp*k3(j)+6.e0_dp*k4(j)))
 enddo
 enddo
 
 do i=0,nstates-1
 do j=0,nstates-1
-k6(i) = k6(i) + dcmplx(timestep,0.d0)*RK_k(time+(2.e0_dp*timestep/3.e0_dp),Ham_l(i,j), TransHam_ei(i,j), &
+k6(i) = k6(i) + dcmplx(timestep,0.d0)*RK_k_inbox(time+(2.e0_dp*timestep/3.e0_dp),Ham_l(i,j),&
+TransHam_ei_l(i,j,1),TransHam_ei_l(i,j,2),TransHam_ei_l(i,j,3), &
 xc_ei(j,t)+(1.e0_dp/9.e0_dp)*(221.e0_dp*k1(j)-981.e0_dp*k2(j)+867.e0_dp*k3(j)-102.e0_dp*k4(j)+k5(j)))
 enddo
 enddo
 
 do i=0,nstates-1
 do j=0,nstates-1
-k7(i) = k7(i) + dcmplx(timestep,0.d0)*RK_k(time+(5.e0_dp*timestep/6.e0_dp),Ham_l(i,j), TransHam_ei(i,j), &
+k7(i) = k7(i) + dcmplx(timestep,0.d0)*RK_k_inbox(time+(5.e0_dp*timestep/6.e0_dp),Ham_l(i,j),&
+TransHam_ei_l(i,j,1),TransHam_ei_l(i,j,2),TransHam_ei_l(i,j,3), &
 xc_ei(j,t)+(1.e0_dp/48.e0_dp)*(-183.e0_dp*k1(j)+678.e0_dp*k2(j)-472.e0_dp*k3(j)-66.e0_dp*k4(j)+80.e0_dp*k5(j)+3.e0_dp*k6(j)))
 enddo
 enddo
 
 do i=0,nstates-1
 do j=0,nstates-1
-k8(i)=k8(i)+dcmplx(timestep,0.d0)*RK_k(time+timestep,Ham_l(i,j), TransHam_ei(i,j), &
-xc_ei(j,t)+(1.e0_dp/82.e0_dp)*&
+k8(i)=k8(i)+dcmplx(timestep,0.d0)*RK_k_inbox(time+timestep,Ham_l(i,j),&
+TransHam_ei_l(i,j,1),TransHam_ei_l(i,j,2),TransHam_ei_l(i,j,3),xc_ei(j,t)+(1.e0_dp/82.e0_dp)*&
 (716.e0_dp*k1(j)-2079.e0_dp*k2(j)+1002.e0_dp*k3(j)+834.e0_dp*k4(j)-454.e0_dp*k5(j)-9.e0_dp*k6(j)+72.e0_dp*k7(j)))
 enddo
 enddo

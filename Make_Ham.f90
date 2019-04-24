@@ -950,7 +950,6 @@ TransHam(0,5) = TransDip_Fit_h1e_he(aR(n+nsys),aR(n))
 TransHam(0,6) = TransDip_Fit_h2e_he(aR(n+nsys),aR(n))
 TransHam(0,7) = TransDip_Fit_h1e_he(aR(n),aR(n+nsys))
 TransHam(0,8) = TransDip_Fit_h2e_he(aR(n),aR(n+nsys))
-TransHam = TransHam/D_to_au
 do i=0,nstates-1
 TransHam(i,0) = TransHam(0,i)
 enddo
@@ -1007,7 +1006,6 @@ TransHam(0,5) = TransDip_Fit_h1e_he(aR(n+nsys),aR(n))
 TransHam(0,6) = TransDip_Fit_h2e_he(aR(n+nsys),aR(n))
 TransHam(0,7) = TransDip_Fit_h1e_he(aR(n),aR(n+nsys))
 TransHam(0,8) = TransDip_Fit_h2e_he(aR(n),aR(n+nsys))
-TransHam = TransHam/D_to_au
 do i=0,nstates-1
 TransHam(i,0) = TransHam(0,i)
 enddo
