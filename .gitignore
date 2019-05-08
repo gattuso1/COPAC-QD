@@ -1,4 +1,6 @@
 fort*
+*.pdf
+*.out
 *.log
 *.o
 *.mod

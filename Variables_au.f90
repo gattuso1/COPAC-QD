@@ -153,6 +153,7 @@ endif
 
 if ( inbox .eq. 'y' ) then
 
+if ( pgeom .eq. 'boxcar' ) then
 zbase = 1000*sqrt(2.)*sqrt(1-cos(pi*vertex/180))/sqrt(cos(pi*vertex/180))
 
 k_1(1) =(-2.d0 * pi / (cl/(omega01/t_au))) * ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
@@ -165,9 +166,21 @@ k_3(1) = (2.d0 * pi / (cl/(omega03/t_au))) * ( zbase / 2.d0 ) / (sqrt((zbase / 2
 k_3(2) = (2.d0 * pi / (cl/(omega03/t_au))) * ( 1000.d0      ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
 k_3(3) = (2.d0 * pi / (cl/(omega03/t_au))) * ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
 
-!write(6,*) k_1(1), k_1(2), k_1(3), sqrt(k_1(1)**2 + k_1(2)**2 + k_1(3)**2), 2.d0 * pi / (cl/(omega01/t_au))
-!write(6,*) k_2(1), k_2(2), k_2(3), sqrt(k_2(1)**2 + k_2(2)**2 + k_2(3)**2), 2.d0 * pi / (cl/(omega02/t_au))
-!write(6,*) k_3(1), k_3(2), k_3(3), sqrt(k_3(1)**2 + k_3(2)**2 + k_3(3)**2), 2.d0 * pi / (cl/(omega03/t_au))
+elseif ( pgeom .eq. 'triang' ) then
+
+zbase = 1000*sqrt(2.)*sqrt(1-cos(pi*vertex/180))/sqrt(1-(5.d0/4.d0)*(1-cos(pi*vertex/180)))
+
+k_1(1) = (2.d0*pi/(cl/(omega01/t_au)))*( zbase / 2.d0 ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
+k_1(2) = (2.d0*pi/(cl/(omega01/t_au)))*( 1000.d0      ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
+k_1(3) = (2.d0*pi/(cl/(omega01/t_au)))*( sqrt(3.d0)*zbase/4.d0 )/(sqrt((zbase / 2.d0)**2+(1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
+k_2(1) =(-2.d0*pi/(cl/(omega02/t_au)))*( zbase / 2.d0 ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
+k_2(2) = (2.d0*pi/(cl/(omega02/t_au)))*( 1000.d0      ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
+k_2(3) = (2.d0*pi/(cl/(omega02/t_au)))*( sqrt(3.d0)*zbase/4.d0 )/(sqrt((zbase / 2.d0)**2+(1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
+k_3(1) = (2.d0*pi/(cl/(omega03/t_au)))*0.d0 
+k_3(2) = (2.d0*pi/(cl/(omega03/t_au)))*( 1000.d0      ) /        (sqrt((1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
+k_3(3) =(-2.d0*pi/(cl/(omega03/t_au)))*( sqrt(3.d0)*zbase/4.d0 )/(sqrt((1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
+
+!write(6,*) (2.d0*pi/(cl/(omega01/t_au))), norm2(k_1)
 
 endif
 
@@ -371,6 +384,7 @@ endif
 
 if ( inbox .eq. 'y' ) then
 
+if ( pgeom .eq. 'boxcar' ) then 
 Pe1(1) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
 Pe1(2) =  ( 1000.d0      ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
 Pe1(3) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
@@ -380,8 +394,19 @@ Pe2(3) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)
 Pe3(1) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
 Pe3(2) =  ( 1000.d0      ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
 Pe3(3) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
+elseif ( pgeom .eq. 'triang' ) then
+Pe1(1) =  ( zbase / 2.d0 ) /          (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
+Pe1(2) =  ( 1000.d0      ) /          (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
+Pe1(3) =  ( sqrt(3.d0)*zbase/4.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
+Pe2(1) =  ( zbase / 2.d0 ) /          (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
+Pe2(2) =  ( 1000.d0      ) /          (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
+Pe2(3) =  ( sqrt(3.d0)*zbase/4.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
+Pe3(1) =  0.d0 
+Pe3(2) =  ( 1000.d0      ) /          (sqrt((1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
+Pe3(3) =  ( sqrt(3.d0)*zbase/4.d0 ) / (sqrt((1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
+endif
 
-write(6,*) Pe1(1), Pe1(2), Pe1(3), norm2(Pe1(:))
+!write(6,*) Pe1(1), Pe1(2), Pe1(3), norm2(Pe1(:))
 
 open(56,file='box-dimers.xyz',form='formatted',action='read')
 read(56,*) 
@@ -395,6 +420,9 @@ Dcenter(n,3) = (QDcoor(n,3) + QDcoor(n+nsys,3))/2.
 enddo
 QDcoor(:,:) = QDcoor(:,:) * 1.e-10_dp
 Dcenter(:,:) = Dcenter(:,:) * 1.e-10_dp
+
+endif
+
 endif
 
 end subroutine getVariables

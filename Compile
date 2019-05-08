@@ -8,7 +8,7 @@ f95 -c Integrals.f90 #-fopenmp
 f95 -c Output.f90 #-fopenmp
 f95 -c Make_Ham.f90 #-fopenmp
 f95 -c QD_quest.f90 #-fopenmp
-f95 -O3 Normal.o Constants_au.o Variables_au.o Make_Ham.o Integrals.o Vectors.o Output.o QD_quest.o -o QD_quest -L/usr/lib/x86_64-linux-gnu/lapack -llapack -I /usr/lib/x86_64-linux-gnu/libblas.a -I /home/gattuso/NAG/fll6i26dfl/nag_interface_blocks/ /home/gattuso/NAG/fll6i26dfl/lib/libnag_mkl.a -lblas -double -g -Wall -Wextra -pedantic -fimplicit-none -fcheck=all -fbacktrace -fno-range-check -s -fopenmp 
+f95 Normal.o Constants_au.o Variables_au.o Make_Ham.o Integrals.o Vectors.o Output.o QD_quest.o -o QD_quest -L/usr/lib/x86_64-linux-gnu/lapack -llapack -I /usr/lib/x86_64-linux-gnu/libblas.a -I /home/gattuso/NAG/fll6i26dfl/nag_interface_blocks/ /home/gattuso/NAG/fll6i26dfl/lib/libnag_mkl.a -lblas -double -g -Wall -Wextra -pedantic -fimplicit-none -fcheck=all -fbacktrace -fno-range-check -s -fopenmp -pg
 #gfortran  -O3 -fopenmp Constants_au.o Variables_au.o Normal.o Make_Ham.o Integrals.o Vectors.o Output.o QD_quest.o -o QD_quest -L/usr/lib/x86_64-linux-gnu/lapack -llapack -I /usr/lib/x86_64-linux-gnu/libblas.a -I /home/gattuso/NAG/fll6i26dfl/nag_interface_blocks/ /home/gattuso/NAG/fll6i26dfl/lib/libnag_mkl.a -db1
 
 
