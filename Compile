@@ -8,7 +8,7 @@ gfortran -c Integrals.f90
 #gfortran -c Output.f90 
 gfortran -c Make_Ham.f90 
 gfortran -c QD_quest.f90 
-gfortran Normal.o Constants_au.o Variables_au.o Make_Ham.o Integrals.o Vectors.o Output.o QD_quest.o -o QD_quest -L/usr/lib/x86_64-linux-gnu/lapack -llapack -I /usr/lib/x86_64-linux-gnu/libblas.a -I /home/gattuso/NAG/fll6i26dfl/nag_interface_blocks/ /home/gattuso/NAG/fll6i26dfl/lib/libnag_mkl.a -lblas -double -pedantic -fimplicit-none -fcheck=all -fbacktrace -fno-range-check -s -fopenmp 
+gfortran Normal.o Constants_au.o Variables_au.o Make_Ham.o Integrals.o Vectors.o  QD_quest.o -o QD_quest -L/usr/lib/x86_64-linux-gnu/lapack -llapack -I /usr/lib/x86_64-linux-gnu/libblas.a -I /home/gattuso/NAG/fll6i26dfl/nag_interface_blocks/ /home/gattuso/NAG/fll6i26dfl/lib/libnag_mkl.a -lblas -double -pedantic -fimplicit-none -fcheck=all -fbacktrace -fno-range-check -s -fopenmp 
 
 
 

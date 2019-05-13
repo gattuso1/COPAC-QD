@@ -445,8 +445,10 @@ call make_Ham_ho
 elseif ( ( aA .ne. aB ) .and. ( vers .ne. "singl" ) ) then
 call make_Ham_he
 elseif ( vers .eq. "singl" ) then
-call make_Ham_fineSt
-call make_TransHam_0_fineSt
+!call make_Ham_fineSt
+call make_Ham_singl
+!call make_TransHam_0_fineSt
+!call make_TransHam_singl
 !do i = 0,nstates-1
 !write(6,'(25f12.8)') (Ham(i,j)*Energ_au/elec, j=0,nstates-1)
 !enddo
@@ -593,6 +595,8 @@ endif
 !
 !endif
 
+call cpu_time(start)
+
 if ( ( Dyn_0 .eq. 'y' ) .or. ( Dyn_ei .eq. 'y' ) ) then
 
 !!!!!INITIAL POPULATIONS
@@ -617,6 +621,9 @@ call RK_0_ei
 
 endif !endif dynamics
 
+call cpu_time(finish)
+
+write(6,*) finish - start
 
 enddo !end loop number of systems
 

@@ -2002,7 +2002,6 @@ k8 = dcmplx(0.0d0,0.0d0)
 
 do i=0,nstates-1
 do j=0,nstates-1
-!write(6,*) i,j, Ham_l(i,j)
 k1(i) = k1(i) + dcmplx(timestep,0.d0)*RK_k_inbox(time,Ham_l(i,j),&
 TransHam_ei_l(i,j,1),TransHam_ei_l(i,j,2),TransHam_ei_l(i,j,3),xc_ei(j,t)) 
 enddo
@@ -2089,9 +2088,10 @@ enddo
 !!!NORM
 write(50,*) time*t_au, cnorm2 !cnormabs !, cnormconj, cnorm2
 !!!POPULATIONS
-write(49,'(26ES15.6E3)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,24)
-write(52,'(ES11.5E2,25ES15.6E3)') time*t_au, (dreal(xc_ei(i,t)), i=0,nstates-1)
-write(53,'(ES11.5E2,25ES15.6E3)') time*t_au, (aimag(xc_ei(i,t)), i=0,nstates-1)
+!write(49,'(26ES15.6E3)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,24)
+write(49,'(4ES15.6E3)') time*t_au, (dreal(xc_ei(i,t))**2+aimag(xc_ei(i,t))**2, i=0,2)
+write(52,'(ES11.5E2,3ES15.6E3)') time*t_au, (dreal(xc_ei(i,t)), i=0,nstates-1)
+write(53,'(ES11.5E2,3ES15.6E3)') time*t_au, (aimag(xc_ei(i,t)), i=0,nstates-1)
 endif
 endif
 

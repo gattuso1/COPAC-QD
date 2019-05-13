@@ -1043,8 +1043,6 @@ endif
 
 endif
 
-
-
 TransHam = TransHam/D_to_au
 
 end subroutine make_Ham_he
@@ -1220,5 +1218,94 @@ end subroutine make_Ham_l
 !enddo
 !
 !end subroutine TDM_d2l
+
+subroutine make_Ham_singl
+
+Ham     = 0.0
+Ham_0   = 0.0
+Ham_dir = 0.0
+Ham_ex  = 0.0
+
+Ham_0(1)   = minEe(1,n) + minEh(1,n)  + V0 
+Ham_dir(1,1) = elec*(a11_1d_ho + a11_2d_ho / ((aR(n)*1d9)**a11_3d_ho)) 
+Ham_ex(1,1)  = elec*(a11_1e_ho + a11_2e_ho / ((aR(n)*1d9)**a11_3e_ho))
+
+Ham_0(2)   = minEe(1,n) + minEh(2,n) + V0 
+Ham_dir(2,2) = elec*(a22_1d_ho + a22_2d_ho / ((aR(n)*1d9)**a22_3d_ho))
+Ham_ex(2,2)  = elec*(a22_1e_ho + a22_2e_ho / ((aR(n)*1d9)**a22_3e_ho))
+
+Ham_dir(1,2) = elec*(a12_1d_ho + a12_2d_ho / ((aR(n)*1d9)**a12_3d_ho)) 
+Ham_ex(1,2)  = elec*(a12_1e_ho + a12_2e_ho / ((aR(n)*1d9)**a12_3e_ho))
+
+do i=1,nstates-1
+  do j=1,nstates-1
+    if ( i .eq. j ) then
+    Ham(i,j) = Ham_0(i) - Ham_dir(i,j) + Ham_ex(i,j)
+    elseif ( i .ne. j ) then
+    Ham(i,j) = -1.d0 * Ham_dir(i,j) + Ham_ex(i,j)
+    endif
+  enddo
+enddo
+
+do i=1,nstates-1
+  do j=i+1,nstates-1
+    Ham(j,i) = Ham(i,j)
+    Ham_dir(j,i) = Ham_dir(i,j)
+    Ham_ex(j,i) = Ham_ex(i,j)
+  enddo
+enddo
+
+Ham = Ham/Energ_au
+Ham_dir = Ham_dir/Energ_au
+Ham_ex = Ham_ex/Energ_au
+
+if ( inbox .eq. "y" ) then
+
+TransHam_d = 0.d0
+TransHam_l = 0.d0
+
+if ( TDM_ee .eq. 'n') then
+TransHam(0,1) = TransDip_Ana_h1e(n)
+TransHam(0,2) = TransDip_Ana_h2e(n)
+do i=0,nstates-1
+TransHam(i,0) = TransHam(0,i)
+enddo
+elseif ( TDM_ee .eq. 'y') then
+TransHam_l(0,1,:) = vector(TransDip_Ana_h1e(n))
+TransHam_l(0,2,:) = vector(TransDip_Ana_h2e(n))
+TransHam_l(1,2,:) = vector(TransDip_Ana_h1h2(n))
+
+do i=0,nstates-1
+do j=i+1,nstates-1
+TransHam_l(j,i,:) = TransHam_l(i,j,:)
+enddo
+enddo
+endif
+
+else 
+
+if ( TDM_ee .eq. 'n') then
+TransHam(0,1) = TransDip_Ana_h1e(n)
+TransHam(0,2) = TransDip_Ana_h2e(n)
+do i=0,nstates-1
+TransHam(i,0) = TransHam(0,i)
+enddo
+elseif ( TDM_ee .eq. 'y') then
+TransHam(0,1) = TransDip_Ana_h1e(n)
+TransHam(0,2) = TransDip_Ana_h2e(n)
+TransHam(1,2) = TransDip_Ana_h1h2(n)
+
+do i=0,nstates-1
+do j=i+1,nstates-1
+TransHam(j,i) = TransHam(i,j)
+enddo
+enddo
+endif
+
+endif
+
+TransHam = TransHam/D_to_au
+
+end subroutine make_Ham_singl
 
 end module Make_Ham

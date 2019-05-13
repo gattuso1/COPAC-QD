@@ -1,7 +1,7 @@
 ! Namelist definition
 &version !version of the code, choose between singl, dimer, range, randm
 threads = 1
-vers = "randm"   
+vers = "singl"   
 /
 
 &outputs !Select output and computation modules, yes ("y") or ("no") 
@@ -12,11 +12,11 @@ o_DipS  = "y" !Transition dipole moments of local excitons (must be "y")
 o_Osci  = "n" !Oscillator strength of local excitons
 o_Exti  = "n" !Molar extinction coefficients of local excitons
 o_DipD  = "n" !Transition dipole moments of CT states
-inbox   = "y" !For phase matching directions, read coordinates in space, orient mus ... 
+inbox   = "n" !For phase matching directions, read coordinates in space, orient mus ... 
 get_sp  = "n" !recover sampling from a previous Etransitions_0.dat
 get_ei  = "y" !Generates eigenstate vectors and TDM 
 Dyn_0   = "n" !Should I perform dynamics in 0 order basis?
-Dyn_ei  = "y" !Should I perform dynamics in eigenstate basis?
+Dyn_ei  = "n" !Should I perform dynamics in eigenstate basis?
 hamilt  = "n" !Should I print the time dependent Hamiltonian (very heavy and time consuming)
 fineSt  = "n" !Request fine structure 
 TDM_ee  = "y" !Request interexciton TDM or not
@@ -51,7 +51,7 @@ t01        = 100.d0     !Pulse 1 centered at (s)
 t02        = 200.d0     !Pulse 2 centered at (s)
 t03        = 300.d0     !Pulse 3 centered at (s)
 timestep   = 0.050d0      !Time step of quantum dynamic
-totaltime  = 500.d0     !Total time simulated (s)
+totaltime  = 1000.d0     !Total time simulated (s)
 omega01    = 0.55d15      !Frequency (s-1)
 omega02    = 0.55d15      !Frequency (s-1)
 omega03    = 0.193d15      !Frequency (s-1)
@@ -61,17 +61,17 @@ omega03    = 0.193d15      !Frequency (s-1)
 width01    = 6.0d0       !Width of the pulse (s) 
 width02    = 6.0d0       !Width of the pulse (s) 
 width03    = 6.0d0       !Width of the pulse (s) 
-Ed01       = 2.d9     !Field strength (V/m so far)
-Ed02       = 2.d9     !Field strength (V/m so far)
-Ed03       = 2.d9     !Field strength (V/m so far)
+Ed01       = 5.d9     !Field strength (V/m so far)
+Ed02       = 5.d9     !Field strength (V/m so far)
+Ed03       = 5.d9     !Field strength (V/m so far)
 pgeom      = "triang" !useless so far (boxcar / triang)
 vertex     = 8.d0     !vertex angle of beam crossing (inbox=y and 3 pulses)
 /
 
 &syst_single !Parameters of the single dot
-nsys      = 1          !Number of dimers
-aA        = 1.65d-9      !Radius of QDA
-dispQD    = 0.00d0     !Dispersion of QD radius
+nsys      = 1000          !Number of dimers
+aA        = 1.35d-9      !Radius of QDA
+dispQD    = 0.05d0     !Dispersion of QD radius
 /
 
 &syst_dimer !Parameters of the dimer
@@ -89,10 +89,10 @@ idlink = 55        !Linker length
 
 &syst_random !Parameters of a random distribution of dimers either homo (aA=aB) or hetero (aA!=aB,linker fixed)
 nsys      = 10         !Number of dimers
-aA        = 1.175d-9      !Radius of QDA
-aB        = 1.925d-9      !Radius of QDB
-idlink    = 20        !Linker length  (if hetero must be 0.2 or 0.55 nm so far)
-displink  = 0.03d0        !Dispersion on the linker length
-dispQD    = 0.03d0        !Dispersion of QD radius
+aA        = 1.350001d-9      !Radius of QDA
+aB        = 1.35d-9      !Radius of QDB
+idlink    = 55        !Linker length  (if hetero must be 0.2 or 0.55 nm so far)
+displink  = 0.05d0        !Dispersion on the linker length
+dispQD    = 0.05d0        !Dispersion of QD radius
 /
 

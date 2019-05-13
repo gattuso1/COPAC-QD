@@ -15,7 +15,7 @@ implicit none
    integer :: ndots, n, rmin, rmax, nsys, npulses, nstates, ntime, i, j, t, lwork, info, idlink, threads
    integer,allocatable :: seed(:)
    real(dp) :: aA, aB, me, mh, eps, epsout, V0, omegaLO, rhoe, rhoh, slope, V0eV, minr, maxr, rsteps, side, link
-   real(dp) :: Pe1x, Pe1y, Pe1z, Pe2x, Pe2y, Pe2z, Pe3x, Pe3y, Pe3z, vertex, zbase
+   real(dp) :: Pe1x, Pe1y, Pe1z, Pe2x, Pe2y, Pe2z, Pe3x, Pe3y, Pe3z, vertex, zbase, start, finish
    real(dp) :: dispQD, displink, rdmlinker, rdmQDA, rdmQDB, t01, t02, t03, timestep, totaltime, distQD
    real(dp) :: omega01, omega02, omega03, phase01, phase02, phase03, width01, width02, width03, Ed01, Ed02, Ed03
    real(dp) :: pulse1, pulse2, pulse3, test, time, cnorm, cnormabs, cnormconj, cnorm2, cnorm2_ei, Kas, Kbs, Kcs, Dso1, Dso2, Dxf
@@ -72,12 +72,6 @@ elseif ( model .eq. "FS") then
 nstates = 25
 endif
 
-!if ( idlink .eq. 20 ) then
-!link = 0.2d-9
-!elseif ( idlink .eq. 55 ) then
-!link = 0.55d-9
-!endif
-
 if ( ( Dyn_0 .eq. 'y' ) .or. ( Dyn_ei .eq. 'y' ) ) then
 
 timestep   =  timestep*1.d-15/t_au  !timestep*1.d-15/t_au
@@ -132,6 +126,9 @@ allocate(dk1(0:nstates-1))
 allocate(dk2(0:nstates-1))
 allocate(dk3(0:nstates-1))
 allocate(dk4(0:nstates-1))
+allocate(Pe1(3))
+allocate(Pe2(3))
+allocate(Pe3(3))
 
 if ( npulses .eq. 3) then
 pulse1 = 1.d0 
@@ -154,13 +151,8 @@ endif
 if ( inbox .eq. 'y' ) then
 
 if ( pgeom .eq. 'boxcar' ) then
+
 zbase = 1000*sqrt(2.d0)*sqrt(1-cos(pi*vertex/180.d0))/sqrt(cos(pi*vertex/180.d0))
-
-!write(6,*) 1000*sqrt(2.)*sqrt(1-cos(pi*vertex/180))/sqrt(cos(pi*vertex/180))
-!write(6,*) 1000*sqrt(2.d0*(1.d0-cos(pi*vertex/180))/(1.d0-(1-cos(pi*vertex/180.d0))/(1-cos(pi*120/180.d0))))
-!write(6,*) 1000*sqrt(2.d0*(1.d0-cos(pi*vertex/180))/(1.d0-(2.d0/3.d0)*(1-cos(pi*vertex/180.d0))))
-!write(6,*) tan(pi*60/180.d0), sqrt(3.d0)
-
 k_1(1) =(-2.d0 * pi / (cl/(omega01/t_au))) * ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
 k_1(2) = (2.d0 * pi / (cl/(omega01/t_au))) * ( 1000.d0      ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
 k_1(3) =(-2.d0 * pi / (cl/(omega01/t_au))) * ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
@@ -170,11 +162,19 @@ k_2(3) = (2.d0 * pi / (cl/(omega02/t_au))) * ( zbase / 2.d0 ) / (sqrt((zbase / 2
 k_3(1) = (2.d0 * pi / (cl/(omega03/t_au))) * ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
 k_3(2) = (2.d0 * pi / (cl/(omega03/t_au))) * ( 1000.d0      ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
 k_3(3) = (2.d0 * pi / (cl/(omega03/t_au))) * ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
+Pe1(1) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
+Pe1(2) =  ( 1000.d0      ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
+Pe1(3) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
+Pe2(1) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))  
+Pe2(2) =  ( 1000.d0      ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
+Pe2(3) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
+Pe3(1) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
+Pe3(2) =  ( 1000.d0      ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
+Pe3(3) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
 
 elseif ( pgeom .eq. 'triang' ) then
 
 zbase = 1000*sqrt(2.d0*(1.d0-cos(pi*vertex/180.d0))/(1.d0-(1-cos(pi*vertex/180.d0))/(1-cos(pi*120.d0/180.d0)))) 
-
 k_1(1) = (2.d0*pi/(cl/(omega01/t_au)))*(zbase / 2.d0 ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
 k_1(2) = (2.d0*pi/(cl/(omega01/t_au)))*(1000.d0      ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
 k_1(3) = (2.d0*pi/(cl/(omega01/t_au)))*(zbase/(2.d0*sqrt(3.d0)))/(sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
@@ -184,16 +184,24 @@ k_2(3) = (2.d0*pi/(cl/(omega02/t_au)))*(zbase/(2.d0*sqrt(3.d0)))/(sqrt((zbase / 
 k_3(1) = (2.d0*pi/(cl/(omega03/t_au)))*0.d0 
 k_3(2) = (2.d0*pi/(cl/(omega03/t_au)))*(1000.d0      ) /        (sqrt((1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
 k_3(3) =(-2.d0*pi/(cl/(omega03/t_au)))*(zbase/(2.d0*sqrt(3.d0)))/(sqrt((1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
+Pe1(1) =  ( zbase / 2.d0 ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
+Pe1(2) =  ( 1000.d0      ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
+Pe1(3) =  ( zbase/(2.d0*sqrt(3.d0)))/(sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
+Pe2(1) =  ( zbase / 2.d0 ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
+Pe2(2) =  ( 1000.d0      ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
+Pe2(3) =  ( zbase/(2.d0*sqrt(3.d0)))/(sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
+Pe3(1) =  0.d0 
+Pe3(2) =  ( 1000.d0      ) /        (sqrt((1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
+Pe3(3) =  ( zbase/(2.d0*sqrt(3.d0)))/(sqrt((1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
 
-!write(6,*) (2.d0*pi/(cl/(omega01/t_au))), norm2(k_1)
-!write(6,*) (2.d0*pi/(cl/(omega02/t_au))), norm2(k_2)
-!write(6,*) (2.d0*pi/(cl/(omega03/t_au))), norm2(k_3)
+endif
 
 endif
 
 endif
 
 rewind 150
+
 if ( vers .eq. 'randm' ) then
 read(150,NML=syst_random)
 else if ( vers .eq. 'singl' ) then
@@ -204,15 +212,15 @@ if ( vers .eq. 'singl' ) then
 
 write(6,*) "You are requesting me to tackle a single QD"
 
-rewind 150
-read(150,NML=fineStruc)
-
-Kas = Kas*elec
-Kbs = Kbs*elec
-Kcs = Kcs*elec
-Dso1 = Dso1*elec
-Dso2 = Dso2*elec
-Dxf = Dxf*elec
+!rewind 150
+!read(150,NML=fineStruc)
+!
+!Kas = Kas*elec
+!Kbs = Kbs*elec
+!Kcs = Kcs*elec
+!Dso1 = Dso1*elec
+!Dso2 = Dso2*elec
+!Dxf = Dxf*elec
 
 allocate(TransHam0(0:nstates-1,0:nstates-1))
 allocate(aR(nsys))
@@ -229,6 +237,7 @@ allocate(V0h(nsys))
 linker = link
 rmin = 1
 rmax = nsys
+nstates = 3
 
 do n = 1,nsys
 aR(n)= r8_NORMAL_AB(aA, dispQD*1d-9, seed(1))
@@ -341,9 +350,6 @@ allocate(V0e(2*nsys))
 allocate(V0h(2*nsys))
 allocate(QDcoor(2*nsys,3))
 allocate(Dcenter(2*nsys,3))
-allocate(Pe1(3))
-allocate(Pe2(3))
-allocate(Pe3(3))
 
 if ( idlink .eq. 20 ) then
 link = 0.2d-9
@@ -389,31 +395,8 @@ V0h(n+nsys)=-1*(-5.23-0.74*(1d9*2*aR(n+nsys))**(-0.95))*elec
 enddo
 endif 
 
+
 if ( inbox .eq. 'y' ) then
-
-if ( pgeom .eq. 'boxcar' ) then 
-Pe1(1) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
-Pe1(2) =  ( 1000.d0      ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
-Pe1(3) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
-Pe2(1) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))  
-Pe2(2) =  ( 1000.d0      ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
-Pe2(3) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
-Pe3(1) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
-Pe3(2) =  ( 1000.d0      ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
-Pe3(3) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
-elseif ( pgeom .eq. 'triang' ) then
-Pe1(1) =  ( zbase / 2.d0 ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
-Pe1(2) =  ( 1000.d0      ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
-Pe1(3) =  ( zbase/(2.d0*sqrt(3.d0)))/(sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
-Pe2(1) =  ( zbase / 2.d0 ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
-Pe2(2) =  ( 1000.d0      ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
-Pe2(3) =  ( zbase/(2.d0*sqrt(3.d0)))/(sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
-Pe3(1) =  0.d0 
-Pe3(2) =  ( 1000.d0      ) /        (sqrt((1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
-Pe3(3) =  ( zbase/(2.d0*sqrt(3.d0)))/(sqrt((1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
-endif
-
-!write(6,*) Pe1(1), Pe1(2), Pe1(3), norm2(Pe1(:))
 
 open(56,file='box-dimers.xyz',form='formatted',action='read')
 read(56,*) 
@@ -427,8 +410,6 @@ Dcenter(n,3) = (QDcoor(n,3) + QDcoor(n+nsys,3))/2.
 enddo
 QDcoor(:,:) = QDcoor(:,:) * 1.e-10_dp
 Dcenter(:,:) = Dcenter(:,:) * 1.e-10_dp
-
-endif
 
 endif
 
