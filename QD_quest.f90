@@ -7,16 +7,15 @@ use Constants_au
 use Variables_au
 use Integrals
 use Vectors
-use Output
+!use Output
 use Make_Ham
 
 implicit none
 
 real(dp), external:: s13adf, ei, eone, nag_bessel_j0
 
-integer :: je,jh,k,nsteps,r,ifail, r1, r2, nthreads, tid
-real(dp) :: Ef,le,re,lh,rh,delta, start, finish, mu, A, epsinf, aR1, aR2
-real(dp) :: Rine, Route, Rinh1, Routh1, Rinh2, Routh2, RadProbe, RadProbh1, RadProbh2, r0
+integer :: je,jh,k,nsteps,r,ifail, r1, r2
+real(dp) :: Ef,delta, mu, A
 real(dp),allocatable :: Ae(:), Ah1(:), Ah2(:), Be(:), Bh1(:), Bh2(:)
 real(dp),allocatable :: I1eh1(:), I1eh2(:), I2eh1(:), I2eh2(:), I3eh1(:), I3eh2(:), kine(:), kinh1(:), kinh2(:)
 real(dp),allocatable :: koute(:), kouth1(:), kouth2(:),diffe(:), diffh(:), E(:)
@@ -509,7 +508,6 @@ write(33,*)
 !endif
 
 if ( ( ( (vers .eq. 'randm' ) .or. (vers .eq. 'dimer' ) ) .and. ( aA .eq. aB ) )  .or. ( vers .eq. 'range' ) )  then
-!write(47,'(11f14.10)') aR(n)*1.d9, linker(n)*1.d9, (Ham(i,i)*Energ_au/elec, i=0,nstates-1)
 write(47,'(11f14.10)') aR(n)*1.d9, linker(n)*1.d9, (Ham(i,i)*Energ_au/elec, i=0,nstates-1)
 elseif ( ( (vers .eq. 'randm' ) .or. (vers .eq. 'dimer' ) ) .and. ( aA .ne. aB ) ) then
 write(47,'(11f14.10)') aR(n)*1.d9, aR(n+nsys)*1.d9, (Ham(i,i)*Energ_au/elec, i=0,nstates-1)
@@ -528,24 +526,22 @@ deallocate (work)
 allocate(work(0:lwork))
 call dsyev('V', 'U', nstates, Ham_ei(0:nstates-1,0:nstates-1), nstates, lambda, Work, lwork, info)
 deallocate (work)
-!!!Make eigenstate TDM
-Mat(:,:) = matmul(TransHam(:,:),Ham_ei(:,:))
 
-if ( inbox .eq. "y" ) then
+!!!Make eigenstate TDM
+if ( inbox .eq. "n" ) then
+Mat(:,:) = matmul(TransHam(:,:),Ham_ei(:,:))
+TransHam_ei(:,:) = matmul(transpose(Ham_ei(:,:)),Mat(:,:))
+elseif ( inbox .eq. "y" ) then
 Matx(:,:) = matmul(TransHam_l(:,:,1),Ham_ei(:,:))
 Maty(:,:) = matmul(TransHam_l(:,:,2),Ham_ei(:,:))
 Matz(:,:) = matmul(TransHam_l(:,:,3),Ham_ei(:,:))
-endif
-
-TransHam_ei(:,:) = matmul(transpose(Ham_ei(:,:)),Mat(:,:))
-
-if ( inbox .eq. "y" ) then
 TransHam_ei_l(:,:,1) = matmul(transpose(Ham_ei(:,:)),Matx(:,:))
 TransHam_ei_l(:,:,2) = matmul(transpose(Ham_ei(:,:)),Maty(:,:))
 TransHam_ei_l(:,:,3) = matmul(transpose(Ham_ei(:,:)),Matz(:,:))
 endif
 
-!call make_Ham_l
+call make_Ham_l
+
 do i=0,nstates-1
 if ( (vers .eq. 'randm' ) .or. ( vers .eq. 'range' ) .or. (vers .eq. 'dimer' ) ) then
 write(58,'(10f12.6)') (Ham_ei(i,j), j=0,nstates-1)

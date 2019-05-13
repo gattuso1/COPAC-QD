@@ -9,9 +9,8 @@ contains
 function vector(d)
 
       implicit none
-      integer :: i,j
       real(kind=8), dimension(3) :: vector
-      real(kind=8) :: d, phi, teta, x, y, z, rand1, rand2
+      real(kind=8) :: d, phi, teta, rand1, rand2
 
       call random_number(rand1)
       call random_number(rand2)
@@ -36,7 +35,6 @@ end function vector
 function vectorin(ddot)
 
       implicit none
-      double precision, external:: s13adf
       real(kind=8), dimension(3) :: vectorin
       real(kind=8) :: ddot, phi, teta, rand1, rand2, rand3, dval
 

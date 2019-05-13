@@ -797,7 +797,7 @@ real(dp) function TransDip_EMA(Egap,r)
       real(dp) :: Egap, r
 
       TransDip_EMA=sqrt(((elec**2*hbar**2)/(6*Egap**2*m0))* &
-       ((m0/me)-1)*((V0*(V0+(0.42*elec)))/(V0+(2/3)*(0.42*elec))))
+       ((m0/me)-1)*((V0*(V0+(0.42*elec)))/(V0+(2.d0/3.d0)*(0.42*elec))))
 
 end function TransDip_EMA
 
@@ -1204,8 +1204,8 @@ end function D12_out_out
 real(dp) function D12ex_8loops(oo,A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4,kin4,kout4,r)
 
       implicit none
-      integer :: oo, l, k,  i1, i2,m
-      real(dp) :: x, y, Integii,Integio,Integoi,Integoo, inte, inth, ende, endh, angl,&
+      integer :: oo, k,  i1, i2,m
+      real(dp) :: x, y, Integii,Integio,Integoi,Integoo, &
       eps1,eps2,interval,r,epsR, A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4,kin4,kout4
       real(dp), dimension(3) :: r1, r2
 
@@ -1549,7 +1549,7 @@ real(dp) function DXXex(A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4
       implicit none
       integer :: oo, i1, i2, m, k
       real(dp) :: x, y, Integii,Integio,Integoi,Integoo, &
-      eps1,eps2,eps1R,eps2R,interval,r,epsR, A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4,kin4,kout4, start, finish
+      eps1,eps2,eps1R,eps2R,interval,r,epsR, A1,B1,kin1,kout1,A2,B2,kin2,kout2,A3,B3,kin3,kout3,A4,B4,kin4,kout4
       real(dp), dimension(3) :: r1, r2
 
       oo=200
@@ -2002,6 +2002,7 @@ k8 = dcmplx(0.0d0,0.0d0)
 
 do i=0,nstates-1
 do j=0,nstates-1
+!write(6,*) i,j, Ham_l(i,j)
 k1(i) = k1(i) + dcmplx(timestep,0.d0)*RK_k_inbox(time,Ham_l(i,j),&
 TransHam_ei_l(i,j,1),TransHam_ei_l(i,j,2),TransHam_ei_l(i,j,3),xc_ei(j,t)) 
 enddo

@@ -1182,43 +1182,43 @@ enddo
 
 end subroutine make_Ham_l
 
-subroutine TDM_d2l
+!subroutine TDM_d2l
 
-distQD = sqrt((QDcoor(n,1) - QDcoor(n+nsys,1))**2 + (QDcoor(n,2) - QDcoor(n+nsys,2))**2 + (QDcoor(n,3) - QDcoor(n+nsys,3))**2)
-
-!TransHam_l(1,1,:) = vector(6.9e-9)
-
-!TransHam_l(1,1,:) =vector(1.0d-9)
-!write(6,*) TransHam_l(1,1,1) , TransHam_l(1,1,2), TransHam_l(1,1,3)
-
-!!TDM from A to B
+!distQD = sqrt((QDcoor(n,1) - QDcoor(n+nsys,1))**2 + (QDcoor(n,2) - QDcoor(n+nsys,2))**2 + (QDcoor(n,3) - QDcoor(n+nsys,3))**2)
+!
+!!TransHam_l(1,1,:) = vector(6.9e-9)
+!
+!!TransHam_l(1,1,:) =vector(1.0d-9)
+!!write(6,*) TransHam_l(1,1,1) , TransHam_l(1,1,2), TransHam_l(1,1,3)
+!
+!!!TDM from A to B
+!!do i=0,nstates-1
+!!do j=0,nstates-1
+!!TransHam_l(i,j,1) = (QDcoor(n+nsys,1) - QDcoor(n,1)) * TransHam_d(i,j,1)/distQD
+!!TransHam_l(i,j,2) = (QDcoor(n+nsys,2) - QDcoor(n,2)) * TransHam_d(i,j,1)/distQD
+!!TransHam_l(i,j,3) = (QDcoor(n+nsys,3) - QDcoor(n,3)) * TransHam_d(i,j,1)/distQD
+!!enddo
+!!enddo
+!!
+!!!TDM from B to A
+!!do i=0,nstates-1
+!!do j=0,nstates-1
+!!TransHam_l(i,j,1) = (QDcoor(n,1) - QDcoor(n+nsys,1)) * TransHam_d(i,j,1)/distQD
+!!TransHam_l(i,j,2) = (QDcoor(n,2) - QDcoor(n+nsys,2)) * TransHam_d(i,j,1)/distQD
+!!TransHam_l(i,j,3) = (QDcoor(n,3) - QDcoor(n+nsys,3)) * TransHam_d(i,j,1)/distQD
+!!enddo
+!!enddo
+!
+!!TDM intradot
 !do i=0,nstates-1
 !do j=0,nstates-1
-!TransHam_l(i,j,1) = (QDcoor(n+nsys,1) - QDcoor(n,1)) * TransHam_d(i,j,1)/distQD
-!TransHam_l(i,j,2) = (QDcoor(n+nsys,2) - QDcoor(n,2)) * TransHam_d(i,j,1)/distQD
-!TransHam_l(i,j,3) = (QDcoor(n+nsys,3) - QDcoor(n,3)) * TransHam_d(i,j,1)/distQD
+!TransHam_l(i,j,:) = vector(1.0d-9)
+!!TransHam_l(i,j,1) = (QDcoor(n+nsys,1) - QDcoor(n,1)) * TransHam_d(i,j,1)/distQD
+!!TransHam_l(i,j,2) = (QDcoor(n+nsys,2) - QDcoor(n,2)) * TransHam_d(i,j,1)/distQD
+!!TransHam_l(i,j,3) = (QDcoor(n+nsys,3) - QDcoor(n,3)) * TransHam_d(i,j,1)/distQD
 !enddo
 !enddo
 !
-!!TDM from B to A
-!do i=0,nstates-1
-!do j=0,nstates-1
-!TransHam_l(i,j,1) = (QDcoor(n,1) - QDcoor(n+nsys,1)) * TransHam_d(i,j,1)/distQD
-!TransHam_l(i,j,2) = (QDcoor(n,2) - QDcoor(n+nsys,2)) * TransHam_d(i,j,1)/distQD
-!TransHam_l(i,j,3) = (QDcoor(n,3) - QDcoor(n+nsys,3)) * TransHam_d(i,j,1)/distQD
-!enddo
-!enddo
-
-!TDM intradot
-do i=0,nstates-1
-do j=0,nstates-1
-TransHam_l(i,j,:) = vector(1.0d-9)
-!TransHam_l(i,j,1) = (QDcoor(n+nsys,1) - QDcoor(n,1)) * TransHam_d(i,j,1)/distQD
-!TransHam_l(i,j,2) = (QDcoor(n+nsys,2) - QDcoor(n,2)) * TransHam_d(i,j,1)/distQD
-!TransHam_l(i,j,3) = (QDcoor(n+nsys,3) - QDcoor(n,3)) * TransHam_d(i,j,1)/distQD
-enddo
-enddo
-
-end subroutine TDM_d2l
+!end subroutine TDM_d2l
 
 end module Make_Ham

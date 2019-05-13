@@ -1,0 +1,15 @@
+#!/bin/bash
+
+gfortran -c Constants_au.f90 -g -Wall -Wextra -Warray-temporaries -Wconversion -fimplicit-none -fbacktrace -ffree-line-length-0 -fcheck=all -ffpe-trap=zero,overflow,underflow -finit-real=nan -pg #-fopenmp 
+gfortran -c Variables_au.f90 -g -Wall -Wextra -Warray-temporaries -Wconversion -fimplicit-none -fbacktrace -ffree-line-length-0 -fcheck=all -ffpe-trap=zero,overflow,underflow -finit-real=nan -pg #-fopenmp
+gfortran -c Vectors.f90 -g -Wall -Wextra -Warray-temporaries -Wconversion -fimplicit-none -fbacktrace -ffree-line-length-0 -fcheck=all -ffpe-trap=zero,overflow,underflow -finit-real=nan -pg #-fopenmp
+gfortran -c Normal.f90 -g -Wall -Wextra -Warray-temporaries -Wconversion -fimplicit-none -fbacktrace -ffree-line-length-0 -fcheck=all -ffpe-trap=zero,overflow,underflow -finit-real=nan -pg #-fopenmp
+gfortran -c Integrals.f90 -g -Wall -Wextra -Warray-temporaries -Wconversion -fimplicit-none -fbacktrace -ffree-line-length-0 -fcheck=all -ffpe-trap=zero,overflow,underflow -finit-real=nan -pg #-fopenmp 
+#gfortran -c Output.f90 -g -Wall -Wextra -Warray-temporaries -Wconversion -fimplicit-none -fbacktrace -ffree-line-length-0 -fcheck=all -ffpe-trap=zero,overflow,underflow -finit-real=nan -pg #-fopenmp
+gfortran -c Make_Ham.f90 -g -Wall -Wextra -Warray-temporaries -Wconversion -fimplicit-none -fbacktrace -ffree-line-length-0 -fcheck=all -ffpe-trap=zero,overflow,underflow -finit-real=nan -pg #-fopenmp
+gfortran -c QD_quest.f90 -g -Wall -Wextra -Warray-temporaries -Wconversion -fimplicit-none -fbacktrace -ffree-line-length-0 -fcheck=all -ffpe-trap=zero,overflow,underflow -finit-real=nan -pg #-fopenmp
+gfortran Normal.o Constants_au.o Variables_au.o Make_Ham.o Integrals.o Vectors.o Output.o QD_quest.o -o QD_quest -L/usr/lib/x86_64-linux-gnu/lapack -llapack -I /usr/lib/x86_64-linux-gnu/libblas.a -I /home/gattuso/NAG/fll6i26dfl/nag_interface_blocks/ /home/gattuso/NAG/fll6i26dfl/lib/libnag_mkl.a -lblas -double -g -Wall -Wextra -pedantic -fimplicit-none -fcheck=all -fbacktrace -fno-range-check -s -fopenmp -pg -Warray-temporaries -Wconversion -fimplicit-none -fbacktrace -ffree-line-length-0 -fcheck=all -ffpe-trap=zero,overflow,underflow -finit-real=nan
+#gfortran  -O3 -fopenmp Constants_au.o Variables_au.o Normal.o Make_Ham.o Integrals.o Vectors.o Output.o QD_quest.o -o QD_quest -L/usr/lib/x86_64-linux-gnu/lapack -llapack -I /usr/lib/x86_64-linux-gnu/libblas.a -I /home/gattuso/NAG/fll6i26dfl/nag_interface_blocks/ /home/gattuso/NAG/fll6i26dfl/lib/libnag_mkl.a -db1
+
+
+

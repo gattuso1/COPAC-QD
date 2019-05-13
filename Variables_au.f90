@@ -154,7 +154,12 @@ endif
 if ( inbox .eq. 'y' ) then
 
 if ( pgeom .eq. 'boxcar' ) then
-zbase = 1000*sqrt(2.)*sqrt(1-cos(pi*vertex/180))/sqrt(cos(pi*vertex/180))
+zbase = 1000*sqrt(2.d0)*sqrt(1-cos(pi*vertex/180.d0))/sqrt(cos(pi*vertex/180.d0))
+
+!write(6,*) 1000*sqrt(2.)*sqrt(1-cos(pi*vertex/180))/sqrt(cos(pi*vertex/180))
+!write(6,*) 1000*sqrt(2.d0*(1.d0-cos(pi*vertex/180))/(1.d0-(1-cos(pi*vertex/180.d0))/(1-cos(pi*120/180.d0))))
+!write(6,*) 1000*sqrt(2.d0*(1.d0-cos(pi*vertex/180))/(1.d0-(2.d0/3.d0)*(1-cos(pi*vertex/180.d0))))
+!write(6,*) tan(pi*60/180.d0), sqrt(3.d0)
 
 k_1(1) =(-2.d0 * pi / (cl/(omega01/t_au))) * ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
 k_1(2) = (2.d0 * pi / (cl/(omega01/t_au))) * ( 1000.d0      ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
@@ -168,19 +173,21 @@ k_3(3) = (2.d0 * pi / (cl/(omega03/t_au))) * ( zbase / 2.d0 ) / (sqrt((zbase / 2
 
 elseif ( pgeom .eq. 'triang' ) then
 
-zbase = 1000*sqrt(2.)*sqrt(1-cos(pi*vertex/180))/sqrt(1-(5.d0/4.d0)*(1-cos(pi*vertex/180)))
+zbase = 1000*sqrt(2.d0*(1.d0-cos(pi*vertex/180.d0))/(1.d0-(1-cos(pi*vertex/180.d0))/(1-cos(pi*120.d0/180.d0)))) 
 
-k_1(1) = (2.d0*pi/(cl/(omega01/t_au)))*( zbase / 2.d0 ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
-k_1(2) = (2.d0*pi/(cl/(omega01/t_au)))*( 1000.d0      ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
-k_1(3) = (2.d0*pi/(cl/(omega01/t_au)))*( sqrt(3.d0)*zbase/4.d0 )/(sqrt((zbase / 2.d0)**2+(1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
-k_2(1) =(-2.d0*pi/(cl/(omega02/t_au)))*( zbase / 2.d0 ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
-k_2(2) = (2.d0*pi/(cl/(omega02/t_au)))*( 1000.d0      ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
-k_2(3) = (2.d0*pi/(cl/(omega02/t_au)))*( sqrt(3.d0)*zbase/4.d0 )/(sqrt((zbase / 2.d0)**2+(1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
+k_1(1) = (2.d0*pi/(cl/(omega01/t_au)))*(zbase / 2.d0 ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
+k_1(2) = (2.d0*pi/(cl/(omega01/t_au)))*(1000.d0      ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
+k_1(3) = (2.d0*pi/(cl/(omega01/t_au)))*(zbase/(2.d0*sqrt(3.d0)))/(sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
+k_2(1) =(-2.d0*pi/(cl/(omega02/t_au)))*(zbase / 2.d0 ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
+k_2(2) = (2.d0*pi/(cl/(omega02/t_au)))*(1000.d0      ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
+k_2(3) = (2.d0*pi/(cl/(omega02/t_au)))*(zbase/(2.d0*sqrt(3.d0)))/(sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
 k_3(1) = (2.d0*pi/(cl/(omega03/t_au)))*0.d0 
-k_3(2) = (2.d0*pi/(cl/(omega03/t_au)))*( 1000.d0      ) /        (sqrt((1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
-k_3(3) =(-2.d0*pi/(cl/(omega03/t_au)))*( sqrt(3.d0)*zbase/4.d0 )/(sqrt((1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
+k_3(2) = (2.d0*pi/(cl/(omega03/t_au)))*(1000.d0      ) /        (sqrt((1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
+k_3(3) =(-2.d0*pi/(cl/(omega03/t_au)))*(zbase/(2.d0*sqrt(3.d0)))/(sqrt((1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
 
 !write(6,*) (2.d0*pi/(cl/(omega01/t_au))), norm2(k_1)
+!write(6,*) (2.d0*pi/(cl/(omega02/t_au))), norm2(k_2)
+!write(6,*) (2.d0*pi/(cl/(omega03/t_au))), norm2(k_3)
 
 endif
 
@@ -226,7 +233,7 @@ rmax = nsys
 do n = 1,nsys
 aR(n)= r8_NORMAL_AB(aA, dispQD*1d-9, seed(1))
 epsin(n) = 1.0 + (eps - 1.0) / (1.0 + (0.75d-9/(2*aR(n)))**1.2)
-epsR(n) = 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-(36/35)*aR(n)/rhoe)+exp(-(36/35)*aR(n)/rhoh))/2))
+epsR(n)=1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-(36.d0/35)*aR(n)/rhoe)+exp(-(36.d0/35)*aR(n)/rhoh))/2))
 V0e(n)=-1*(-3.49+2.47*(1d9*2*aR(n))**(-1.32))*elec
 V0h(n)=-1*(-5.23-0.74*(1d9*2*aR(n))**(-0.95))*elec
 enddo
@@ -289,7 +296,7 @@ linker(:) = link
 do n = rmin,rmax
 aR(n)= n*rsteps
 epsin(n) = 1.0 + (eps - 1.0) / (1.0 + (0.75d-9/(2*aR(n)))**1.2)
-epsR(n) = 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-(36/35)*aR(n)/rhoe)+exp(-(36/35)*aR(n)/rhoh))/2))
+epsR(n) = 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-(36.d0/35)*aR(n)/rhoe)+exp(-(36.d0/35)*aR(n)/rhoh))/2))
 V0e(n)=-1*(-3.49+2.47*(1d9*2*aR(n))**(-1.32))*elec
 V0h(n)=-1*(-5.23-0.74*(1d9*2*aR(n))**(-0.95))*elec
 enddo
@@ -316,7 +323,7 @@ do n = 1,nsys
 aR(n)= r8_NORMAL_AB(aA, dispQD*1d-9, seed(1))
 linker(n) = r8_NORMAL_AB(link, displink*1d-9, seed(2))
 epsin(n) = 1.0 + (eps - 1.0) / (1.0 + (0.75d-9/(2*aR(n)))**1.2)
-epsR(n) = 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-(36/35)*aR(n)/rhoe)+exp(-(36/35)*aR(n)/rhoh))/2))
+epsR(n)=1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-(36.d0/35)*aR(n)/rhoe)+exp(-(36.d0/35)*aR(n)/rhoh))/2))
 V0e(n)=-1*(-3.49+2.47*(1d9*2*aR(n))**(-1.32))*elec
 V0h(n)=-1*(-5.23-0.74*(1d9*2*aR(n))**(-0.95))*elec
 !write(6,*) aR(n), linker(n)
@@ -374,7 +381,7 @@ epsin(n) = 1.0 + (eps - 1.0) / (1.0 + (0.75d-9/(2*aR(n)))**1.2)
 epsin(n+nsys) = 1.0 + (eps - 1.0) / (1.0 + (0.75d-9/(2*aR(n+nsys)))**1.2)
 epsR(n)= 1.0/((1.0/epsin(n))-((1.0/epsin(n))-(1.0/(epsin(n)+3.5)))*(1-(exp(-(36.d0/35)*aR(n)/rhoe)+exp(-(36.d0/35)*aR(n)/rhoh))/2))
 epsR(n+nsys)= 1.0/((1.0/epsin(n+nsys))-((1.0/epsin(n+nsys))-(1.0/(epsin(n+nsys)+3.5)))*&
-                  (1-(exp(-(36/35)*aR(n+nsys)/rhoe)+exp(-(36/35)*aR(n+nsys)/rhoh))/2))
+                  (1-(exp(-(36.d0/35)*aR(n+nsys)/rhoe)+exp(-(36.d0/35)*aR(n+nsys)/rhoh))/2))
 V0e(n)=-1*(-3.49+2.47*(1d9*2*aR(n))**(-1.32))*elec
 V0e(n+nsys)=-1*(-3.49+2.47*(1d9*2*aR(n+nsys))**(-1.32))*elec
 V0h(n)=-1*(-5.23-0.74*(1d9*2*aR(n))**(-0.95))*elec
@@ -395,15 +402,15 @@ Pe3(1) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)
 Pe3(2) =  ( 1000.d0      ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
 Pe3(3) =  ( zbase / 2.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase / 2.d0)**2))
 elseif ( pgeom .eq. 'triang' ) then
-Pe1(1) =  ( zbase / 2.d0 ) /          (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
-Pe1(2) =  ( 1000.d0      ) /          (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
-Pe1(3) =  ( sqrt(3.d0)*zbase/4.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
-Pe2(1) =  ( zbase / 2.d0 ) /          (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
-Pe2(2) =  ( 1000.d0      ) /          (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
-Pe2(3) =  ( sqrt(3.d0)*zbase/4.d0 ) / (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
+Pe1(1) =  ( zbase / 2.d0 ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
+Pe1(2) =  ( 1000.d0      ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
+Pe1(3) =  ( zbase/(2.d0*sqrt(3.d0)))/(sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
+Pe2(1) =  ( zbase / 2.d0 ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
+Pe2(2) =  ( 1000.d0      ) /        (sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
+Pe2(3) =  ( zbase/(2.d0*sqrt(3.d0)))/(sqrt((zbase / 2.d0)**2+(1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
 Pe3(1) =  0.d0 
-Pe3(2) =  ( 1000.d0      ) /          (sqrt((1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
-Pe3(3) =  ( sqrt(3.d0)*zbase/4.d0 ) / (sqrt((1000.d0)**2+(sqrt(3.d0)*zbase/4.d0)**2))
+Pe3(2) =  ( 1000.d0      ) /        (sqrt((1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
+Pe3(3) =  ( zbase/(2.d0*sqrt(3.d0)))/(sqrt((1000.d0)**2+(zbase/(2.d0*sqrt(3.d0)))**2))
 endif
 
 !write(6,*) Pe1(1), Pe1(2), Pe1(3), norm2(Pe1(:))
